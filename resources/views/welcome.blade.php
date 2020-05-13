@@ -1,21 +1,41 @@
-@extends('layouts.app', ['class' => 'bg-default'])
+@extends('layouts.app', ['class' => 'bg-default', 'titlePage' => __('Patients')])
 
 @section('content')
     <div class="header bg-gradient-primary py-7 py-lg-8">
         <div class="container">
-            <div class="header-body text-center mt-7 mb-7">
-                <div class="row justify-content-center">
-                    <div class="col-lg-5 col-md-6">
-                        <h1 class="text-white">{{ __('Welcome to Argon Dashboard FREE Laravel Live Preview.') }}</h1>
+          <div class="card-body">
+                @if ($message = Session::get('success'))
+                    <div class="alert alert-success  alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert">×</button>
+                        <strong>{{ $message }}</strong>
                     </div>
-                </div>
-            </div>
+                @endif
+                <form method="POST" action="{{ route('signaturepad.upload') }}">
+                    @csrf
+                    <div class="col-md-12">
+                        <label class="" for="">Signature:</label>
+                        <br/>
+                        <div id="sig" ></div>
+                        <br/>
+                        <button id="clear" class="btn btn-danger btn-sm">Clear Signature</button>
+                        <textarea id="signature64" name="signed" style="display: none"></textarea>
+                    </div>
+                    <br/>
+                    <button class="btn btn-success">Save</button>
+                </form>
+           </div>
+
+           <script type="text/javascript">
+    var sig = $('#sig').signature({syncField: '#signature64', syncFormat: 'PNG'});
+    $('#clear').click(function(e) {
+        e.preventDefault();
+        sig.signature('clear');
+        $("#signature64").val('');
+    });
+</script>
+
         </div>
-        <div class="separator separator-bottom separator-skew zindex-100">
-            <svg x="0" y="0" viewBox="0 0 2560 100" preserveAspectRatio="none" version="1.1" xmlns="http://www.w3.org/2000/svg">
-                <polygon class="fill-default" points="2560 0 2560 100 0 100"></polygon>
-            </svg>
-        </div>
+
     </div>
 
     <div class="container mt--10 pb-5"></div>

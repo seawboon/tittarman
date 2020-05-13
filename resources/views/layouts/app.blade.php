@@ -17,6 +17,31 @@
         <link href="{{ asset('argon') }}/vendor/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
         <!-- Argon CSS -->
         <link type="text/css" href="{{ asset('argon') }}/css/argon.css?v=1.0.0" rel="stylesheet">
+        <style>
+        .wrapper {
+position: relative;
+width: 400px;
+height: 200px;
+-moz-user-select: none;
+-webkit-user-select: none;
+-ms-user-select: none;
+user-select: none;
+}
+img {
+position: absolute;
+left: 0;
+top: 0;
+}
+
+.signature-pad {
+position: absolute;
+left: 0;
+top: 0;
+width:400px;
+height:200px;
+background-image: url('https://preview.ibb.co/jnW4Qz/Grumpy_Cat_920x584.jpg');
+}
+        </style>
     </head>
     <body class="{{ $class ?? '' }}">
         @auth()
@@ -25,7 +50,7 @@
             </form>
             @include('layouts.navbars.sidebar')
         @endauth
-        
+
         <div class="main-content">
             @include('layouts.navbars.navbar')
             @yield('content')
@@ -37,10 +62,12 @@
 
         <script src="{{ asset('argon') }}/vendor/jquery/dist/jquery.min.js"></script>
         <script src="{{ asset('argon') }}/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-        
+        <!--
+        <script src="{{ url('js/app.js') }} " charset="utf-8"></script>
+      -->
         @stack('js')
-        
+
         <!-- Argon JS -->
-        <script src="{{ asset('argon') }}/js/argon.js?v=1.0.0"></script>
+        <!--<script src="{{ asset('argon') }}/js/argon.js?v=1.0.0"></script>-->
     </body>
 </html>

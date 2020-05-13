@@ -11,21 +11,13 @@
 |
 */
 
-Route::get('/', function () {
+/*Route::get('/', function () {
     return view('welcome');
-});
+});*/
 
-Auth::routes();
+Route::view('/', 'signature');
+Route::post('/signature/post', 'SignaturePadController@store');
 
-Route::get('/home', 'HomeController@index')->name('home');
-
-Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');
-
-Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
@@ -35,35 +27,23 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('profile', ['as' => 'profile.edit', 'uses' => 'ProfileController@edit']);
 	Route::put('profile', ['as' => 'profile.update', 'uses' => 'ProfileController@update']);
 	Route::put('profile/password', ['as' => 'profile.password', 'uses' => 'ProfileController@password']);
+
+	Route::get('/patients', 'PatientController@index')->name('patient.index');
+	Route::get('/patients/create', 'PatientController@create')->name('patient.create');
+	Route::post('/patients', 'PatientController@store')->name('patient.store');
+	Route::any('/patients/search', 'PatientController@search')->name('patient.search');
+	Route::get('/patients/{pid}/edit', 'PatientController@edit')->name('patient.edit');
+	Route::post('/patients/{pid}/edit', 'PatientController@update')->name('patient.update');
+
+	Route::get('/patient/{patient}/matter/create', 'MatterController@create')->name('matter.create');
+	Route::get('/patient/{patient}/matters', 'MatterController@index')->name('matter.index');
+	Route::post('/patient/{patient}/matter', 'MatterController@store')->name('matter.store');
+	Route::get('/patient/{patient}/matter/{matter}', 'MatterController@edit')->name('matter.edit');
+	Route::post('/patient/{patient}/matter/{matter}/update', 'MatterController@update')->name('matter.update');
+
+	Route::get('/patient/{patient}/matter/{matter}/treats', 'TreatController@index')->name('treat.index');
+	Route::get('/patient/{patient}/matter/{matter}/treat/create', 'TreatController@create')->name('treat.create');
+	Route::post('/patient/{patient}/matter/{matter}/treat/store', 'TreatController@store')->name('treat.store');
+	Route::get('/patient/{patient}/matter/{matter}/treat/{treat}', 'TreatController@edit')->name('treat.edit');
+	Route::post('/patient/{patient}/matter/{matter}/treat/{treat}/update', 'TreatController@update')->name('treat.update');
 });
-
-
-Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');
-Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');
-
-Route::group(['middleware' => 'auth'], function () {
-	Route::resource('user', 'UserController', ['except' => ['show']]);
-	Route::get('profile', ['as' => 'profile.edit', 'uses' => 'ProfileController@edit']);
-	Route::put('profile', ['as' => 'profile.update', 'uses' => 'ProfileController@update']);
-	Route::put('profile/password', ['as' => 'profile.password', 'uses' => 'ProfileController@password']);
-});
-
-
-Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');
-Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');
-
-Route::group(['middleware' => 'auth'], function () {
-	Route::resource('user', 'UserController', ['except' => ['show']]);
-	Route::get('profile', ['as' => 'profile.edit', 'uses' => 'ProfileController@edit']);
-	Route::put('profile', ['as' => 'profile.update', 'uses' => 'ProfileController@update']);
-	Route::put('profile/password', ['as' => 'profile.password', 'uses' => 'ProfileController@password']);
-});
-
