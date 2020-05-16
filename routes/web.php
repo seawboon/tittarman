@@ -11,12 +11,12 @@
 |
 */
 
-/*Route::get('/', function () {
-    return view('welcome');
-});*/
+Route::get('/', 'HomeController@index');
 
-Route::view('/', 'signature');
+/*Route::view('/', 'signature');
 Route::post('/signature/post', 'SignaturePadController@store');
+*/
+
 
 Auth::routes();
 

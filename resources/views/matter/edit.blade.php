@@ -43,7 +43,7 @@
                 </div>
               </div>
 
-              
+
 
               <div class="col-12">
                 <div class="form-group">
@@ -105,7 +105,9 @@
             </div>
 
 
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" name="submit" value="save" class="btn btn-primary">Edit Case</button>
+
+            <button type="submit" name="submit" value="new-treat" class="btn btn-primary">Edit & Add New Treatment</button>
 
           </form>
 

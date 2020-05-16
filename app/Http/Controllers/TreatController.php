@@ -58,7 +58,15 @@ class TreatController extends Controller
         $treat = $matter->treats()->create($data['treat']);
         //$matter->injuries()->createMany($data['injuries']);
 
-        return redirect()->route('treat.index', ['patient' => $patient, 'matter' => $matter]);
+        switch(request('submit')) {
+          case 'save':
+            return redirect()->route('treat.index', ['patient' => $patient, 'matter' => $matter]);
+          break;
+
+          case 'new-treat':
+            return redirect()->route('treat.create', ['patient' => $patient, 'matter' => $matter]);
+          break;
+        }
 
     }
 
@@ -80,7 +88,7 @@ class TreatController extends Controller
 
         $treat->update($data['treat']);
 
-        return redirect()->route('treat.edit', ['patient' => $patient, 'matter' => $matter, 'treat' => $treat]);
+        return redirect()->route('treat.index', ['patient' => $patient, 'matter' => $matter, 'treat' => $treat]);
 
         //return view('matter.edit', compact('patient', 'matter', 'injuries', 'matter_injuries'));
     }

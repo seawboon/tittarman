@@ -1,6 +1,10 @@
 <?php
 
 namespace App\Http\Controllers;
+use Carbon\Carbon;
+use App\Patient;
+use App\Matter;
+use App\Treat;
 
 class HomeController extends Controller
 {
@@ -21,6 +25,10 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('dashboard');
+        $patients = Patient::get();
+        $treats = Treat::get();
+        $matters = Matter::get();
+
+        return view('dashboard', compact('patients', 'treats', 'matters'));
     }
 }

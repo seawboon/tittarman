@@ -143,7 +143,9 @@
                 </div>
 
 
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" name="submit" value="save" class="btn btn-primary">Submit</button>
+
+                <button type="submit" name="submit" value="new-case" class="btn btn-primary">Submit & New Case</button>
 
               </form>
            </div>

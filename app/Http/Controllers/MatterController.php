@@ -48,7 +48,7 @@ class MatterController extends Controller
       //dd($data['injuries']);
 
       if($data['matter']['injury_since']!='') {
-        $dateTime = Carbon::parse(request($data['matter']['injury_since']));
+        $dateTime = Carbon::parse($data['matter']['injury_since']);
 
         $data['matter']['injury_since'] = $dateTime->format('Y-m-d');
       }
@@ -56,7 +56,15 @@ class MatterController extends Controller
       $matter = $patient->matters()->create($data['matter']);
       $matter->injuries()->createMany($data['injuries']);
 
-      return redirect()->route('matter.index', ['patient' => $patient]);
+      switch(request('submit')) {
+        case 'save':
+          return redirect()->route('matter.index', ['patient' => $patient]);
+        break;
+
+        case 'new-treat':
+          return redirect()->route('treat.create', ['patient' => $patient, 'matter' => $matter]);
+        break;
+      }
 
   }
 
@@ -100,9 +108,16 @@ class MatterController extends Controller
       $matter->injuries()->createMany($data['injuries']);
       //$matter->injuries()->sync([1,2,3]);
 
-      return redirect()->route('matter.edit', ['patient' => $patient, 'matter' => $matter]);
+      switch(request('submit')) {
+        case 'save':
+          return redirect()->route('matter.index', ['patient' => $patient]);
+        break;
 
-      //return view('matter.edit', compact('patient', 'matter', 'injuries', 'matter_injuries'));
+        case 'new-treat':
+          return redirect()->route('treat.create', ['patient' => $patient, 'matter' => $matter]);
+        break;
+      }
+
   }
 
 }

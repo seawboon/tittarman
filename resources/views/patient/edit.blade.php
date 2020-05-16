@@ -140,7 +140,9 @@
                 </div>
 
 
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" name="submit" value="save" class="btn btn-primary">Edit Patient</button>
+
+                <button type="submit" name="submit" value="new-case" class="btn btn-primary">Edit & Add New Case</button>
 
               </form>
            </div>

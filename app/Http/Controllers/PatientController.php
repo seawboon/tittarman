@@ -71,9 +71,18 @@ class PatientController extends Controller
       $dateTime = Carbon::parse(request('dob'));
       $request['dob'] = $dateTime->format('Y-m-d');
       //dd($request);
-      $patient->update($request->all());
+      $patient->update($request->except('submit'));
 
-      return redirect()->route('patient.edit', ['pid' => $pid]);
+      switch($request->submit) {
+        case 'save':
+          return redirect()->route('patient.edit', ['pid' => $patient]);
+        break;
+
+        case 'new-case':
+          return redirect()->route('matter.create', ['patient' => $patient]);
+        break;
+      }
+      //return redirect()->route('patient.edit', ['pid' => $pid]);
   }
 
   public function store()
@@ -103,7 +112,16 @@ class PatientController extends Controller
 
       if($user == null){
         $patient = Patient::create($data);
-        return redirect()->route('matter.index', ['patient' => $patient]);
+        switch(request('submit')) {
+          case 'save':
+            return redirect()->route('matter.index', ['patient' => $patient]);
+          break;
+
+          case 'new-case':
+            return redirect()->route('matter.create', ['patient' => $patient]);
+          break;
+        }
+
       } else {
         return redirect()->route('matter.index', ['patient' => $user]);
       }

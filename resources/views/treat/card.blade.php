@@ -53,7 +53,9 @@
 
      <hr class="my-4" />
 
-     <a href="{{ route('matter.edit', ['patient'=> $patient, 'matter'=> $matter]) }}" class="btn btn-sm btn-default">Edit / View Case</a>
+     <a href="{{ route('matter.edit', ['patient'=> $patient, 'matter'=> $matter]) }}" class="btn btn-sm btn-default mb-3">Edit / View Case</a>
+
+     <a href="{{ route('treat.index', ['patient'=> $patient, 'matter'=> $matter]) }}" class="btn btn-sm btn-success">View All Treatment</a>
 
    </div>
  </div>

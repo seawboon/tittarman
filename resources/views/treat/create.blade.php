@@ -72,7 +72,9 @@
               </div>
 
 
-              <button type="submit" class="btn btn-primary">Submit</button>
+              <button type="submit" name="submit" value="save" class="btn btn-primary">Submit</button>
+
+              <button type="submit" name="submit" value="new-treat" class="btn btn-primary">Submit & New Treatment</button>
 
             </form>
          </div>
