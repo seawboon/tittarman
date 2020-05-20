@@ -23,4 +23,9 @@ class Matter extends Model
       return $this->hasMany(Treat::class);
     }
 
+    public function images()
+    {
+      return $this->hasMany(Image::class, 'matter_id');
+    }
+
 }

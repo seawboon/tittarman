@@ -6,7 +6,8 @@
         </button>
         <!-- Brand -->
         <a class="navbar-brand pt-0" href="{{ route('home') }}">
-            <img src="{{ asset('argon') }}/img/brand/blue.png" class="navbar-brand-img" alt="...">
+            <!--<img src="{{ asset('argon') }}/img/brand/blue.png" class="navbar-brand-img" alt="...">-->
+            TITTARMAN
         </a>
         <!-- User -->
         <ul class="nav align-items-center d-md-none">
@@ -26,18 +27,18 @@
                         <i class="ni ni-single-02"></i>
                         <span>{{ __('My profile') }}</span>
                     </a>
-                    <a href="#" class="dropdown-item">
+                    <!--<a href="#" class="dropdown-item">
                         <i class="ni ni-settings-gear-65"></i>
                         <span>{{ __('Settings') }}</span>
-                    </a>
+                    </a>-->
                     <a href="#" class="dropdown-item">
                         <i class="ni ni-calendar-grid-58"></i>
                         <span>{{ __('Activity') }}</span>
                     </a>
-                    <a href="#" class="dropdown-item">
+                    <!--<a href="#" class="dropdown-item">
                         <i class="ni ni-support-16"></i>
                         <span>{{ __('Support') }}</span>
-                    </a>
+                    </a>-->
                     <div class="dropdown-divider"></div>
                     <a href="{{ route('logout') }}" class="dropdown-item" onclick="event.preventDefault();
                     document.getElementById('logout-form').submit();">
@@ -54,7 +55,8 @@
                 <div class="row">
                     <div class="col-6 collapse-brand">
                         <a href="{{ route('home') }}">
-                            <img src="{{ asset('argon') }}/img/brand/blue.png">
+                            <!-- <img src="{{ asset('argon') }}/img/brand/blue.png"> -->
+                            TITTARMAN
                         </a>
                     </div>
                     <div class="col-6 collapse-close">
@@ -66,9 +68,10 @@
                 </div>
             </div>
             <!-- Form -->
-            <form class="mt-4 mb-3 d-md-none">
+            <form class="mt-4 mb-3 d-md-none" action="{{ route('patient.search') }}" method="post">
+              @csrf
                 <div class="input-group input-group-rounded input-group-merge">
-                    <input type="search" class="form-control form-control-rounded form-control-prepended" placeholder="Search Name / NRIC / Email" aria-label="Search">
+                    <input class="form-control" name="search" id="search" placeholder="Search Name / NRIC / Email" type="text" value="{{ $searchTerm ?? '' }}">
                     <div class="input-group-prepend">
                         <div class="input-group-text">
                             <span class="fa fa-search"></span>
@@ -76,6 +79,7 @@
                     </div>
                 </div>
             </form>
+
             <!-- Navigation -->
             <ul class="navbar-nav">
                 <li class="nav-item">
@@ -90,12 +94,12 @@
                     </a>
                 </li>
 
-                <li class="nav-item">
+                <!--<li class="nav-item">
                     <a class="nav-link" href="#">
                         <i class="ni ni-planet text-blue"></i> {{ __('Icons') }}
                     </a>
                 </li>
-                <!--<li class="nav-item">
+                <li class="nav-item">
                     <a class="nav-link" href="#">
                         <i class="ni ni-pin-3 text-orange"></i> {{ __('Maps') }}
                     </a>
@@ -114,9 +118,9 @@
             </ul>
             <!-- Divider -->
             <hr class="my-3">
-            <!-- Heading -->
-            <h6 class="navbar-heading text-muted">Documentation</h6>
-            <!-- Navigation -->
+            <!-- Heading
+            <h6 class="navbar-heading text-muted">Documentation</h6>-->
+            <!-- Navigation
             <ul class="navbar-nav mb-md-3">
                 <li class="nav-item">
                     <a class="nav-link" href="https://demos.creative-tim.com/argon-dashboard/docs/getting-started/overview.html">
@@ -133,7 +137,7 @@
                         <i class="ni ni-ui-04"></i> Components
                     </a>
                 </li>
-            </ul>
+            </ul>-->
         </div>
     </div>
 </nav>

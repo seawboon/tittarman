@@ -1,4 +1,4 @@
-@extends('layouts.app', ['class' => 'bg-default'])
+@extends('layouts.app-signaturepad', ['class' => 'bg-default'])
 
 @section('content')
     <div class="header bg-gradient-primary py-7 py-lg-8">
@@ -27,3 +27,8 @@
 
     <div class="container mt--10 pb-5"></div>
 @endsection
+
+@push('js')
+    <script src="{{ asset('argon') }}/vendor/chart.js/dist/Chart.min.js"></script>
+    <script src="{{ asset('argon') }}/vendor/chart.js/dist/Chart.extension.js"></script>
+@endpush

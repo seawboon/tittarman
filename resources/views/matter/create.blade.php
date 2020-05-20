@@ -12,7 +12,7 @@
 
         <div class="col-xl-8 order-xl-1">
 
-          <form action="{{ route('matter.store', ['patient' => $patient->id]) }}" method="post">
+          <form action="{{ route('matter.store', ['patient' => $patient->id]) }}" method="post" enctype="multipart/form-data">
             @csrf
 
             <div class="row">
@@ -99,7 +99,38 @@
                 </div>
               </div>
 
+              <div class="col-12">
+                <div class="form-group control-group increment">
+                  <label>Upload</label>
+                  <div class="custom-file">
+                      <input type="file" class="custom-file-input" name="filename[]" lang="en">
+                      <label class="custom-file-label" for="customFileLang">Select file</label>
+                      <button class="btn btn-icon btn-success" type="button">
+                      	<span class="btn-inner--icon"><i class="ni ni-fat-add"></i></span>
+                          <span class="btn-inner--text">Add</span>
+                      </button>
+                  </div>
+                </div>
 
+
+                <div class="clone d-none">
+                  <div class="form-group control-group">
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input" name="filename[]" lang="en">
+                        <label class="custom-file-label" for="customFileLang">Select file</label>
+                        <button class="btn btn-icon btn-danger" type="button">
+                          <span class="btn-inner--icon"><i class="ni ni-fat-delete"></i></span>
+                            <span class="btn-inner--text">Delete</span>
+                        </button>
+                    </div>
+                  </div>
+                </div>
+
+
+                @error('filename')
+                <small class="text-danger">{{ $message}}</small>
+                @enderror
+              </div>
 
 
 
@@ -141,6 +172,22 @@
       $('.datepicker').datepicker({
         todayBtn:true,
       });
+
+      $('.btn-success').click(function(){
+        var html = $('.clone').html();
+        $('.increment').after(html);
+      });
+
+      $('body').on('click', '.btn-danger', function(){
+        $(this).parents(".control-group").remove();
+      });
+
+      $("body").on('change', '.custom-file input', function (e) {
+        if (e.target.files.length) {
+          $(this).next('.custom-file-label').html(e.target.files[0].name);
+        }
+      });
+
     });
     </script>
     @endpush

@@ -13,9 +13,9 @@
 
 Route::get('/', 'HomeController@index');
 
-/*Route::view('/', 'signature');
-Route::post('/signature/post', 'SignaturePadController@store');
-*/
+Route::view('/draw', 'signature');
+Route::post('/signature/post', 'SignaturePadController@store')->name('signaturepad.upload');
+
 
 
 Auth::routes();

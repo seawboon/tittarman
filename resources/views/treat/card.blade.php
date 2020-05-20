@@ -51,6 +51,12 @@
        </div>
      </h5>
 
+     @foreach($matter->images as $image)
+     <span class="badge badge-md badge-circle badge-floating badge-default border-white" data-toggle="modal" data-target="#exampleModal" data-whatever="{{ asset('/image/'.$image->filename) }}">
+       {{$loop->iteration}}
+     </span>
+     @endforeach
+
      <hr class="my-4" />
 
      <a href="{{ route('matter.edit', ['patient'=> $patient, 'matter'=> $matter]) }}" class="btn btn-sm btn-default mb-3">Edit / View Case</a>
@@ -60,5 +66,35 @@
    </div>
  </div>
 </div>
+
+@push('js')
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-lg">
+<div class="modal-content">
+
+ <div class="modal-body">
+   <img class="modalimage w-100" src="" />
+   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+     <span aria-hidden="true">&times;</span>
+   </button>
+ </div>
+</div>
+</div>
+</div>
+
+<script>
+$(function(){
+  $('#exampleModal').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget); // Button that triggered the modal
+    var recipient = button.data('whatever'); // Extract info from data-* attributes
+    // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+    // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+    var modal = $(this);
+    modal.find('.modal-title').text(recipient);
+    modal.find('.modalimage').attr('src', recipient);
+  });
+});
+</script>
+@endpush
 
 @include('matter.card')
