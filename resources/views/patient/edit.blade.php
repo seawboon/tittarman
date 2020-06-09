@@ -21,8 +21,31 @@
 
                   <div class="col-6">
                     <div class="form-group">
+                      <label for="gemder" class="d-block">Gender</label>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="gender" id="Male" value="male" {{ $patient->gender == 'male' ? 'checked' : ''}}>
+                        <label class="form-check-label" for="Male">Male</label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="gender" id="Female" value="female" {{ $patient->gender == 'female' ? 'checked' : ''}}>
+                        <label class="form-check-label" for="Female">Female</label>
+                      </div>
+
+                      @error('gender')
+                      <small class="text-danger d-block">{{ $message}}</small>
+                      @enderror
+                    </div>
+                  </div>
+
+                  <div class="col-6">
+                    <div class="form-group">
                       <label for="title">Title</label>
-                      <input type="text" class="form-control" id="salutation" name="salutation" value="{{ $patient->salutation }}" placeholder="Enter Title">
+                      <select class="form-control" id="salutation" name="salutation">
+                        <option value="" selected="selected">Please Select</option>
+                        <option value="Mr." {{($patient->salutation == 'Mr.') ? 'selected' : ''}}>Mr.</option>
+                        <option value="Mrs." {{($patient->salutation == 'Mrs.') ? 'selected' : ''}}>Mrs.</option>
+                        <option value="Miss" {{($patient->salutation == 'Miss') ? 'selected' : ''}}>Miss</option>
+                      </select>
                       @error('salutation')
                       <small class="text-danger">{{ $message}}</small>
                       @enderror
@@ -39,23 +62,7 @@
                     </div>
                   </div>
 
-                  <div class="col-6">
-                    <div class="form-group">
-                      <label for="gemder" class="d-block">Gender</label>
-                      <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="gender" id="Male" value="male" {{ $patient->gender == 'male' ? 'checked' : ''}}>
-                        <label class="form-check-label" for="Male">Male</label>
-                      </div>
-                      <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="gender" id="Female" value="female" {{ $patient->gender == 'female' ? 'checked' : ''}}>
-                        <label class="form-check-label" for="Female">Female</label>
-                      </div>
 
-                      @error('gender')
-                      <small class="text-danger d-block">{{ $message}}</small>
-                      @enderror
-                    </div>
-                  </div>
 
                   <div class="col-6">
                     <label for="gemder" class="d-block">Date of Birth</label>
@@ -92,7 +99,29 @@
                   <div class="col-6">
                     <div class="form-group">
                       <label for="contact">Contact</label>
-                      <input type="text" class="form-control" id="contact" name="contact" placeholder="Enter Contact" value="{{ $patient->contact }}">
+                      <div class="row">
+                        <div class="col-4">
+                          <select class="form-control" id="provider" name="provider">
+                            <option value="">Please Select</option>
+                            <option value="010" {{($patient->provider == '010') ? 'selected' : ''}}>010</option>
+                            <option value="011" {{($patient->provider == '011') ? 'selected' : ''}}>011</option>
+                            <option value="012" {{($patient->provider == '012') ? 'selected' : ''}}>012</option>
+                            <option value="013" {{($patient->provider == '013') ? 'selected' : ''}}>013</option>
+                            <option value="014" {{($patient->provider == '014') ? 'selected' : ''}}>014</option>
+                            <option value="016" {{($patient->provider == '016') ? 'selected' : ''}}>016</option>
+                            <option value="017" {{($patient->provider == '017') ? 'selected' : ''}}>017</option>
+                            <option value="018" {{($patient->provider == '018') ? 'selected' : ''}}>018</option>
+                            <option value="019" {{($patient->provider == '019') ? 'selected' : ''}}>019</option>
+                          </select>
+                        </div>
+                        <div class="col-8">
+                          <input type="text" class="form-control" id="contact" name="contact" placeholder="Enter Contact" value="{{ $patient->contact }}">
+                          @error('contact')
+                          <small class="text-danger">{{ $message}}</small>
+                          @enderror
+                        </div>
+                      </div>
+
                       @error('contact')
                       <small class="text-danger">{{ $message}}</small>
                       @enderror
@@ -130,8 +159,47 @@
                   <div class="col-12">
                     <div class="form-group">
                       <label for="address">Address</label>
-                      <textarea class="form-control" id="address" name="address" rows="3" placeholder="Enter Address">{{ $patient->address }}</textarea>
+                      <input type="text" class="form-control" id="address2" name="address" placeholder="Enter Address" value="{{ $patient->address }}">
                       @error('address')
+                      <small class="text-danger">{{ $message}}</small>
+                      @enderror
+                    </div>
+                  </div>
+
+                  <div class="col-12">
+                    <div class="form-group">
+                      <input type="text" class="form-control" id="address2" name="address2" placeholder="" value="{{ $patient->address2 }}">
+                      @error('address2')
+                      <small class="text-danger">{{ $message}}</small>
+                      @enderror
+                    </div>
+                  </div>
+
+                  <div class="col-4">
+                    <div class="form-group">
+                      <label for="address">Postcode</label>
+                      <input type="text" class="form-control" id="postcode" name="postcode" placeholder="" value="{{ $patient->postcode }}">
+                      @error('postcode')
+                      <small class="text-danger">{{ $message}}</small>
+                      @enderror
+                    </div>
+                  </div>
+
+                  <div class="col-4">
+                    <div class="form-group">
+                      <label for="state">State</label>
+                      {!! Form::select('state', [null=>'Please Select'] + $states, $patient->state, array('class' => 'form-control')) !!}
+                      @error('state')
+                      <small class="text-danger">{{ $message}}</small>
+                      @enderror
+                    </div>
+                  </div>
+
+                  <div class="col-4">
+                    <div class="form-group">
+                      <label for="country">Country</label>
+                      {!! Form::select('country', [null=>'Please Select'] + $countries, $patient->country , array('class' => 'form-control')) !!}
+                      @error('country')
                       <small class="text-danger">{{ $message}}</small>
                       @enderror
                     </div>
@@ -162,7 +230,9 @@
 
 <script>
 $(document).ready(function() {
-  $('.datepicker').datepicker({});
+  $('.datepicker').datepicker({
+    format: 'dd M yyyy',
+  });
 });
 </script>
 @endpush

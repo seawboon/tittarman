@@ -14,7 +14,6 @@
                             <th scope="col" class="sort" data-sort="status">Gender</th>
                             <th scope="col">NRIC / Passport</th>
                             <th scope="col" class="sort" data-sort="branch">Branch</th>
-                            <th scope="col" class="sort" data-sort="completion">Case(s)</th>
                             <th scope="col">Last Treatment</th>
                         </tr>
                     </thead>
@@ -49,10 +48,10 @@
                                         </div>
                                     </div>
                                 </div>
-                            </td>-->
+                            </td>
                             <td>
                               <a href="{{ route('matter.index', $patient) }}" class="badge badge-md badge-circle badge-floating badge-default border-white">{{ count($patient->matters) }}</a>
-                            </td>
+                            </td>-->
 
                             <td class="text-left">
                                 @if($patient->treats->last()['treat_date'])
@@ -67,6 +66,7 @@
                                     <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
                                         <a class="dropdown-item" href="{{ route('patient.edit', $patient->id) }}">View / Edit</a>
                                         <a class="dropdown-item" href="{{ route('matter.create', ['patient' => $patient->id])}}"> New Case</a>
+                                        <a class="dropdown-item" href="{{ route('matter.index', $patient) }}"> View Case(s)</a>
                                         <!--<a class="dropdown-item" href="#">View</a>
                                         <a class="dropdown-item" href="#">Something else here</a>-->
                                     </div>
@@ -89,11 +89,11 @@
 
 </div>
 
-
+<!--
 <div class="text-center">
   <a href="{{ route('patient.create') }}" class="btn btn-sm btn-primary">Add New Patient</a>
 </div>
-
+-->
         </div>
 
     </div>

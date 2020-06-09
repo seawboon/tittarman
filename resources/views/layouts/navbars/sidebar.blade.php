@@ -94,6 +94,12 @@
                     </a>
                 </li>
 
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('patient.index') }}">
+                        <i class="ni ni-bullet-list-67 text-pink"></i> {{ __('Patients') }}
+                    </a>
+                </li>
+
                 <!--<li class="nav-item">
                     <a class="nav-link" href="#">
                         <i class="ni ni-planet text-blue"></i> {{ __('Icons') }}

@@ -4,7 +4,8 @@
     <div class="header bg-gradient-secondary py-7 py-lg-8">
         <div class="container">
           <div class="card-body">
-              <form action="{{ route('patient.store') }}" method="post">
+              <form action="{{ route('patient.store') }}" method="post" autocomplete="off">
+                <input autocomplete="false" name="hidden" type="text" style="display:none;">
                 @csrf
 
                 <div class="row">
@@ -13,26 +14,6 @@
                       <label for="branch_id" class="d-block">Branch</label>
                       {!! Form::select('branch_id', [null=>'Please Select'] + $branches, null, array('class' => 'form-control', 'id' => 'branch_id')) !!}
                       @error('branch_id')
-                      <small class="text-danger">{{ $message}}</small>
-                      @enderror
-                    </div>
-                  </div>
-
-                  <div class="col-6">
-                    <div class="form-group">
-                      <label for="title">Title</label>
-                      <input type="text" class="form-control" id="salutation" name="salutation" value="{{ old('salutation') }}" placeholder="Enter Title">
-                      @error('salutation')
-                      <small class="text-danger">{{ $message}}</small>
-                      @enderror
-                    </div>
-                  </div>
-
-                  <div class="col-6">
-                    <div class="form-group">
-                      <label for="fullname">Full Name</label>
-                      <input type="text" class="form-control" id="fullname" name="fullname" placeholder="Enter Full Name" value="{{ old('fullname') }}">
-                      @error('fullname')
                       <small class="text-danger">{{ $message}}</small>
                       @enderror
                     </div>
@@ -52,6 +33,32 @@
 
                       @error('gender')
                       <small class="text-danger d-block">{{ $message}}</small>
+                      @enderror
+                    </div>
+                  </div>
+
+                  <div class="col-3">
+                    <div class="form-group">
+                      <label for="title">Title</label>
+                      <select class="form-control" id="salutation" name="salutation">
+                        <option value="" selected="selected">Please Select</option>
+                        <option value="Mr." {{(old('salutation') == 'Mr.') ? 'selected' : ''}}>Mr.</option>
+                        <option value="Mrs." {{(old('salutation') == 'Mrs.') ? 'selected' : ''}}>Mrs.</option>
+                          <option value="Miss" {{(old('salutation') == 'Miss') ? 'selected' : ''}}>Miss</option>
+                      </select>
+
+                      @error('salutation')
+                      <small class="text-danger">{{ $message}}</small>
+                      @enderror
+                    </div>
+                  </div>
+
+                  <div class="col-8">
+                    <div class="form-group">
+                      <label for="fullname">Full Name</label>
+                      <input type="text" class="form-control" id="fullname" name="fullname" placeholder="Enter Full Name" value="{{ old('fullname') }}">
+                      @error('fullname')
+                      <small class="text-danger">{{ $message}}</small>
                       @enderror
                     </div>
                   </div>
@@ -95,10 +102,31 @@
                   <div class="col-6">
                     <div class="form-group">
                       <label for="contact">Contact</label>
-                      <input type="text" class="form-control" id="contact" name="contact" placeholder="Enter Contact" value="{{ old('contact') }}">
-                      @error('contact')
-                      <small class="text-danger">{{ $message}}</small>
-                      @enderror
+
+
+                      <div class="row">
+                        <div class="col-4">
+                          <select class="form-control" id="provider" name="provider">
+                            <option value="">Please Select</option>
+                            <option value="010" {{(old('provider') == '010') ? 'selected' : ''}}>010</option>
+                            <option value="011" {{(old('provider') == '011') ? 'selected' : ''}}>011</option>
+                            <option value="012" {{(old('provider') == '012') ? 'selected' : ''}}>012</option>
+                            <option value="013" {{(old('provider') == '013') ? 'selected' : ''}}>013</option>
+                            <option value="014" {{(old('provider') == '014') ? 'selected' : ''}}>014</option>
+                            <option value="016" {{(old('provider') == '016') ? 'selected' : ''}}>016</option>
+                            <option value="017" {{(old('provider') == '017') ? 'selected' : ''}}>017</option>
+                            <option value="018" {{(old('provider') == '018') ? 'selected' : ''}}>018</option>
+                            <option value="019" {{(old('provider') == '019') ? 'selected' : ''}}>019</option>
+                          </select>
+                        </div>
+                        <div class="col-8">
+                          <input type="text" class="form-control" id="contact" name="contact" placeholder="Enter Contact" value="{{ old('contact') }}">
+                          @error('contact')
+                          <small class="text-danger">{{ $message}}</small>
+                          @enderror
+                        </div>
+                      </div>
+
                     </div>
                   </div>
 
@@ -133,8 +161,47 @@
                   <div class="col-12">
                     <div class="form-group">
                       <label for="address">Address</label>
-                      <textarea class="form-control" id="address" name="address" rows="3" placeholder="Enter Address">{{ old('address') }}</textarea>
+                      <input type="text" class="form-control" id="address" name="address" placeholder="Enter Address" value="{{ old('address') }}">
                       @error('address')
+                      <small class="text-danger">{{ $message}}</small>
+                      @enderror
+                    </div>
+                  </div>
+
+                  <div class="col-12">
+                    <div class="form-group">
+                      <input type="text" class="form-control" id="address2" name="address2" placeholder="" value="{{ old('address2') }}">
+                      @error('address2')
+                      <small class="text-danger">{{ $message}}</small>
+                      @enderror
+                    </div>
+                  </div>
+
+                  <div class="col-4">
+                    <div class="form-group">
+                      <label for="address">Postcode</label>
+                      <input type="text" class="form-control" id="postcode" name="postcode" placeholder="" value="{{ old('postcode') }}">
+                      @error('postcode')
+                      <small class="text-danger">{{ $message}}</small>
+                      @enderror
+                    </div>
+                  </div>
+
+                  <div class="col-4">
+                    <div class="form-group">
+                      <label for="state">State</label>
+                      {!! Form::select('state', [null=>'Please Select'] + $states, null, array('class' => 'form-control')) !!}
+                      @error('postcode')
+                      <small class="text-danger">{{ $message}}</small>
+                      @enderror
+                    </div>
+                  </div>
+
+                  <div class="col-4">
+                    <div class="form-group">
+                      <label for="country">Country</label>
+                      {!! Form::select('country', [null=>'Please Select'] + $countries, 'Malaysia', array('class' => 'form-control')) !!}
+                      @error('postcode')
                       <small class="text-danger">{{ $message}}</small>
                       @enderror
                     </div>
@@ -165,7 +232,9 @@
 
 <script>
 $(document).ready(function() {
-  $('.datepicker').datepicker({});
+  $('.datepicker').datepicker({
+    format: 'dd M yyyy',
+  });
 });
 </script>
 @endpush

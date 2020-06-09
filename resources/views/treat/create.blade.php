@@ -16,8 +16,27 @@
               @csrf
 
               <div class="row">
+                <div class="col-6">
+                  <div class="form-group">
+                    <label for="branch_id" class="d-block">Branch</label>
+                    {!! Form::select('treat[branch_id]', [null=>'Please Select'] + $branches, null, array('class' => 'form-control', 'id' => 'branch_id')) !!}
+                    @error('treat.branch_id')
+                    <small class="text-danger">{{ $message}}</small>
+                    @enderror
+                  </div>
+                </div>
 
                 <div class="col-6">
+                  <div class="form-group">
+                    <label for="user_id" class="d-block">Treat By</label>
+                    {!! Form::select('treat[user_id]', [null=>'Please Select'] + $users, auth()->user()->id, array('class' => 'form-control', 'id' => 'user_id')) !!}
+                    @error('treat.user_id')
+                    <small class="text-danger">{{ $message}}</small>
+                    @enderror
+                  </div>
+                </div>
+
+                <div class="col-12">
                   <label for="gemder" class="d-block">Treatment Date & Time</label>
                   <div class="form-group">
                     <div class="input-group">
@@ -32,15 +51,7 @@
                   </div>
                 </div>
 
-                <div class="col-6">
-                  <div class="form-group">
-                    <label for="user_id" class="d-block">Treat By</label>
-                    {!! Form::select('treat[user_id]', [null=>'Please Select'] + $users, null, array('class' => 'form-control', 'id' => 'user_id')) !!}
-                    @error('treat.user_id')
-                    <small class="text-danger">{{ $message}}</small>
-                    @enderror
-                  </div>
-                </div>
+
 
                 <div class="col-12">
                   <div class="form-group">
@@ -70,6 +81,7 @@
 
 
               </div>
+
 
 
               <button type="submit" name="submit" value="save" class="btn btn-primary">Submit</button>
@@ -117,6 +129,10 @@ $(document).ready(function() {
     altFormat: "F j, Y H:i",
     dateFormat: "Y-m-d H:i",
     maxDate: "today",
+    minTime: "10:00",
+    maxTime: "18:00",
+    defaultHour: {{date('H')}},
+    defaultMinute: {{date('i')}}
   });
 });
 </script>

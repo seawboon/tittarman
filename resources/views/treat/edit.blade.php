@@ -16,17 +16,11 @@
               @csrf
 
               <div class="row">
-
                 <div class="col-6">
-                  <label for="gemder" class="d-block">Treatment Date & Time</label>
                   <div class="form-group">
-                    <div class="input-group">
-                      <div class="input-group-prepend">
-                        <span class="input-group-text"><i class="ni ni-calendar-grid-58"></i></span>
-                      </div>
-                      <input class="flatpickr datetimepicker form-control" name="treat[treat_date]" type="text" placeholder="Date & Time" value="{{ $treat->treat_date }}">
-                    </div>
-                    @error('treat.treat_date')
+                    <label for="branch_id" class="d-block">Branch</label>
+                    {!! Form::select('treat[branch_id]', [null=>'Please Select'] + $branches, $treat->branch_id, array('class' => 'form-control', 'id' => 'branch_id')) !!}
+                    @error('treat.branch_id')
                     <small class="text-danger">{{ $message}}</small>
                     @enderror
                   </div>
@@ -37,6 +31,21 @@
                     <label for="user_id" class="d-block">Treat By</label>
                     {!! Form::select('user_id', $users, $treat->user_id, array('class' => 'form-control')) !!}
                     @error('treat.user_id')
+                    <small class="text-danger">{{ $message}}</small>
+                    @enderror
+                  </div>
+                </div>
+
+                <div class="col-12">
+                  <label for="gemder" class="d-block">Treatment Date & Time</label>
+                  <div class="form-group">
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="ni ni-calendar-grid-58"></i></span>
+                      </div>
+                      <input class="flatpickr datetimepicker form-control" name="treat[treat_date]" type="text" placeholder="Date & Time" value="{{ $treat->treat_date }}">
+                    </div>
+                    @error('treat.treat_date')
                     <small class="text-danger">{{ $message}}</small>
                     @enderror
                   </div>
@@ -112,9 +121,11 @@ $(document).ready(function() {
     flatpickr('.datetimepicker', {
     enableTime: true,
     altInput: true,
-    altFormat: "F j, Y H:i",
+    altFormat: "d M Y H:i",
     dateFormat: "Y-m-d H:i",
-    maxDate: "today",
+    maxDate: new Date().fp_incr(1),
+    minTime: "10:00",
+    maxTime: "18:00",
   });
 });
 </script>

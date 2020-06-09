@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use App\Branches;
 use App\Patient;
 use App\Matter;
 use App\injury;
@@ -35,9 +36,11 @@ class TreatController extends Controller
 
         $users = User::pluck('name','id')->all();
 
+        $branches = Branches::pluck('name','id')->all();
+
         $ii = MatterInjury::with('injury')->where('matter_id', $matter->id)->get();
 
-        return view('treat.create', compact('patient', 'matter', 'age', 'users', 'ii'));
+        return view('treat.create', compact('patient', 'matter', 'age', 'users', 'ii', 'branches'));
     }
 
     public function store(Patient $patient, Matter $matter)
@@ -47,6 +50,7 @@ class TreatController extends Controller
           'treat.treat_date' => 'required',
           'treat.treatment' => 'required',
           'treat.user_id' => 'required',
+          'treat.branch_id' => 'required',
           'treat.remarks' => '',
         ]);
         //dd($data['treat']);
@@ -74,8 +78,9 @@ class TreatController extends Controller
     {
         $age = Carbon::parse($patient->dob)->age;
         $users = User::pluck('name','id')->all();
+        $branches = Branches::pluck('name','id')->all();
         $ii = MatterInjury::with('injury')->where('matter_id', $matter->id)->get();
-        return view('treat.edit', compact('patient', 'matter', 'treat', 'age', 'users', 'ii'));
+        return view('treat.edit', compact('patient', 'matter', 'treat', 'age', 'users', 'ii', 'branches'));
     }
 
     public function update(Patient $patient, Matter $matter, Treat $treat)
@@ -83,6 +88,7 @@ class TreatController extends Controller
         $data = request()->validate([
           'treat.treat_date' => 'required',
           'treat.treatment' => 'required',
+          'treat.branch_id' => 'required',
           'treat.remarks' => '',
         ]);
 

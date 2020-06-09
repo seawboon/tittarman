@@ -10,4 +10,10 @@ class Branches extends Model
   {
     return $this->hasMany(Patient::class);
   }
+
+  public function treats()
+  {
+    return $this->hasMany(Treat::class);
+  }
+  
 }

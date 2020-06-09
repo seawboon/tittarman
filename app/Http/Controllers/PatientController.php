@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Patient;
 use App\Branches;
+use App\Country;
+use App\State;
 use App\Macros\whereLike;
 
 class PatientController extends Controller
@@ -38,7 +40,9 @@ class PatientController extends Controller
   public function create()
   {
       $branches = Branches::pluck('name','id')->all();
-      return view('patient.create', compact('branches'));
+      $countries = Country::pluck('name', 'name')->all();
+      $states = State::where('country_id', 111)->pluck('name', 'name')->all();
+      return view('patient.create', compact('branches', 'countries', 'states'));
   }
 
   public function edit($pid)
@@ -46,11 +50,13 @@ class PatientController extends Controller
     //dd($patient);
       $patient = Patient::findOrFail($pid);
       $branches = Branches::pluck('name','id')->all();
+      $countries = Country::pluck('name', 'name')->all();
+      $states = State::where('country_id', 111)->pluck('name', 'name')->all();
 
       $dateTime = Carbon::parse($patient->dob);
-      $patient->dob = $dateTime->format('m/d/Y');
+      $patient->dob = $dateTime->format('d M Y');
 
-      return view('patient.edit', compact('patient', 'branches'));
+      return view('patient.edit', compact('patient', 'branches', 'countries', 'states'));
   }
 
   public function update(Request $request, $pid)
@@ -95,9 +101,14 @@ class PatientController extends Controller
         'dob' => 'required',
         'nric' => 'required',
         'email' => '',
+        'provider' => '',
         'contact' => '',
         'occupation' => '',
         'address' => '',
+        'address2' => '',
+        'postcode' => '',
+        'state' => '',
+        'country' => '',
         'sensitive_skin' => 'required',
       ]);
 
