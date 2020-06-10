@@ -11,6 +11,8 @@ use App\injury;
 use App\MatterInjury;
 use App\Treat;
 use App\User;
+use App\Product;
+use App\TreatProduct;
 
 class TreatController extends Controller
 {
@@ -34,13 +36,15 @@ class TreatController extends Controller
     {
         $age = Carbon::parse($patient->dob)->age;
 
+        $products = Product::where('status', 'yes')->get();
+
         $users = User::pluck('name','id')->all();
 
         $branches = Branches::pluck('name','id')->all();
 
         $ii = MatterInjury::with('injury')->where('matter_id', $matter->id)->get();
 
-        return view('treat.create', compact('patient', 'matter', 'age', 'users', 'ii', 'branches'));
+        return view('treat.create', compact('patient', 'matter', 'age', 'users', 'ii', 'branches', 'products'));
     }
 
     public function store(Patient $patient, Matter $matter)
@@ -52,14 +56,21 @@ class TreatController extends Controller
           'treat.user_id' => 'required',
           'treat.branch_id' => 'required',
           'treat.remarks' => '',
+          'treat.fee' => 'required',
+          'treat.total' => 'required',
+          'product.*' => '',
         ]);
+
+        $data['treat']['product_amount'] = $data['treat']['total'] - $data['treat']['fee'];
         //dd($data['treat']);
 
         $data['treat']['patient_id'] = $patient->id;
 
         //dd($data['treat']['treat_date']);
-        //dd($data);
+
         $treat = $matter->treats()->create($data['treat']);
+
+        $treat->products()->createMany($data['product']);
         //$matter->injuries()->createMany($data['injuries']);
 
         switch(request('submit')) {
@@ -79,8 +90,13 @@ class TreatController extends Controller
         $age = Carbon::parse($patient->dob)->age;
         $users = User::pluck('name','id')->all();
         $branches = Branches::pluck('name','id')->all();
+        $products = Product::where('status', 'yes')->get();
         $ii = MatterInjury::with('injury')->where('matter_id', $matter->id)->get();
-        return view('treat.edit', compact('patient', 'matter', 'treat', 'age', 'users', 'ii', 'branches'));
+
+
+        $treat->load('products');
+
+        return view('treat.edit', compact('patient', 'matter', 'treat', 'age', 'users', 'ii', 'branches', 'products'));
     }
 
     public function update(Patient $patient, Matter $matter, Treat $treat)
@@ -90,9 +106,16 @@ class TreatController extends Controller
           'treat.treatment' => 'required',
           'treat.branch_id' => 'required',
           'treat.remarks' => '',
+          'treat.fee' => 'required',
+          'treat.total' => 'required',
+          'product.*' => '',
         ]);
 
+        TreatProduct::where('treat_id', $treat->id)->delete();
+        
         $treat->update($data['treat']);
+        $treat->products()->createMany($data['product']);
+
 
         return redirect()->route('treat.index', ['patient' => $patient, 'matter' => $matter, 'treat' => $treat]);
 

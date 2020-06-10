@@ -55,7 +55,7 @@
 
                   <div class="col-8">
                     <div class="form-group">
-                      <label for="fullname">Full Name</label>
+                      <label for="fullname">Name <small>as per NRIC / Passport</small></label>
                       <input type="text" class="form-control" id="fullname" name="fullname" placeholder="Enter Full Name" value="{{ old('fullname') }}">
                       @error('fullname')
                       <small class="text-danger">{{ $message}}</small>

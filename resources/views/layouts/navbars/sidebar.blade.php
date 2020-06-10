@@ -100,30 +100,47 @@
                     </a>
                 </li>
 
-                <!--<li class="nav-item">
-                    <a class="nav-link" href="#">
-                        <i class="ni ni-planet text-blue"></i> {{ __('Icons') }}
-                    </a>
-                </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">
-                        <i class="ni ni-pin-3 text-orange"></i> {{ __('Maps') }}
+                    <a class="nav-link" href="{{ route('products.index') }}">
+                        <i class="ni ni-app text-pink"></i> {{ __('Products') }}
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">
-                        <i class="ni ni-key-25 text-info"></i> {{ __('Login') }}
-                    </a>
-                </li>
-                li class="nav-item">
-                    <a class="nav-link" href="#">
-                        <i class="ni ni-circle-08 text-pink"></i> {{ __('Register') }}
-                    </a>
-                </li>-->
 
             </ul>
             <!-- Divider -->
             <hr class="my-3">
+
+            @isset($patient)
+              @if(Route::currentRouteName()!='patient.index' && Route::currentRouteName() != 'patient.search')
+              <h6 class="navbar-heading text-muted">{{ $patient->fullname }}</h6>
+              <ul class="navbar-nav mb-md-3">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('patient.edit', ['patient' => $patient]) }}">
+                        <i class="ni ni-circle-08 text-pink"></i> Profile
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('matter.index', ['patient' => $patient]) }}">
+                        <i class="ni ni-badge text-pink"></i> Case(s)
+                    </a>
+
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('matter.create', ['patient' => $patient]) }}">
+                        <i class="ni ni-fat-add text-pink"></i> New Case
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('patient.treats', ['patient' => $patient]) }}">
+                        <i class="ni ni-badge text-pink"></i> Treatment(s)
+                    </a>
+                </li>
+              </ul>
+              @endif
+            @endisset
             <!-- Heading
             <h6 class="navbar-heading text-muted">Documentation</h6>-->
             <!-- Navigation

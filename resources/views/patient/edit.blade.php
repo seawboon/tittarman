@@ -37,7 +37,7 @@
                     </div>
                   </div>
 
-                  <div class="col-6">
+                  <div class="col-3">
                     <div class="form-group">
                       <label for="title">Title</label>
                       <select class="form-control" id="salutation" name="salutation">
@@ -52,17 +52,15 @@
                     </div>
                   </div>
 
-                  <div class="col-6">
+                  <div class="col-9">
                     <div class="form-group">
-                      <label for="fullname">Full Name</label>
+                      <label for="fullname">Name <small>as per NRIC / Passport</small></label>
                       <input type="text" class="form-control" id="fullname" name="fullname" placeholder="Enter Full Name" value="{{ $patient->fullname }}">
                       @error('fullname')
                       <small class="text-danger">{{ $message}}</small>
                       @enderror
                     </div>
                   </div>
-
-
 
                   <div class="col-6">
                     <label for="gemder" class="d-block">Date of Birth</label>

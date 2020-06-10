@@ -24,6 +24,9 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::group(['middleware' => 'auth'], function () {
 	Route::resource('user', 'UserController', ['except' => ['show']]);
+
+	Route::resource('products', 'ProductController', ['except' => ['show']]);
+
 	Route::get('profile', ['as' => 'profile.edit', 'uses' => 'ProfileController@edit']);
 	Route::put('profile', ['as' => 'profile.update', 'uses' => 'ProfileController@update']);
 	Route::put('profile/password', ['as' => 'profile.password', 'uses' => 'ProfileController@password']);
@@ -34,6 +37,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::any('/patients/search', 'PatientController@search')->name('patient.search');
 	Route::get('/patients/{pid}/edit', 'PatientController@edit')->name('patient.edit');
 	Route::post('/patients/{pid}/edit', 'PatientController@update')->name('patient.update');
+		Route::get('/patients/{patient}/treats', 'PatientController@treats')->name('patient.treats');
 
 	Route::get('/patient/{patient}/matter/create', 'MatterController@create')->name('matter.create');
 	Route::get('/patient/{patient}/matters', 'MatterController@index')->name('matter.index');

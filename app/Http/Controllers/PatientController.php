@@ -25,6 +25,14 @@ class PatientController extends Controller
       return view('patient.index', compact('patients'));
   }
 
+  public function treats(Patient $patient)
+  {
+      //$patients = Patient::get();
+      //$patient = Patient::paginate(10);
+      $patient->load('treats.branch');
+      return view('patient.treats', compact('patient'));
+  }
+
   public function search(Request $request)
   {
       //$data = request();
@@ -68,6 +76,15 @@ class PatientController extends Controller
         'gender' => 'required',
         'dob' => 'required',
         'nric' => 'required',
+        'email' => '',
+        'provider' => '',
+        'contact' => '',
+        'occupation' => '',
+        'address' => '',
+        'address2' => '',
+        'postcode' => '',
+        'state' => '',
+        'country' => '',
         'sensitive_skin' => 'required',
       ]);
 
