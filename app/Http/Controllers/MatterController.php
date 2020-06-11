@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 use App\Patient;
 use App\Matter;
@@ -72,7 +73,13 @@ class MatterController extends Controller
           $name = $image->getClientOriginalName();
           $extensss = $image->getClientOriginalExtension();
           $newName = $matter->id.'_'.$key.'_'.Carbon::now()->timestamp.'.'.$extensss;
-          $image->move(public_path().'/image/', $newName);
+
+          //$image->move(public_path().'/image/', $newName);
+
+          $newName = Storage::putFileAs(
+              'matters', $image, $newName
+          );
+
           $mfile[] = ['filename' => $newName];
         }
 
@@ -138,13 +145,18 @@ class MatterController extends Controller
           $name = $image->getClientOriginalName();
           $extensss = $image->getClientOriginalExtension();
           $newName = $matter->id.'_'.$key.'_'.Carbon::now()->timestamp.'.'.$extensss;
-          $image->move(public_path().'/image/', $newName);
+          //$image->move(public_path().'/image/', $newName);
+          //$newName = Storage::putFileAs(
+              //'public', $image, $newName
+          //);
+
+          $newName = Storage::disk('public')->put('/', $image);
           $mfile[] = ['filename' => $newName];
         }
 
         $matter->images()->createMany($mfile);
       }
-      
+
       //$matter->injuries()->sync([1,2,3]);
 
       switch(request('submit')) {
