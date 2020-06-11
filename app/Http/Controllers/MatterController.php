@@ -11,6 +11,7 @@ use App\injury;
 use App\MatterInjury;
 use App\Images;
 use Image;
+use File;
 
 class MatterController extends Controller
 {
@@ -150,7 +151,7 @@ class MatterController extends Controller
           $newName = $matter->id.'_'.$key.'_'.Carbon::now()->timestamp.'.'.$extensss;
           //$image->move(public_path().'/image/', $newName);
           $image = Image::make($image)->fit(300);
-          $local = public_path().'/image/'.$newName;
+          $local = public_path().'/image/';
           $savefile = $local.$newName;
 
           if (!file_exists($local)) {
@@ -161,7 +162,7 @@ class MatterController extends Controller
 
           Storage::put('public/'.$newName, $image);
 
-          unlink($savefile);
+          File::delete($savefile);
           //$newName = Storage::disk('public')->put('/', $image);
           $mfile[] = ['filename' => $newName];
         }
