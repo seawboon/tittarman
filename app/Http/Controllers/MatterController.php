@@ -67,7 +67,7 @@ class MatterController extends Controller
       $matter = $patient->matters()->create($data['matter']);
       $matter->injuries()->createMany($data['injuries']);
 
-      if($data['filename'])
+      if(isset($data['filename']))
       {
         foreach ($data['filename'] as $key => $image) {
           $name = $image->getClientOriginalName();
@@ -139,7 +139,7 @@ class MatterController extends Controller
       $matter->update($data['matter']);
       $matter->injuries()->createMany($data['injuries']);
 
-      if($data['filename'])
+      if(isset($data['filename']))
       {
         foreach ($data['filename'] as $key => $image) {
           $name = $image->getClientOriginalName();
