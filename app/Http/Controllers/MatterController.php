@@ -9,7 +9,8 @@ use App\Patient;
 use App\Matter;
 use App\injury;
 use App\MatterInjury;
-use App\Image;
+use App\Images;
+use Image;
 
 class MatterController extends Controller
 {
@@ -73,6 +74,7 @@ class MatterController extends Controller
           $name = $image->getClientOriginalName();
           $extensss = $image->getClientOriginalExtension();
           $newName = $matter->id.'_'.$key.'_'.Carbon::now()->timestamp.'.'.$extensss;
+
 
           //$image->move(public_path().'/image/', $newName);
 
@@ -142,15 +144,15 @@ class MatterController extends Controller
       if(isset($data['filename']))
       {
         foreach ($data['filename'] as $key => $image) {
+
           $name = $image->getClientOriginalName();
           $extensss = $image->getClientOriginalExtension();
           $newName = $matter->id.'_'.$key.'_'.Carbon::now()->timestamp.'.'.$extensss;
           //$image->move(public_path().'/image/', $newName);
-          //$newName = Storage::putFileAs(
-              //'public', $image, $newName
-          //);
+          $image = Image::make($image)->resize(300, 200);
 
-          $newName = Storage::disk('public')->put('/', $image);
+          Storage::put('public/'.$newName, $image);
+          //$newName = Storage::disk('public')->put('/', $image);
           $mfile[] = ['filename' => $newName];
         }
 

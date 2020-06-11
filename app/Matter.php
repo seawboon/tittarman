@@ -25,7 +25,7 @@ class Matter extends Model
 
     public function images()
     {
-      return $this->hasMany(Image::class, 'matter_id');
+      return $this->hasMany(Images::class, 'matter_id');
     }
 
 }
