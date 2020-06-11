@@ -105,9 +105,8 @@
 
                   <div>
                     @foreach($matter->images as $image)
-                    {{ asset('storage/'.$image->filename) }}
-                    <img src="{{ asset($image->filename) }}" />
-                    <span class="badge badge-md badge-circle badge-floating badge-default border-white" data-toggle="modal" data-target="#exampleModal" data-whatever="{{ asset('/image/'.$image->filename) }}">
+
+                    <span class="badge badge-md badge-circle badge-floating badge-default border-white" data-toggle="modal" data-target="#exampleModal" data-whatever="{{ asset('storage/'.$image->filename) }}">
                       {{$loop->iteration}}
                     </span>
                     @endforeach
