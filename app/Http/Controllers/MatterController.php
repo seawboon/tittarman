@@ -151,8 +151,6 @@ class MatterController extends Controller
           //$image->move(public_path().'/image/', $newName);
           $image = Image::make($image)->resize(300, 200);
 
-          $image->save(public_path().'/image/'.$newName,80);
-
           Storage::put('public/'.$newName, $image);
           //$newName = Storage::disk('public')->put('/', $image);
           $mfile[] = ['filename' => $newName];
