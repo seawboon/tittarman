@@ -150,7 +150,9 @@ class MatterController extends Controller
           $extensss = $image->getClientOriginalExtension();
           $newName = $matter->id.'_'.$key.'_'.Carbon::now()->timestamp.'.'.$extensss;
           //$image->move(public_path().'/image/', $newName);
-          $image = Image::make($image)->resize(1280, null);
+          $image = Image::make($image)->resize(1280, null, function ($constraint) {
+              $constraint->aspectRatio();
+          });
           $local = public_path().'/image/';
           $savefile = $local.$newName;
 
