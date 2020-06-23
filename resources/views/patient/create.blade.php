@@ -1,4 +1,4 @@
-@extends('layouts.app', ['titlePage' => __('Patients')])
+@extends('layouts.app', ['titlePage' => __('New Patients')])
 
 @section('content')
     <div class="header bg-gradient-secondary py-7 py-lg-8">
@@ -42,9 +42,20 @@
                       <label for="title">Title</label>
                       <select class="form-control" id="salutation" name="salutation">
                         <option value="" selected="selected">Please Select</option>
-                        <option value="Mr." {{(old('salutation') == 'Mr.') ? 'selected' : ''}}>Mr.</option>
-                        <option value="Mrs." {{(old('salutation') == 'Mrs.') ? 'selected' : ''}}>Mrs.</option>
-                          <option value="Miss" {{(old('salutation') == 'Miss') ? 'selected' : ''}}>Miss</option>
+                        <option value="Datuk Seri" {{(old('salutation') == 'Datuk Seri') ? 'selected' : ''}}>Datuk Seri</option>
+                        <option value="Dato Sri" {{(old('salutation') == 'Dato Sri') ? 'selected' : ''}}>Dato Sri</option>
+                        <option value="Datin Seri" {{(old('salutation') == 'Datin Seri') ? 'selected' : ''}}>Datin Seri</option>
+                        <option value="Datuk" {{(old('salutation') == 'Datuk') ? 'selected' : ''}}>Datuk</option>
+                        <option value="Dato" {{(old('salutation') == 'Dato') ? 'selected' : ''}}>Dato</option>
+                        <option value="Datin" {{(old('salutation') == 'Datin') ? 'selected' : ''}}>Datin</option>
+                        <option value="Dr" {{(old('salutation') == 'Dr') ? 'selected' : ''}}>Dr</option>
+                        <option value="Mr" {{(old('salutation') == 'Mr') ? 'selected' : ''}}>Mr</option>
+                        <option value="Mrs" {{(old('salutation') == 'Mrs') ? 'selected' : ''}}>Mrs</option>
+                        <option value="Master" {{(old('salutation') == 'Master') ? 'selected' : ''}}>Master</option>
+                        <option value="Miss" {{(old('salutation') == 'Miss') ? 'selected' : ''}}>Miss</option>
+                        <option value="Prof" {{(old('salutation') == 'Prof') ? 'selected' : ''}}>Prof</option>
+                        <option value="Puan Sri" {{(old('salutation') == 'Puan Sri') ? 'selected' : ''}}>Puan Sri</option>
+                        <option value="Tan Sri" {{(old('salutation') == 'Tan Sri') ? 'selected' : ''}}>Tan Sri</option>
                       </select>
 
                       @error('salutation')
@@ -177,7 +188,7 @@
                     </div>
                   </div>
 
-                  <div class="col-4">
+                  <div class="col-3">
                     <div class="form-group">
                       <label for="address">Postcode</label>
                       <input type="text" class="form-control" id="postcode" name="postcode" placeholder="" value="{{ old('postcode') }}">
@@ -187,7 +198,17 @@
                     </div>
                   </div>
 
-                  <div class="col-4">
+                  <div class="col-3">
+                    <div class="form-group">
+                      <label for="address">City</label>
+                      <input type="text" class="form-control" id="city" name="city" placeholder="" value="{{ old('city') }}">
+                      @error('city')
+                      <small class="text-danger">{{ $message}}</small>
+                      @enderror
+                    </div>
+                  </div>
+
+                  <div class="col-3">
                     <div class="form-group">
                       <label for="state">State</label>
                       {!! Form::select('state', [null=>'Please Select'] + $states, null, array('class' => 'form-control')) !!}
@@ -197,7 +218,7 @@
                     </div>
                   </div>
 
-                  <div class="col-4">
+                  <div class="col-3">
                     <div class="form-group">
                       <label for="country">Country</label>
                       {!! Form::select('country', [null=>'Please Select'] + $countries, 'Malaysia', array('class' => 'form-control')) !!}

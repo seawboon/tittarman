@@ -1,4 +1,4 @@
-@extends('layouts.app', ['titlePage' => __('Patients')])
+@extends('layouts.app', ['titlePage' => $patient->fullname.' profile'])
 
 @section('content')
     <div class="header bg-gradient-secondary py-7 py-lg-8">
@@ -42,9 +42,20 @@
                       <label for="title">Title</label>
                       <select class="form-control" id="salutation" name="salutation">
                         <option value="" selected="selected">Please Select</option>
-                        <option value="Mr." {{($patient->salutation == 'Mr.') ? 'selected' : ''}}>Mr.</option>
-                        <option value="Mrs." {{($patient->salutation == 'Mrs.') ? 'selected' : ''}}>Mrs.</option>
+                        <option value="Datuk Seri" {{($patient->salutation == 'Datuk Seri') ? 'selected' : ''}}>Datuk Seri</option>
+                        <option value="Dato Sri" {{($patient->salutation == 'Dato Sri') ? 'selected' : ''}}>Dato Sri</option>
+                        <option value="Datin Seri" {{($patient->salutation == 'Datin Seri') ? 'selected' : ''}}>Datin Seri</option>
+                        <option value="Datuk" {{($patient->salutation == 'Datuk') ? 'selected' : ''}}>Datuk</option>
+                        <option value="Dato" {{($patient->salutation == 'Dato') ? 'selected' : ''}}>Dato</option>
+                        <option value="Datin" {{($patient->salutation == 'Datin') ? 'selected' : ''}}>Datin</option>
+                        <option value="Dr" {{($patient->salutation == 'Dr') ? 'selected' : ''}}>Dr</option>
+                        <option value="Mr" {{($patient->salutation == 'Mr') ? 'selected' : ''}}>Mr</option>
+                        <option value="Mrs" {{($patient->salutation == 'Mrs') ? 'selected' : ''}}>Mrs</option>
+                        <option value="Master" {{($patient->salutation == 'Master') ? 'selected' : ''}}>Master</option>
                         <option value="Miss" {{($patient->salutation == 'Miss') ? 'selected' : ''}}>Miss</option>
+                        <option value="Prof" {{($patient->salutation == 'Prof') ? 'selected' : ''}}>Prof</option>
+                        <option value="Puan Sri" {{($patient->salutation == 'Puan Sri') ? 'selected' : ''}}>Puan Sri</option>
+                        <option value="Tan Sri" {{($patient->salutation == 'Tan Sri') ? 'selected' : ''}}>Tan Sri</option>
                       </select>
                       @error('salutation')
                       <small class="text-danger">{{ $message}}</small>
@@ -173,7 +184,7 @@
                     </div>
                   </div>
 
-                  <div class="col-4">
+                  <div class="col-3">
                     <div class="form-group">
                       <label for="address">Postcode</label>
                       <input type="text" class="form-control" id="postcode" name="postcode" placeholder="" value="{{ $patient->postcode }}">
@@ -183,7 +194,17 @@
                     </div>
                   </div>
 
-                  <div class="col-4">
+                  <div class="col-3">
+                    <div class="form-group">
+                      <label for="address">City</label>
+                      <input type="text" class="form-control" id="city" name="city" placeholder="" value="{{ $patient->city }}">
+                      @error('city')
+                      <small class="text-danger">{{ $message}}</small>
+                      @enderror
+                    </div>
+                  </div>
+
+                  <div class="col-3">
                     <div class="form-group">
                       <label for="state">State</label>
                       {!! Form::select('state', [null=>'Please Select'] + $states, $patient->state, array('class' => 'form-control')) !!}
@@ -193,7 +214,7 @@
                     </div>
                   </div>
 
-                  <div class="col-4">
+                  <div class="col-3">
                     <div class="form-group">
                       <label for="country">Country</label>
                       {!! Form::select('country', [null=>'Please Select'] + $countries, $patient->country , array('class' => 'form-control')) !!}

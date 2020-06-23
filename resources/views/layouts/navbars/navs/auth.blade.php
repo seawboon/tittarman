@@ -2,13 +2,13 @@
 <nav class="navbar navbar-top navbar-expand-md navbar-dark" id="navbar-main">
     <div class="container-fluid">
         <!-- Brand -->
-        <!--<h4 class="mb-0 text-uppercase d-none d-lg-inline-block">{{ $titlePage ?? '' }}</h4>-->
-        <h4 class="mb-0 text-uppercase d-none d-lg-inline-block">
+        <h4 class="mb-0 text-capitalize d-none d-lg-inline-block">{{ $titlePage ?? '' }}</h4>
+        <!--<h4 class="mb-0 text-uppercase d-none d-lg-inline-block">
           <a href="{{ route('patient.create') }}" class="btn btn-icon btn-outline-primary" type="button">
           	<span class="btn-inner--icon"><i class="ni ni-circle-08 text-pink"></i></span>
               <span class="btn-inner--text">New Patient</span>
           </a>
-        </h4>
+        </h4>-->
         <!-- Form -->
         <form class="navbar-search navbar-search-dark form-inline mr-3 d-none d-md-flex ml-lg-auto" action="{{ route('patient.search') }}" method="post">
           @csrf

@@ -11,7 +11,7 @@
                         <tr>
                             <th scope="col" class="sort" data-sort="name">No.</th>
                             <th scope="col" class="sort" data-sort="budget">Name</th>
-                            <th scope="col" class="sort" data-sort="status">Gender</th>
+                            <!--<th scope="col" class="sort" data-sort="status">Gender</th>-->
                             <th scope="col">NRIC / Passport</th>
                             <th scope="col" class="sort" data-sort="branch">Branch</th>
                             <th scope="col">Last Treatment</th>
@@ -30,9 +30,9 @@
                             <td class="budget">
                                 <small>{{ $patient->salutation ?? '' }}</small> {{ $patient->fullname }}
                             </td>
-                            <td>
+                            <!--<td>
                                 {{ $patient->gender }}
-                            </td>
+                            </td>-->
                             <td>
                               {{ $patient->nric }}
                             </td>
