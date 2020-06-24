@@ -10,8 +10,10 @@ use App\Matter;
 use App\injury;
 use App\MatterInjury;
 use App\Images;
+use App\InjuryPart;
 use Image;
 use File;
+use chosen;
 
 class MatterController extends Controller
 {
@@ -34,15 +36,15 @@ class MatterController extends Controller
   public function create(Patient $patient)
   {
       $injuries = injury::get();
-
-      return view('matter.create', compact('patient', 'injuries'));
+      $injuryparts = InjuryPart::where('status','yes')->get();
+      return view('matter.create', compact('patient', 'injuries', 'injuryparts'));
   }
 
   public function store(Patient $patient, Request $request)
   {
-      //dd($request->all());
+      dd($request->all());
       $data = request()->validate([
-        'matter.injury_part' => 'required',
+        'matter.injury_part.*' => 'required',
         'matter.injury_since' => '',
         'matter.remarks' => '',
         'injuries' => 'required',

@@ -228,6 +228,22 @@
                     </div>
                   </div>
 
+                  <div class="col-12">
+                    <div class="form-group">
+                      <div class="custom-control custom-checkbox">
+
+                        <div class="col-6 col-md-3">
+                          <input type="checkbox" name="freegift" class="custom-control-input" id="freegift" value="yes"  {{ old('freegift') == 'yes' ? ' checked' : '' }}>
+                          <label class="custom-control-label" for="freegift">Free Gift</label>
+                        </div>
+
+                        @error('freegift')
+                        <small class="text-danger">{{ $message}}</small>
+                        @enderror
+                      </div>
+                    </div>
+                  </div>
+
                 </div>
 
 

@@ -17,15 +17,10 @@
 
             <div class="row">
 
-              <div class="col-6">
+              <div class="col-12">
                 <div class="form-group">
                   <label for="title">Injury Part</label>
-                  <select class="js-example-basic-multiple w-100" name="matter[injury_part][]" multiple="multiple">
-                    @foreach($injuryparts as $part)
-                      <option value="{{$part->id}}">{{$part->name}}</option>
-                    @endforeach
-                  </select>
-
+                  <input type="text" class="form-control" id="injury_part" name="matter[injury_part]" value="{{ old('matter.injury_part') }}" placeholder="Enter injury part">
                   @error('matter.injury_part')
                   <small class="text-danger">{{ $message}}</small>
                   @enderror
@@ -161,9 +156,6 @@
 
     @endsection
 
-    @push('css')
-      <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
-    @endpush
     @push('js')
     <style>
     .datepicker table tr td.today,  .datepicker table tr td.today:hover {
@@ -172,13 +164,11 @@
 
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js" charset="utf-8"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+
 
     <script>
     $(document).ready(function() {
       //$("input").attr("autocomplete", "off");
-      $('.js-example-basic-multiple').select2();
-
       $('.datepicker').datepicker({
         todayBtn:true,
       });

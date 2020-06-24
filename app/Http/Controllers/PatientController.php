@@ -72,11 +72,12 @@ class PatientController extends Controller
     //dd($patient);
       $request->validate([
         'branch_id' => 'required',
+        'salutation' => 'required',
         'fullname' => 'required',
         'gender' => 'required',
         'dob' => 'required',
         'nric' => 'required',
-        'email' => '',
+        'email' => 'required|email',
         'provider' => '',
         'contact' => '',
         'occupation' => '',
@@ -87,7 +88,12 @@ class PatientController extends Controller
         'state' => '',
         'country' => '',
         'sensitive_skin' => 'required',
+        'freegift' => '',
       ]);
+
+      if($request['freegift'] == null) {
+        $request['freegift'] = 'no';
+      }
 
       $patient = Patient::find($pid);
 
@@ -113,19 +119,19 @@ class PatientController extends Controller
   {
       $data = request()->validate([
         'branch_id' => 'required',
-        'salutation' => '',
+        'salutation' => 'required',
         'fullname' => 'required',
         'gender' => 'required',
         'dob' => 'required',
         'nric' => 'required',
-        'email' => '',
+        'email' => 'required|email',
         'provider' => '',
         'contact' => '',
         'occupation' => '',
         'address' => '',
         'address2' => '',
         'postcode' => '',
-        'city' => '',
+        'city' => 'nullable',
         'state' => '',
         'country' => '',
         'sensitive_skin' => 'required',

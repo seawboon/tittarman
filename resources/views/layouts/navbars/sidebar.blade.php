@@ -106,6 +106,12 @@
                     </a>
                 </li>
 
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('injuryparts.index') }}">
+                        <i class="ni ni-app text-pink"></i> {{ __('Injury Part') }}
+                    </a>
+                </li>
+
             </ul>
             <!-- Divider -->
             <hr class="my-3">
