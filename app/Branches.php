@@ -15,5 +15,10 @@ class Branches extends Model
   {
     return $this->hasMany(Treat::class);
   }
-  
+
+  public function checkins()
+  {
+    return $this->hasMany(CheckIn::class);
+  }
+
 }

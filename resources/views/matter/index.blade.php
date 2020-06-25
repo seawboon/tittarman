@@ -12,11 +12,9 @@
           </div>--}}
 
         <div class="col-xl-12 order-xl-1">
-          <div class="mb-3">
-            <a href="{{ route('matter.create', ['patient' => $patient]) }}" class="btn btn-sm btn-info">Add New Case</a>
-          </div>
 
-          <div class="table-responsive">
+          <h3><small>{{$patient->salutation}}</small> {{$patient->fullname}} <a class="btn btn-sm btn-info ml-2" href="{{ route('matter.create', ['patient' => $patient]) }}">New Case</a></h3>
+          <div class="table-responsive mt-3">
 
                     <div>
                         <table class="table align-items-center">

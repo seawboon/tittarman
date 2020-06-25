@@ -60,6 +60,8 @@
                                 </a>
                                 @endif
                                 <div class="dropdown float-right">
+                                    <a class="btn btn-sm btn-info ml-2" href="{{ route('checkin.store', ['patient' => $patient]) }}">Check-In</a>
+
                                     <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                       <i class="fas fa-ellipsis-v"></i>
                                     </a>

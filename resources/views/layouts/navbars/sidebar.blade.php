@@ -9,6 +9,11 @@
             <!--<img src="{{ asset('argon') }}/img/brand/blue.png" class="navbar-brand-img" alt="...">-->
             TITTARMAN
         </a>
+        @if(Session::get('myBranch'))
+          <div class="text-center">
+            <small class="text-center">{{ Session::get('myBranch')->name }}</small>
+          </div>
+        @endif
         <!-- User -->
         <ul class="nav align-items-center d-md-none">
             <li class="nav-item dropdown">
@@ -85,6 +90,29 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('home') }}">
                         <i class="ni ni-tv-2 text-primary"></i> {{ __('Dashboard') }}
+                    </a>
+                </li>
+
+                @if(Session::get('myBranch'))
+                  @if(Session::get('myBranch')->id == 2)
+                  <li class="nav-item">
+                      <a class="nav-link" href="{{ route('checkin.setSession', ['branch' => 1])}}">
+                          <i class="ni ni-square-pin text-pink"></i> Switch to Mid Valley
+                      </a>
+                  </li>
+                  @else
+                  <li class="nav-item">
+                      <a class="nav-link" href="{{ route('checkin.setSession', ['branch' => 2])}}">
+                          <i class="ni ni-square-pin text-pink"></i> Switch to Plaza Arkadia
+                      </a>
+                  </li>
+                  @endif
+                @endif
+
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('checkin.index') }}">
+                        <i class="ni ni-circle-08 text-pink"></i> {{ __('Check In') }}
                     </a>
                 </li>
 
