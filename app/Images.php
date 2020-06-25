@@ -12,4 +12,10 @@ class Images extends Model
   {
     return $this->belongsTo(Matter::class);
   }
+
+  public function treat()
+  {
+    return $this->belongsTo(Treat::class);
+  }
+
 }

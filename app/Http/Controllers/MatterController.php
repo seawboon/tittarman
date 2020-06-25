@@ -11,9 +11,9 @@ use App\injury;
 use App\MatterInjury;
 use App\Images;
 use App\InjuryPart;
+use App\MatterInjuryPart;
 use Image;
 use File;
-use chosen;
 
 class MatterController extends Controller
 {
@@ -23,9 +23,12 @@ class MatterController extends Controller
       //$patient = Patient::with('matters')->get();
       //$patient->load('matters');
 
-      $patient->load(['matters' => function ($query) {
+      /*$patient->load(['matters' => function ($query) {
           $query->orderBy('created_at', 'desc');
-      }, 'treats']);
+      }, 'treats']);*/
+      $patient->load('matters.parts.part', 'treats');
+
+      //dd($patient);
 
       //$age = Carbon::parse($patient->dob)->age;
       //dd($patient);
@@ -33,19 +36,21 @@ class MatterController extends Controller
       return view('matter.index', compact('patient'));
   }
 
-  public function create(Patient $patient)
+  public function create(Patient $patient, Request $request)
   {
       $injuries = injury::get();
       $injuryparts = InjuryPart::where('status','yes')->get();
-      return view('matter.create', compact('patient', 'injuries', 'injuryparts'));
+      return view('matter.create', compact('patient', 'injuries', 'injuryparts', 'olds'));
   }
 
   public function store(Patient $patient, Request $request)
   {
-      dd($request->all());
+      //dd($request->all());
       $data = request()->validate([
-        'matter.injury_part.*' => 'required',
+        'injury_parts' => 'required',
+        'injury_parts.*.injury_part_id' => 'required',
         'matter.injury_since' => '',
+        'matter.notes' => '',
         'matter.remarks' => '',
         'injuries' => 'required',
         'injuries.*.injury_id' => 'required',
@@ -58,7 +63,6 @@ class MatterController extends Controller
 
       if($data['matter']['injury_since']!='') {
         $dateTime = Carbon::parse($data['matter']['injury_since']);
-
         $data['matter']['injury_since'] = $dateTime->format('Y-m-d');
       }
       //dd($data['filename']);
@@ -70,21 +74,32 @@ class MatterController extends Controller
       //dd($data);
       $matter = $patient->matters()->create($data['matter']);
       $matter->injuries()->createMany($data['injuries']);
+      $matter->parts()->createMany($data['injury_parts']);
 
       if(isset($data['filename']))
       {
         foreach ($data['filename'] as $key => $image) {
+
           $name = $image->getClientOriginalName();
           $extensss = $image->getClientOriginalExtension();
           $newName = $matter->id.'_'.$key.'_'.Carbon::now()->timestamp.'.'.$extensss;
-
-
           //$image->move(public_path().'/image/', $newName);
+          $image = Image::make($image)->resize(1280, null, function ($constraint) {
+              $constraint->aspectRatio();
+          });
+          $local = public_path().'/image/';
+          $savefile = $local.$newName;
 
-          $newName = Storage::putFileAs(
-              'matters', $image, $newName
-          );
+          if (!file_exists($local)) {
+              mkdir($local, 666, true);
+          }
 
+          $image->save($savefile,80);
+
+          Storage::put('public/'.$newName, $image);
+
+          File::delete($savefile);
+          //$newName = Storage::disk('public')->put('/', $image);
           $mfile[] = ['filename' => $newName];
         }
 
@@ -106,20 +121,23 @@ class MatterController extends Controller
   public function edit(Patient $patient, Matter $matter)
   {
       $injuries = injury::get();
-
+      $injuryparts = InjuryPart::where('status','yes')->get();
       $dateTime = Carbon::parse($matter->injury_since);
-      $matter->injury_since = $dateTime->format('m/d/Y');
-
+      $matter->injury_since = $dateTime->format('d M Y');
+      $matter->load('treats');
       $matter_injuries = $matter->load('injuries');
+      $parts = $matter->load('parts');
 
-      return view('matter.edit', compact('patient', 'matter', 'injuries', 'matter_injuries'));
+      return view('matter.edit', compact('patient', 'matter', 'injuries', 'matter_injuries', 'injuryparts', 'parts'));
   }
 
   public function update(Patient $patient, Matter $matter)
   {
       $data = request()->validate([
-        'matter.injury_part' => 'required',
+        'injury_parts' => 'required',
+        'injury_parts.*.injury_part_id' => 'required',
         'matter.injury_since' => '',
+        'matter.notes' => '',
         'matter.remarks' => '',
         'injuries' => 'required',
         'injuries.*.injury_id' => 'required',
@@ -140,9 +158,11 @@ class MatterController extends Controller
 
       //$matter->injuries->delete();
       MatterInjury::where('matter_id', $matter->id)->delete();
+      MatterInjuryPart::where('matter_id', $matter->id)->delete();
 
       $matter->update($data['matter']);
       $matter->injuries()->createMany($data['injuries']);
+      $matter->parts()->createMany($data['injury_parts']);
 
       if(isset($data['filename']))
       {

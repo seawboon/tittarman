@@ -22,9 +22,11 @@
             </div>
         </form>
         <!-- User -->
+        <!--
         <a class="nav-link" href="{{ route('patient.index') }}">
             <i class="ni ni-bullet-list-67 text-pink"></i> {{ __('Patients') }}
         </a>
+      -->
         <ul class="navbar-nav align-items-center d-none d-md-flex">
             <li class="nav-item dropdown">
                 <a class="nav-link pr-0" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

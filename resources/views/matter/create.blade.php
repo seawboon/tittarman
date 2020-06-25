@@ -1,4 +1,4 @@
-@extends('layouts.app', ['titlePage' => __(' Case')])
+@extends('layouts.app', ['titlePage' => __('New Case')])
 
 @section('content')
     <div class="header bg-gradient-secondary py-7 py-lg-8 vh-100">
@@ -17,16 +17,36 @@
 
             <div class="row">
 
-              <div class="col-6">
+              <div class="col-12">
                 <div class="form-group">
                   <label for="title">Injury Part</label>
-                  <select class="js-example-basic-multiple w-100" name="matter[injury_part][]" multiple="multiple">
+                  <?php $oldinjuryparts = [];?>
+                  @if(old('injury_parts'))
+
+                    @foreach(old('injury_parts') as $yy)
+                      <?php
+                        $oldinjuryparts[] = $yy['injury_part_id'];
+                      ?>
+                    @endforeach
+                  @endif
+
+                  <select class="js-example-basic-multiple w-100" name="injury_parts[][injury_part_id]" multiple="multiple">
                     @foreach($injuryparts as $part)
-                      <option value="{{$part->id}}">{{$part->name}}</option>
+                      <option value="{{$part->id}}" {{ (is_array($oldinjuryparts) && in_array($part->id, $oldinjuryparts)) ? ' selected' : '' }}>{{$part->name}}</option>
                     @endforeach
                   </select>
 
-                  @error('matter.injury_part')
+                  @error('injury_parts')
+                  <small class="text-danger">{{ $message}}</small>
+                  @enderror
+                </div>
+              </div>
+
+              <div class="col-6">
+                <div class="form-group">
+                  <label for="address">Notes</label>
+                  <textarea class="form-control" id="notes" name="matter[notes]" rows="2" placeholder="Enter Notes">{{ old('matter.notes') }}</textarea>
+                  @error('matter.notes')
                   <small class="text-danger">{{ $message}}</small>
                   @enderror
                 </div>
@@ -53,7 +73,7 @@
               <div class="col-12">
                 <div class="form-group">
                   <label for="address">Remarks</label>
-                  <textarea class="form-control" id="remarks" name="matter[remarks]" rows="3" placeholder="Enter Remarks">{{ old('matter.remarks') }}</textarea>
+                  <textarea class="form-control" id="remarks" name="matter[remarks]" rows="2" placeholder="Enter Remarks">{{ old('matter.remarks') }}</textarea>
                   @error('matter.remarks')
                   <small class="text-danger">{{ $message}}</small>
                   @enderror
@@ -106,7 +126,7 @@
 
               <div class="col-12">
                 <div class="form-group control-group increment">
-                  <label>Upload</label>
+                  <label>Case Upload</label>
                   <div class="custom-file">
                       <input type="file" class="custom-file-input" name="filename[]" lang="en">
                       <label class="custom-file-label" for="customFileLang">Select file</label>
@@ -180,6 +200,7 @@
       $('.js-example-basic-multiple').select2();
 
       $('.datepicker').datepicker({
+        format: 'dd M yyyy',
         todayBtn:true,
       });
 

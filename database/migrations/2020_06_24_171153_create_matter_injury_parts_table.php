@@ -1,0 +1,34 @@
+<?php
+
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+
+class CreateMatterInjuryPartsTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('matter_injury_parts', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('matter_id');
+            $table->unsignedBigInteger('injury_part_id');
+            $table->timestamps();
+        });
+
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('matter_injury_parts');
+    }
+}

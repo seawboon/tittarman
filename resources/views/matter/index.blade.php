@@ -1,17 +1,21 @@
-@extends('layouts.app', ['titlePage' => __(' Case')])
+@extends('layouts.app', ['titlePage' => __(' CASES & TREATMENTS LIST')])
 
 @section('content')
 
-    <div class="header bg-gradient-Secondary py-7 py-lg-8 vh-100">
+    <div class="header bg-gradient-Secondary py-6 py-lg-7 vh-100">
         <div class="container-fluid">
           <div class="row">
 
 
-          <div class="col-xl-4 order-xl-2">
+          {{--<div class="col-xl-4 order-xl-2">
            @include('matter.card')
+          </div>--}}
+
+        <div class="col-xl-12 order-xl-1">
+          <div class="mb-3">
+            <a href="{{ route('matter.create', ['patient' => $patient]) }}" class="btn btn-sm btn-info">Add New Case</a>
           </div>
 
-        <div class="col-xl-8 order-xl-1">
           <div class="table-responsive">
 
                     <div>
@@ -19,26 +23,34 @@
                             <thead class="thead-light">
                                 <tr>
                                     <th scope="col" class="sort" data-sort="name">No.</th>
-                                    <th scope="col" class="sort" data-sort="budget">Injury Part</th>
+                                    <th scope="col" class="sort" data-sort="budget">Cases</th>
+                                    <th scope="col" class="sort" data-sort="budget">Photos</th>
                                     <th scope="col" class="sort" data-sort="status">Injury Since</th>
                                     <th scope="col" class="sort" data-sort="branch">Treatment</th>
+                                    <th scope="col" class="sort" data-sort="branch" style="width:40px !important; padding: .75rem 0"></th>
                                 </tr>
                             </thead>
                             <tbody class="list">
                               @foreach($patient->matters as $matter)
                                 <tr>
-                                    <th scope="row">
+                                    <th scope="row" class="align-top">
                                         <div class="media align-items-center">
                                             <div class="media-body">
                                                 <span class="name mb-0 text-sm">{{$loop->iteration}}</span>
                                             </div>
                                         </div>
                                     </th>
-                                    <td class="budget">
-                                        {{ $matter->injury_part }}
+                                    <td class="budget align-top">
+                                      <a href="{{ route('matter.edit', ['patient' => $patient, 'matter' => $matter]) }}">
+                                        @foreach($matter->parts as $part)
+                                          {{$part->part->name}}@if(!$loop->last) + @endif
+                                        @endforeach
+                                      </a>
                                         <div>
-                                          <i>{{ $matter->remarks ?? '' }}</i>
+                                          <i>{{ $matter->notes ?? '' }}</i>
                                         </div>
+                                    </td>
+                                    <td class="budget align-top">
                                         @if(count($matter->images) > 0)
                                           @foreach($matter->images as $image)
                                           <span class="badge badge-md badge-circle badge-floating badge-default border-white" data-toggle="modal" data-target="#exampleModal" data-whatever="{{ asset('storage/'.$image->filename) }}">
@@ -46,16 +58,18 @@
                                           </span>
                                           @endforeach
                                         @endif
-
                                     </td>
-                                    <td>
+                                    <td class="align-top">
                                         {{ Carbon\Carbon::parse($matter->injury_since)->format('d M Y') }}
                                     </td>
-                                    <td>
-                                      <div class="row">
-                                        <div class="col-auto">
+                                    <td class="align-top">
+                                        @foreach($matter->treats as $treat)
+                                          <a class="d-block mb-2 w-75" href="{{ route('treat.edit', ['patient' => $patient, 'matter' => $treat->matter_id, 'treat' => $treat]) }}">{{ Carbon\Carbon::parse($treat->treat_date)->format('d M Y') }}</a>
+                                        @endforeach
+                                        {{--<div class="col-auto">
                                           <a href="{{ route('treat.index', ['patient' => $patient, 'matter' => $matter]) }}" class="badge badge-md badge-circle badge-floating badge-default border-white">{{ count($matter->treats)}}</a>
                                         </div>
+
                                         <div>
                                           @if($matter->treats->last()['treat_date'])
                                           <a href="{{ route('treat.index', ['patient' => $patient, 'matter' => $matter->treats->sortBy('treat_date')->last()['matter_id']]) }}">
@@ -64,24 +78,23 @@
                                           </a>
                                           @endif
                                         </div>
+                                        --}}
+                                    </td>
+                                    <td class="align-top px-0">
+                                      <a class="badge badge-md badge-circle badge-floating badge-default border-white" href="{{ route('treat.create', ['patient' => $patient, 'matter' => $matter])}}"><i class="ni ni-fat-add"></i></a>
+                                      {{--<div class="dropdown float-right">
+                                          <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fas fa-ellipsis-v"></i>
+                                          </a>
+                                          <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                                              <a class="dropdown-item" href="{{ route('matter.edit', ['patient' => $patient, 'matter' => $matter]) }}">View / Edit</a>
+                                              <a class="dropdown-item" href="{{ route('treat.create', ['patient' => $patient, 'matter' => $matter])}}"> Add Treatment</a>
+                                              <!--<a class="dropdown-item" href="#">View</a>
+                                              <a class="dropdown-item" href="#">Something else here</a>-->
+                                          </div>
+
                                       </div>
-
-
-
-
-
-                                        <div class="dropdown float-right">
-                                            <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                              <i class="fas fa-ellipsis-v"></i>
-                                            </a>
-                                            <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-                                                <a class="dropdown-item" href="{{ route('matter.edit', ['patient' => $patient, 'matter' => $matter]) }}">View / Edit</a>
-                                                <a class="dropdown-item" href="{{ route('treat.create', ['patient' => $patient, 'matter' => $matter])}}"> Add Treatment</a>
-                                                <!--<a class="dropdown-item" href="#">View</a>
-                                                <a class="dropdown-item" href="#">Something else here</a>-->
-                                            </div>
-
-                                        </div>
+                                      --}}
                                     </td>
                                 </tr>
                                 @endforeach
@@ -92,9 +105,7 @@
                     </div>
         </div>
 
-        <div class="text-center">
-          <a href="{{ route('matter.create', ['patient' => $patient]) }}" class="btn btn-sm btn-info">Add New Case</a>
-        </div>
+
 
 
 

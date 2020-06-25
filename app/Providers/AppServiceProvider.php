@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Blade;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -33,5 +34,10 @@ class AppServiceProvider extends ServiceProvider
 
          return $this;
       });
+
+      Blade::directive('money', function ($amount) {
+          return "<?php echo 'RM ' . number_format($amount, 2); ?>";
+      });
+
     }
 }

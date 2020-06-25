@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 use App\Branches;
 use App\Patient;
@@ -13,6 +14,9 @@ use App\Treat;
 use App\User;
 use App\Product;
 use App\TreatProduct;
+use App\Images;
+use Image;
+use File;
 
 class TreatController extends Controller
 {
@@ -59,6 +63,8 @@ class TreatController extends Controller
           'treat.fee' => 'required',
           'treat.total' => 'required',
           'product.*' => '',
+          'filename' => '',
+          'filename.*' => 'image',
         ]);
 
         $data['treat']['product_amount'] = $data['treat']['total'] - $data['treat']['fee'];
@@ -71,7 +77,38 @@ class TreatController extends Controller
         $treat = $matter->treats()->create($data['treat']);
 
         $treat->products()->createMany($data['product']);
-        //$matter->injuries()->createMany($data['injuries']);
+        //$matter->injuries()->createMany($data['injuries']); ≈
+
+        if(isset($data['filename']))
+        {
+          foreach ($data['filename'] as $key => $image) {
+
+            $name = $image->getClientOriginalName();
+            $extensss = $image->getClientOriginalExtension();
+            $newName = $matter->id.'_'.$key.'_'.Carbon::now()->timestamp.'.'.$extensss;
+            //$image->move(public_path().'/image/', $newName);
+            $image = Image::make($image)->resize(1280, null, function ($constraint) {
+                $constraint->aspectRatio();
+            });
+            $local = public_path().'/image/';
+            $savefile = $local.$newName;
+
+            if (!file_exists($local)) {
+                mkdir($local, 666, true);
+            }
+
+            $image->save($savefile,80);
+
+            Storage::put('public/'.$newName, $image);
+
+            File::delete($savefile);
+            //$newName = Storage::disk('public')->put('/', $image);
+            $mfile[] = ['filename' => $newName];
+          }
+
+          $treat->images()->createMany($mfile);
+        }
+
 
         switch(request('submit')) {
           case 'save':
@@ -109,12 +146,44 @@ class TreatController extends Controller
           'treat.fee' => 'required',
           'treat.total' => 'required',
           'product.*' => '',
+          'filename' => '',
+          'filename.*' => 'image',
         ]);
 
         TreatProduct::where('treat_id', $treat->id)->delete();
-        
+
         $treat->update($data['treat']);
         $treat->products()->createMany($data['product']);
+
+        if(isset($data['filename']))
+        {
+          foreach ($data['filename'] as $key => $image) {
+
+            $name = $image->getClientOriginalName();
+            $extensss = $image->getClientOriginalExtension();
+            $newName = $matter->id.'_'.$key.'_'.Carbon::now()->timestamp.'.'.$extensss;
+            //$image->move(public_path().'/image/', $newName);
+            $image = Image::make($image)->resize(1280, null, function ($constraint) {
+                $constraint->aspectRatio();
+            });
+            $local = public_path().'/image/';
+            $savefile = $local.$newName;
+
+            if (!file_exists($local)) {
+                mkdir($local, 666, true);
+            }
+
+            $image->save($savefile,80);
+
+            Storage::put('public/'.$newName, $image);
+
+            File::delete($savefile);
+            //$newName = Storage::disk('public')->put('/', $image);
+            $mfile[] = ['filename' => $newName];
+          }
+
+          $treat->images()->createMany($mfile);
+        }
 
 
         return redirect()->route('treat.index', ['patient' => $patient, 'matter' => $matter, 'treat' => $treat]);

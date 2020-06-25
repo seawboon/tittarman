@@ -18,6 +18,11 @@ class Matter extends Model
       return $this->hasMany(MatterInjury::class, 'matter_id');
     }
 
+    public function parts()
+    {
+      return $this->hasMany(MatterInjuryPart::class, 'matter_id');
+    }
+
     public function treats()
     {
       return $this->hasMany(Treat::class);

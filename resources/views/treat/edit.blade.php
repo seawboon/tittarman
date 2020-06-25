@@ -12,7 +12,7 @@
 
       <div class="col-xl-8 order-xl-1">
         <div class="card-body">
-            <form action="{{ route('treat.update', ['patient' => $patient, 'matter' => $matter, 'treat' => $treat]) }}" method="post">
+            <form action="{{ route('treat.update', ['patient' => $patient, 'matter' => $matter, 'treat' => $treat]) }}" method="post" enctype="multipart/form-data">
               @csrf
 
               <div class="row">
@@ -59,6 +59,48 @@
                     <small class="text-danger">{{ $message}}</small>
                     @enderror
                   </div>
+                </div>
+
+                <div class="col-12">
+                  <div class="form-group control-group increment">
+                    <label>Treat Upload</label>
+                    <div>
+                      @foreach($treat->images as $image)
+
+                      <span class="badge badge-md badge-circle badge-floating badge-default border-white" data-toggle="modal" data-target="#exampleModal" data-whatever="{{ asset('storage/'.$image->filename) }}">
+                        {{$loop->iteration}}
+                      </span>
+                      @endforeach
+                    </div>
+
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input" id="customFileLang" name="filename[]" lang="en">
+                        <label class="custom-file-label" for="customFileLang">Select file</label>
+                    </div>
+                    <button class="btn btn-icon btn-success" type="button">
+                      <span class="btn-inner--icon"><i class="ni ni-fat-add"></i></span>
+                        <span class="btn-inner--text">Add</span>
+                    </button>
+                  </div>
+
+
+                  <div class="clone d-none">
+                    <div class="form-group control-group">
+                      <div class="custom-file">
+                          <input type="file" class="custom-file-input" name="filename[]" lang="en">
+                          <label class="custom-file-label" for="customFileLang">Select file</label>
+                          <button class="btn btn-icon btn-danger" type="button">
+                            <span class="btn-inner--icon"><i class="ni ni-fat-delete"></i></span>
+                              <span class="btn-inner--text">Delete</span>
+                          </button>
+                      </div>
+                    </div>
+                  </div>
+
+
+                  @error('filename')
+                  <small class="text-danger">{{ $message}}</small>
+                  @enderror
                 </div>
 
                 <div class="col-12">
@@ -187,6 +229,32 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-lg">
+<div class="modal-content">
+
+ <div class="modal-body">
+   <img class="modalimage w-100" src="" />
+   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+     <span aria-hidden="true">&times;</span>
+   </button>
+ </div>
+</div>
+</div>
+</div>
+<script>
+$(function(){
+  $('#exampleModal').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget); // Button that triggered the modal
+    var recipient = button.data('whatever'); // Extract info from data-* attributes
+    // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+    // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+    var modal = $(this);
+    modal.find('.modal-title').text(recipient);
+    modal.find('.modalimage').attr('src', recipient);
+  });
+});
+</script>
 
 <script>
 $(document).ready(function() {
@@ -232,6 +300,21 @@ $(document).ready(function() {
     });
 
   };
+
+  $('.btn-success').click(function(){
+    var html = $('.clone').html();
+    $('.increment').after(html);
+  });
+
+  $('body').on('click', '.btn-danger', function(){
+    $(this).parents(".control-group").remove();
+  });
+
+  $("body").on('change', '.custom-file input', function (e) {
+    if (e.target.files.length) {
+      $(this).next('.custom-file-label').html(e.target.files[0].name);
+    }
+  });
 
 });
 </script>

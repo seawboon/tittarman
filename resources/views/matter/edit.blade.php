@@ -1,4 +1,4 @@
-@extends('layouts.app', ['titlePage' => __(' Case')])
+@extends('layouts.app', ['titlePage' => __('Edit Case')])
 
 @section('content')
     <div class="header bg-gradient-secondary py-7 py-lg-8 vh-100">
@@ -20,8 +20,32 @@
               <div class="col-12">
                 <div class="form-group">
                   <label for="title">Injury Part</label>
-                  <input type="text" class="form-control" id="injury_part" name="matter[injury_part]" value="{{ $matter->injury_part }}" placeholder="Enter injury part">
-                  @error('matter.injury_part')
+                  <?php $mparts = [];?>
+                  @if($parts->parts)
+
+                    @foreach($parts->parts as $yy)
+                      <?php
+                        $mparts[] = $yy['injury_part_id'];
+                      ?>
+                    @endforeach
+                  @endif
+                  <select class="js-example-basic-multiple w-100" name="injury_parts[][injury_part_id]" multiple="multiple">
+                    @foreach($injuryparts as $part)
+                      <option value="{{$part->id}}" {{ (is_array($mparts) && in_array($part->id, $mparts)) ? ' selected' : '' }}>{{$part->name}}</option>
+                    @endforeach
+                  </select>
+
+                  @error('injury_parts')
+                  <small class="text-danger">{{ $message}}</small>
+                  @enderror
+                </div>
+              </div>
+
+              <div class="col-6">
+                <div class="form-group">
+                  <label for="address">Notes</label>
+                  <textarea class="form-control" id="notes" name="matter[notes]" rows="2" placeholder="Enter Notes">{{ $matter->notes }}</textarea>
+                  @error('matter.notes')
                   <small class="text-danger">{{ $message}}</small>
                   @enderror
                 </div>
@@ -101,7 +125,7 @@
 
               <div class="col-12">
                 <div class="form-group control-group increment">
-                  <label>Upload</label>
+                  <label>Case Upload</label>
 
                   <div>
                     @foreach($matter->images as $image)
@@ -152,6 +176,62 @@
 
           </form>
 
+          <hr />
+          <h3>Treatment List <a class="btn btn-sm btn-info float-right" href="{{ route('treat.create', ['patient' => $patient, 'matter' => $matter]) }}">New Treatment</a></h3>
+          <div class="table-responsive mt-3">
+
+                    <div>
+                        <table class="table align-items-center">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col" class="sort" data-sort="name">No.</th>
+                                    <th scope="col" class="sort" data-sort="budget">Treat Date & Time</th>
+                                    <th scope="col" class="sort" data-sort="budget">Photo</th>
+                                    <th scope="col" class="sort" data-sort="status">Treatment</th>
+                                    <th scope="col" class="sort" data-sort="branch">Treatment Fee</th>
+                                </tr>
+                            </thead>
+                            <tbody class="list">
+                              @foreach($matter->treats as $treat)
+                                <tr>
+                                    <th scope="row">
+                                        <div class="media align-items-center">
+                                            <div class="media-body">
+                                                <span class="name mb-0 text-sm">{{$loop->iteration}}</span>
+                                            </div>
+                                        </div>
+                                    </th>
+                                    <td><a href="{{ route('treat.edit', ['patient' => $patient, 'matter' => $matter, 'treat' => $treat]) }}">
+                                        {{ Carbon\Carbon::parse($treat->treat_date)->format('d M Y') }}
+                                      </a><br />
+                                      {{ $treat->branch->short }}
+                                    </td>
+                                    <td>
+                                      @foreach($treat->images as $image)
+                                      <span class="badge badge-md badge-circle badge-floating badge-default border-white" data-toggle="modal" data-target="#exampleModal" data-whatever="{{ asset('storage/'.$image->filename) }}">
+                                        {{$loop->iteration}}
+                                      </span>
+                                      @endforeach
+                                    </td>
+                                    <td class="budget">
+                                      By: {{ $treat->user->name }}<br />
+                                        {{ $treat->treatment }}
+                                        <i class="d-block">{{ $treat->remarks ?? '' }}</i>
+                                    </td>
+
+                                    <td class="align-top">
+                                        @money($treat->fee)
+                                    </td>
+
+                                </tr>
+                                @endforeach
+
+                            </tbody>
+                        </table>
+
+                    </div>
+        </div>
+
 
         </div>
 
@@ -164,9 +244,12 @@
 
 
     @endsection
-
+    @push('css')
+      <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+    @endpush
     @push('js')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js" charset="utf-8"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -198,7 +281,11 @@
 
     <script>
     $(document).ready(function() {
-      $('.datepicker').datepicker({});
+      $('.js-example-basic-multiple').select2();
+
+      $('.datepicker').datepicker({
+        format: 'dd M yyyy',
+      });
 
       $('.btn-success').click(function(){
         var html = $('.clone').html();
