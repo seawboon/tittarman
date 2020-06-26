@@ -35,6 +35,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('/checkin/{patient}', 'HomeController@storeCheckIn')->name('checkin.store');
 	Route::resource('products', 'ProductController', ['except' => ['show']]);
 	Route::resource('injuryparts', 'InjuryPartController', ['except' => ['show']]);
+	Route::resource('appointments', 'AppointmentController', ['except' => ['show']]);
 
 	Route::get('profile', ['as' => 'profile.edit', 'uses' => 'ProfileController@edit']);
 	Route::put('profile', ['as' => 'profile.update', 'uses' => 'ProfileController@update']);

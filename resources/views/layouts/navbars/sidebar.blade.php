@@ -123,6 +123,12 @@
                 </li>
 
                 <li class="nav-item">
+                    <a class="nav-link" href="{{ route('appointments.index') }}">
+                        <i class="ni ni-calendar-grid-58 text-pink"></i> {{ __('Appointments') }}
+                    </a>
+                </li>
+
+                <li class="nav-item">
                     <a class="nav-link" href="{{ route('patient.index') }}">
                         <i class="ni ni-bullet-list-67 text-pink"></i> {{ __('Patients') }}
                     </a>

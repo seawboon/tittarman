@@ -20,6 +20,14 @@ use File;
 
 class TreatController extends Controller
 {
+    private $days = [
+      '2' => '2 Days',
+      '3' => '3 Days',
+      '7' => '1 Week',
+      '14' => '2 Weeks',
+      '21' => '3 Weeks',
+      '28' => '4 Weeks',
+    ];
 
     public function index(Patient $patient, Matter $matter)
     {
@@ -39,16 +47,14 @@ class TreatController extends Controller
     public function create(Patient $patient, Matter $matter)
     {
         $age = Carbon::parse($patient->dob)->age;
-
         $products = Product::where('status', 'yes')->get();
-
         $users = User::pluck('name','id')->all();
-
         $branches = Branches::pluck('name','id')->all();
+        $days = $this->days;
 
         $ii = MatterInjury::with('injury')->where('matter_id', $matter->id)->get();
 
-        return view('treat.create', compact('patient', 'matter', 'age', 'users', 'ii', 'branches', 'products'));
+        return view('treat.create', compact('patient', 'matter', 'age', 'users', 'ii', 'branches', 'products', 'days'));
     }
 
     public function store(Patient $patient, Matter $matter)
@@ -62,6 +68,7 @@ class TreatController extends Controller
           'treat.remarks' => '',
           'treat.fee' => 'required',
           'treat.total' => 'required',
+          'treat.days' => '',
           'product.*' => '',
           'filename' => '',
           'filename.*' => 'image',
@@ -112,7 +119,7 @@ class TreatController extends Controller
 
         switch(request('submit')) {
           case 'save':
-            return redirect()->route('treat.index', ['patient' => $patient, 'matter' => $matter]);
+            return redirect()->route('matter.edit', ['patient' => $patient, 'matter' => $matter]);
           break;
 
           case 'new-treat':
@@ -129,11 +136,11 @@ class TreatController extends Controller
         $branches = Branches::pluck('name','id')->all();
         $products = Product::where('status', 'yes')->get();
         $ii = MatterInjury::with('injury')->where('matter_id', $matter->id)->get();
-
+        $days = $this->days;
 
         $treat->load('products');
 
-        return view('treat.edit', compact('patient', 'matter', 'treat', 'age', 'users', 'ii', 'branches', 'products'));
+        return view('treat.edit', compact('patient', 'matter', 'treat', 'age', 'users', 'ii', 'branches', 'products', 'days'));
     }
 
     public function update(Patient $patient, Matter $matter, Treat $treat)
@@ -145,6 +152,7 @@ class TreatController extends Controller
           'treat.remarks' => '',
           'treat.fee' => 'required',
           'treat.total' => 'required',
+          'treat.days' => '',
           'product.*' => '',
           'filename' => '',
           'filename.*' => 'image',
@@ -186,7 +194,17 @@ class TreatController extends Controller
         }
 
 
-        return redirect()->route('treat.index', ['patient' => $patient, 'matter' => $matter, 'treat' => $treat]);
+        switch(request('submit')) {
+          case 'save':
+            return redirect()->route('matter.edit', ['patient' => $patient, 'matter' => $matter]);
+          break;
+
+          case 'new-appointment':
+            return redirect()->route('appointments.create', ['patient' => $patient, 'matter' => $matter]);
+          break;
+        }
+
+
 
         //return view('matter.edit', compact('patient', 'matter', 'injuries', 'matter_injuries'));
     }

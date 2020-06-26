@@ -33,4 +33,9 @@ class Matter extends Model
       return $this->hasMany(Images::class, 'matter_id');
     }
 
+    public function appointments()
+    {
+      return $this->hasMany(Appointment::class);
+    }
+
 }

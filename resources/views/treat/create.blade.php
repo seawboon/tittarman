@@ -183,6 +183,19 @@
                 </div>
               </div>
 
+              <h3>Appointment</h3>
+              <div class="row">
+                <div class="col-6">
+                  <div class="form-group">
+                    <label for="days" class="d-block">Next Treatment</label>
+                    {!! Form::select('treat[days]', [null=>'Please Select'] + $days, null, array('class' => 'form-control', 'id' => 'days')) !!}
+                    @error('treat.days')
+                    <small class="text-danger">{{ $message}}</small>
+                    @enderror
+                  </div>
+                </div>
+              </div>
+
 
               <button type="submit" name="submit" value="save" class="btn btn-primary">Submit</button>
 
@@ -255,10 +268,10 @@ $(document).ready(function() {
        var fee = $('.treat-fee').val();
        $('.producttotal'+key).val(total);
 
-       var productsum = parseInt(fee);
+       var productsum = parseFloat(fee);
 
        $('[class*=producttotal]').each(function () {
-          productsum += parseInt($(this).val());
+          productsum += parseFloat($(this).val());
        });
 
        $('.productsum').val(productsum);
