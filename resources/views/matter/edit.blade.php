@@ -123,48 +123,7 @@
                 </div>
               </div>
 
-              <div class="col-12">
-                <div class="form-group control-group increment">
-                  <label>Case Upload</label>
 
-                  <div>
-                    @foreach($matter->images as $image)
-
-                    <span class="badge badge-md badge-circle badge-floating badge-default border-white" data-toggle="modal" data-target="#exampleModal" data-whatever="{{ asset('storage/'.$image->filename) }}">
-                      {{$loop->iteration}}
-                    </span>
-                    @endforeach
-                  </div>
-
-                  <div class="custom-file">
-                      <input type="file" class="custom-file-input" id="customFileLang" name="filename[]" lang="en">
-                      <label class="custom-file-label" for="customFileLang">Select file</label>
-                  </div>
-                  <button class="btn btn-icon btn-success" type="button">
-                    <span class="btn-inner--icon"><i class="ni ni-fat-add"></i></span>
-                      <span class="btn-inner--text">Add</span>
-                  </button>
-                </div>
-
-
-                <div class="clone d-none">
-                  <div class="form-group control-group">
-                    <div class="custom-file">
-                        <input type="file" class="custom-file-input" name="filename[]" lang="en">
-                        <label class="custom-file-label" for="customFileLang">Select file</label>
-                        <button class="btn btn-icon btn-danger" type="button">
-                          <span class="btn-inner--icon"><i class="ni ni-fat-delete"></i></span>
-                            <span class="btn-inner--text">Delete</span>
-                        </button>
-                    </div>
-                  </div>
-                </div>
-
-
-                @error('filename')
-                <small class="text-danger">{{ $message}}</small>
-                @enderror
-              </div>
 
 
             </div>
@@ -185,9 +144,9 @@
                             <thead class="thead-dark">
                                 <tr>
                                     <th scope="col" class="sort" data-sort="name">No.</th>
-                                    <th scope="col" class="sort" data-sort="budget">Treat Date & Time</th>
-                                    <th scope="col" class="sort" data-sort="budget">Photo</th>
+                                    <th scope="col" class="sort" data-sort="budget">Date & Time</th>
                                     <th scope="col" class="sort" data-sort="status">Treatment</th>
+                                    <th scope="col" class="sort" data-sort="budget">Photo</th>
                                     <th scope="col" class="sort" data-sort="branch">Treatment Fee</th>
                                 </tr>
                             </thead>
@@ -206,6 +165,11 @@
                                       </a><br />
                                       {{ $treat->branch->short }}
                                     </td>
+                                    <td class="budget">
+                                      By: {{ $treat->user->name }}<br />
+                                        {{ $treat->treatment }}
+                                        <i class="d-block">{{ $treat->remarks ?? '' }}</i>
+                                    </td>
                                     <td>
                                       @foreach($treat->images as $image)
                                       <span class="badge badge-md badge-circle badge-floating badge-default border-white" data-toggle="modal" data-target="#exampleModal" data-whatever="{{ asset('storage/'.$image->filename) }}">
@@ -213,11 +177,7 @@
                                       </span>
                                       @endforeach
                                     </td>
-                                    <td class="budget">
-                                      By: {{ $treat->user->name }}<br />
-                                        {{ $treat->treatment }}
-                                        <i class="d-block">{{ $treat->remarks ?? '' }}</i>
-                                    </td>
+
 
                                     <td class="align-top">
                                         @money($treat->fee)

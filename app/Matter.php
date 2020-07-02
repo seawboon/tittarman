@@ -38,4 +38,9 @@ class Matter extends Model
       return $this->hasMany(Appointment::class);
     }
 
+    public function checkins()
+    {
+      return $this->hasMany(CheckIn::class);
+    }
+
 }

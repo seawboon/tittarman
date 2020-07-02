@@ -13,6 +13,17 @@
           <div class="text-center">
             <small class="text-center">{{ Session::get('myBranch')->name }}</small>
           </div>
+          <small class="d-block text-center">
+            @if(Session::get('myBranch')->id == 2)
+                <a class="nav-link" href="{{ route('checkin.setSession', ['branch' => 1])}}">
+                    <i class="ni ni-square-pin text-pink"></i> Switch to Mid Valley Megamall
+                </a>
+            @else
+                <a class="nav-link" href="{{ route('checkin.setSession', ['branch' => 2])}}">
+                    <i class="ni ni-square-pin text-pink"></i> Switch to Plaza Arkadia
+                </a>
+            @endif
+          </small>
         @endif
         <!-- User -->
         <ul class="nav align-items-center d-md-none">
@@ -63,7 +74,21 @@
                             <!-- <img src="{{ asset('argon') }}/img/brand/blue.png"> -->
                             TITTARMAN
                         </a>
+                        @if(Session::get('myBranch'))
+                        <small>
+                          @if(Session::get('myBranch')->id == 2)
+                              <a class="nav-link" href="{{ route('checkin.setSession', ['branch' => 1])}}">
+                                  <i class="ni ni-square-pin text-pink"></i> Switch to Mid Valley
+                              </a>
+                          @else
+                              <a class="nav-link" href="{{ route('checkin.setSession', ['branch' => 2])}}">
+                                  <i class="ni ni-square-pin text-pink"></i> Switch to Plaza Arkadia
+                              </a>
+                          @endif
+                        </small>
+                        @endif
                     </div>
+
                     <div class="col-6 collapse-close">
                         <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#sidenav-collapse-main" aria-controls="sidenav-main" aria-expanded="false" aria-label="Toggle sidenav">
                             <span></span>
@@ -93,57 +118,52 @@
                     </a>
                 </li>
 
-                @if(Session::get('myBranch'))
-                  @if(Session::get('myBranch')->id == 2)
-                  <li class="nav-item">
-                      <a class="nav-link" href="{{ route('checkin.setSession', ['branch' => 1])}}">
-                          <i class="ni ni-square-pin text-pink"></i> Switch to Mid Valley
-                      </a>
-                  </li>
-                  @else
-                  <li class="nav-item">
-                      <a class="nav-link" href="{{ route('checkin.setSession', ['branch' => 2])}}">
-                          <i class="ni ni-square-pin text-pink"></i> Switch to Plaza Arkadia
-                      </a>
-                  </li>
-                  @endif
-                @endif
-
-
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('checkin.index') }}">
-                        <i class="ni ni-circle-08 text-pink"></i> {{ __('Check In') }}
+                        <i class="ni ni-circle-08 text-pink"></i> {{ __('ttm.todayL') }}
                     </a>
                 </li>
 
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('patient.create') }}">
-                        <i class="ni ni-circle-08 text-pink"></i> {{ __('Register') }}
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('appointments.index') }}">
-                        <i class="ni ni-calendar-grid-58 text-pink"></i> {{ __('Appointments') }}
+                        <i class="ni ni-circle-08 text-pink"></i> {{ __('ttm.register') }}
                     </a>
                 </li>
 
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('patient.index') }}">
-                        <i class="ni ni-bullet-list-67 text-pink"></i> {{ __('Patients') }}
+                        <i class="ni ni-bullet-list-67 text-pink"></i> {{ __('ttm.patientL') }}
                     </a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('products.index') }}">
-                        <i class="ni ni-app text-pink"></i> {{ __('Products') }}
+                    <a class="nav-link" href="{{ route('appointments.index') }}">
+                        <i class="ni ni-calendar-grid-58 text-pink"></i> {{ __('ttm.appo.title') }}
                     </a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('injuryparts.index') }}">
-                        <i class="ni ni-app text-pink"></i> {{ __('Injury Part') }}
+                    <a class="nav-link" href="{{ route('appointments.index') }}">
+                        <i class="ni ni-money-coins text-pink"></i> {{ __('ttm.sales') }}
                     </a>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link pr-0" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="ni ni-app text-pink"></i> Data
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-arrow dropdown-menu-right">
+
+                        <a href="{{ route('products.index') }}" class="dropdown-item">
+                            <i class="ni ni-app"></i>
+                            <span>{{ __('Products') }}</span>
+                        </a>
+                        <a href="{{ route('injuryparts.index') }}" class="dropdown-item">
+                            <i class="ni ni-app"></i>
+                            <span>{{ __('Injury Part') }}</span>
+                        </a>
+
+                    </div>
                 </li>
 
             </ul>

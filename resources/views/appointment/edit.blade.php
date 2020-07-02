@@ -10,8 +10,9 @@
             {{ Form::model($appo, array('route' => array('appointments.update', $appo->id), 'method' => 'PUT')) }}
             <input autocomplete="false" name="hidden" type="text" style="display:none;">
             @csrf
-            {{ Form::hidden('patient_id', '') }}
-            {{ Form::hidden('matter_id', '') }}
+            {{ Form::hidden('patient_id', $appo->patient_id) }}
+            {{ Form::hidden('matter_id', $appo->matter_id) }}
+            {{ Form::hidden('appointment_id', $appo->id) }}
             <div class="row">
               <div class="col-4">
                 <div class="form-group">

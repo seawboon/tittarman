@@ -124,40 +124,6 @@
                 </div>
               </div>
 
-              <div class="col-12">
-                <div class="form-group control-group increment">
-                  <label>Case Upload</label>
-                  <div class="custom-file">
-                      <input type="file" class="custom-file-input" name="filename[]" lang="en">
-                      <label class="custom-file-label" for="customFileLang">Select file</label>
-                      <button class="btn btn-icon btn-success" type="button">
-                      	<span class="btn-inner--icon"><i class="ni ni-fat-add"></i></span>
-                          <span class="btn-inner--text">Add</span>
-                      </button>
-                  </div>
-                </div>
-
-
-                <div class="clone d-none">
-                  <div class="form-group control-group">
-                    <div class="custom-file">
-                        <input type="file" class="custom-file-input" name="filename[]" lang="en">
-                        <label class="custom-file-label" for="customFileLang">Select file</label>
-                        <button class="btn btn-icon btn-danger" type="button">
-                          <span class="btn-inner--icon"><i class="ni ni-fat-delete"></i></span>
-                            <span class="btn-inner--text">Delete</span>
-                        </button>
-                    </div>
-                  </div>
-                </div>
-
-
-                @error('filename')
-                <small class="text-danger">{{ $message}}</small>
-                @enderror
-              </div>
-
-
 
             </div>
 

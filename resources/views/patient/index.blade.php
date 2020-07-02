@@ -9,34 +9,31 @@
                 <table class="table align-items-center">
                     <thead class="thead-light">
                         <tr>
-                            <th scope="col" class="sort" data-sort="name">No.</th>
+                            <th scope="col" class="sort" data-sort="name">Patient No.</th>
                             <th scope="col" class="sort" data-sort="budget">Name</th>
-                            <!--<th scope="col" class="sort" data-sort="status">Gender</th>-->
-                            <th scope="col">NRIC / Passport</th>
                             <th scope="col" class="sort" data-sort="branch">Branch</th>
-                            <th scope="col">Last Treatment</th>
+                            <th scope="col">{{ __('ttm.case.title') }}</th>
+                            <th scope="col"></th>
                         </tr>
                     </thead>
                     <tbody class="list">
                       @foreach($patients as $patient)
                         <tr>
-                            <th scope="row">
+                            <th scope="row" class="align-top">
                                 <div class="media align-items-center">
                                     <div class="media-body">
-                                        <span class="name mb-0 text-sm">{{$loop->iteration}}</span>
+                                        <span class="name mb-0 text-sm">{{$patient->id}}</span>
                                     </div>
                                 </div>
                             </th>
-                            <td class="budget">
-                                <small>{{ $patient->salutation ?? '' }}</small> {{ $patient->fullname }}
+                            <td class="budget align-top">
+                                <a href="{{ route('patient.edit', $patient->id) }}"><small>{{ $patient->salutation ?? '' }}</small> {{ $patient->fullname }}</a>
+                                <br />{{ $patient->nric }}
                             </td>
                             <!--<td>
                                 {{ $patient->gender }}
                             </td>-->
-                            <td>
-                              {{ $patient->nric }}
-                            </td>
-                            <td class="branch">
+                            <td class="branch align-top">
                                 {{ $patient->branch->short }}
                             </td>
                             <!--<td>
@@ -53,27 +50,57 @@
                               <a href="{{ route('matter.index', $patient) }}" class="badge badge-md badge-circle badge-floating badge-default border-white">{{ count($patient->matters) }}</a>
                             </td>-->
 
-                            <td class="text-left">
+                            <td class="text-left align-top">
+                                <ul class="navbar-nav">
+                                  @if($patient->matters->isNotEmpty())
+                                    @foreach($patient->matters as $matter)
+                                      <li class="nav-item">
+                                        <a class="nav-link d-inline float-left" href="{{ route('matter.edit', ['patient'=>$patient, 'matter'=>$matter]) }}">
+                                        {{$loop->iteration}}.
+                                        @foreach($matter->parts as $part)
+                                          {{$part->part->name}}@if(!$loop->last) + @endif
+                                        @endforeach
+                                        </a>
+                                        <a class="btn btn-sm btn-info float-right" href="{{ route('checkin.store', ['patient' => $patient, 'matter' => $matter]) }}">{{ __('ttm.checkin')}}</a>
+                                        <div class="py-1" style="clear:both"></div>
+                                      </li>
+                                    @endforeach
+                                  @else
+                                    <li class="nav-item">
+                                      <a class="btn btn-sm btn-info float-right mr-2" href="{{ route('checkin.store', ['patient' => $patient]) }}">{{ __('ttm.checkin')}}</a>
+                                    </li>
+                                  @endif
+                                </ul>
+
+                                {{--
                                 @if($patient->treats->last()['treat_date'])
                                 <a href="{{ route('treat.index', ['patient' => $patient, 'matter' => $patient->treats->sortBy('treat_date')->last()['matter_id']]) }}">
                                   {{ Carbon\Carbon::parse($patient->treats->sortBy('treat_date')->last()['treat_date'])->format('d M Y g:i A') }}
                                 </a>
                                 @endif
-                                <div class="dropdown float-right">
-                                    <a class="btn btn-sm btn-info ml-2" href="{{ route('checkin.store', ['patient' => $patient]) }}">Check-In</a>
+                                --}}
 
-                                    <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                      <i class="fas fa-ellipsis-v"></i>
-                                    </a>
-                                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-                                        <a class="dropdown-item" href="{{ route('patient.edit', $patient->id) }}">View / Edit</a>
-                                        <a class="dropdown-item" href="{{ route('matter.create', ['patient' => $patient->id])}}"> New Case</a>
-                                        <a class="dropdown-item" href="{{ route('matter.index', $patient) }}"> View Case(s)</a>
-                                        <!--<a class="dropdown-item" href="#">View</a>
-                                        <a class="dropdown-item" href="#">Something else here</a>-->
-                                    </div>
 
-                                </div>
+                            </td>
+
+                            <td class="align-top px-0">
+                              <div class="dropdown float-right">
+                                  <!--<a class="btn btn-sm btn-info ml-2" href="{{ route('checkin.store', ['patient' => $patient]) }}">{{ __('ttm.checkin')}}</a>-->
+
+                                  <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                  </a>
+                                  <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                                      <a class="dropdown-item" href="{{ route('appointments.create', ['patient' => $patient]) }}">{{ __('ttm.appo.add')}}</a>
+                                      <div class="dropdown-divider"></div>
+                                      <div class=" dropdown-header noti-title">
+                                          <h4 class="text-overflow m-0">Case</h4>
+                                      </div>
+                                      <a class="dropdown-item" href="{{ route('matter.index', $patient) }}"> {{ __('ttm.case.view')}}</a>
+                                      <a class="dropdown-item" href="{{ route('matter.create', ['patient' => $patient->id])}}"> {{ __('ttm.case.add')}}</a>
+                                  </div>
+
+                              </div>
                             </td>
                         </tr>
                         @endforeach

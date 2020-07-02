@@ -65,6 +65,13 @@
                             {{$appo->state}}
                         </td>
                         <td class="budget">
+                          @if($appo->state == 'awaiting')
+                            @if($appo->patient_id)
+                            <a class="btn btn-sm btn-info ml-2" href="{{ route('checkin.appointment', ['patient' => $appo->patient_id, 'appo' => $appo]) }}">Check-In</a>
+                            @else
+                            <a class="btn btn-sm btn-info ml-2" href="{{ route('patient.create', ['appo' => $appo]) }}">Register & Check In</a>
+                            @endif
+                          @endif
                             <a class="btn btn-sm btn-danger ml-2" href="{{ route('appointments.edit', ['appo'=>$appo]) }}">Edit</a>
                         </td>
                       </tr>

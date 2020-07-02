@@ -18,4 +18,14 @@ class CheckIn extends Model
       return $this->belongsTo(Branches::class, 'branch_id');
     }
 
+    public function matter()
+    {
+      return $this->belongsTo(Matter::class, 'matter_id');
+    }
+
+    public function treat()
+    {
+      return $this->belongsTo(Matter::class, 'treat_id');
+    }
+
 }

@@ -52,42 +52,33 @@
                 </div>
 
                 <div class="col-12">
-                  <div class="form-group">
-                    <label for="address">Treatment</label>
-                    <textarea class="form-control" id="treatment" name="treat[treatment]" rows="3" placeholder="Enter Treatment">{{ $treat->treatment }}</textarea>
-                    @error('treat.treatment')
-                    <small class="text-danger">{{ $message}}</small>
-                    @enderror
-                  </div>
-                </div>
-
-                <div class="col-12">
-                  <div class="form-group control-group increment">
-                    <label>Treat Upload</label>
+                  <div class="form-group control-group increment before">
+                    <label>Before Treat Upload</label>
                     <div>
                       @foreach($treat->images as $image)
-
-                      <span class="badge badge-md badge-circle badge-floating badge-default border-white" data-toggle="modal" data-target="#exampleModal" data-whatever="{{ asset('storage/'.$image->filename) }}">
-                        {{$loop->iteration}}
-                      </span>
+                        @if($image->state == 'before')
+                        <span class="badge badge-md badge-circle badge-floating badge-default border-white" data-toggle="modal" data-target="#exampleModal" data-whatever="{{ asset('storage/'.$image->filename) }}">
+                          {{$loop->iteration}}
+                        </span>
+                        @endif
                       @endforeach
                     </div>
 
-                    <div class="custom-file">
-                        <input type="file" class="custom-file-input" id="customFileLang" name="filename[]" lang="en">
+                    <div class="custom-file before">
+                        <input type="file" class="custom-file-input" name="filenamebefore[]" lang="en">
                         <label class="custom-file-label" for="customFileLang">Select file</label>
+                        <button class="btn btn-icon btn-success btn-before" type="button">
+                        	<span class="btn-inner--icon"><i class="ni ni-fat-add"></i></span>
+                            <span class="btn-inner--text">Add</span>
+                        </button>
                     </div>
-                    <button class="btn btn-icon btn-success" type="button">
-                      <span class="btn-inner--icon"><i class="ni ni-fat-add"></i></span>
-                        <span class="btn-inner--text">Add</span>
-                    </button>
                   </div>
 
 
-                  <div class="clone d-none">
+                  <div class="clone before d-none">
                     <div class="form-group control-group">
-                      <div class="custom-file">
-                          <input type="file" class="custom-file-input" name="filename[]" lang="en">
+                      <div class="custom-file before">
+                          <input type="file" class="custom-file-input" name="filenamebefore[]" lang="en">
                           <label class="custom-file-label" for="customFileLang">Select file</label>
                           <button class="btn btn-icon btn-danger" type="button">
                             <span class="btn-inner--icon"><i class="ni ni-fat-delete"></i></span>
@@ -98,10 +89,22 @@
                   </div>
 
 
-                  @error('filename')
+                  @error('filenamebefore')
                   <small class="text-danger">{{ $message}}</small>
                   @enderror
                 </div>
+
+                <div class="col-12">
+                  <div class="form-group">
+                    <label for="address">Treatment</label>
+                    <textarea class="form-control" id="treatment" name="treat[treatment]" rows="3" placeholder="Enter Treatment">{{ $treat->treatment }}</textarea>
+                    @error('treat.treatment')
+                    <small class="text-danger">{{ $message}}</small>
+                    @enderror
+                  </div>
+                </div>
+
+
 
                 <div class="col-12">
                   <div class="form-group">
@@ -114,7 +117,48 @@
                 </div>
 
 
+                <div class="col-12">
+                  <div class="form-group control-group increment after">
+                    <label>After Treat Upload</label>
+                    <div>
+                      @foreach($treat->images as $image)
+                        @if($image->state == 'after')
+                        <span class="badge badge-md badge-circle badge-floating badge-default border-white" data-toggle="modal" data-target="#exampleModal" data-whatever="{{ asset('storage/'.$image->filename) }}">
+                          {{$loop->iteration}}
+                        </span>
+                        @endif
+                      @endforeach
+                    </div>
 
+                    <div class="custom-file after">
+                        <input type="file" class="custom-file-input" name="filenameafter[]" lang="en">
+                        <label class="custom-file-label" for="customFileLang">Select file</label>
+                        <button class="btn btn-icon btn-success btn-after" type="button">
+                        	<span class="btn-inner--icon"><i class="ni ni-fat-add"></i></span>
+                            <span class="btn-inner--text">Add</span>
+                        </button>
+                    </div>
+                  </div>
+
+
+                  <div class="clone after d-none">
+                    <div class="form-group control-group">
+                      <div class="custom-file after">
+                          <input type="file" class="custom-file-input" name="filenameafter[]" lang="en">
+                          <label class="custom-file-label" for="customFileLang">Select file</label>
+                          <button class="btn btn-icon btn-danger" type="button">
+                            <span class="btn-inner--icon"><i class="ni ni-fat-delete"></i></span>
+                              <span class="btn-inner--text">Delete</span>
+                          </button>
+                      </div>
+                    </div>
+                  </div>
+
+
+                  @error('filenameafter')
+                  <small class="text-danger">{{ $message}}</small>
+                  @enderror
+                </div>
 
 
 
@@ -315,9 +359,14 @@ $(document).ready(function() {
 
   };
 
-  $('.btn-success').click(function(){
-    var html = $('.clone').html();
-    $('.increment').after(html);
+  $('.btn-before').click(function(){
+    var html = $('.clone.before').html();
+    $('.increment.before').after(html);
+  });
+
+  $('.btn-after').click(function(){
+    var html = $('.clone.after').html();
+    $('.increment.after').after(html);
   });
 
   $('body').on('click', '.btn-danger', function(){

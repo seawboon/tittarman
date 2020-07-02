@@ -19,7 +19,13 @@
                 <div class="col-6">
                   <div class="form-group">
                     <label for="branch_id" class="d-block">Branch</label>
-                    {!! Form::select('treat[branch_id]', [null=>'Please Select'] + $branches, null, array('class' => 'form-control', 'id' => 'branch_id')) !!}
+                    @php
+                      $defBranch = null;
+                      if(Session::get('myBranch')) {
+                        $defBranch=session('myBranch')->id;
+                      }
+                    @endphp
+                    {!! Form::select('treat[branch_id]', [null=>'Please Select'] + $branches, $defBranch, array('class' => 'form-control', 'id' => 'branch_id')) !!}
                     @error('treat.branch_id')
                     <small class="text-danger">{{ $message}}</small>
                     @enderror
@@ -51,7 +57,39 @@
                   </div>
                 </div>
 
+                <div class="col-12">
 
+                  <div class="form-group control-group increment before">
+                    <label>Before Treat Upload</label>
+                    <div class="custom-file before">
+                        <input type="file" class="custom-file-input" name="filenamebefore[]" lang="en">
+                        <label class="custom-file-label" for="customFileLang">Select file</label>
+                        <button class="btn btn-icon btn-success btn-before" type="button">
+                        	<span class="btn-inner--icon"><i class="ni ni-fat-add"></i></span>
+                            <span class="btn-inner--text">Add</span>
+                        </button>
+                    </div>
+                  </div>
+
+
+                  <div class="clone before d-none">
+                    <div class="form-group control-group">
+                      <div class="custom-file before">
+                          <input type="file" class="custom-file-input" name="filenamebefore[]" lang="en">
+                          <label class="custom-file-label" for="customFileLang">Select file</label>
+                          <button class="btn btn-icon btn-danger" type="button">
+                            <span class="btn-inner--icon"><i class="ni ni-fat-delete"></i></span>
+                              <span class="btn-inner--text">Delete</span>
+                          </button>
+                      </div>
+                    </div>
+                  </div>
+
+
+                  @error('filenamebefore')
+                  <small class="text-danger">{{ $message}}</small>
+                  @enderror
+                </div>
 
                 <div class="col-12">
                   <div class="form-group">
@@ -63,13 +101,25 @@
                   </div>
                 </div>
 
+
+
                 <div class="col-12">
-                  <div class="form-group control-group increment">
-                    <label>Treat Upload</label>
-                    <div class="custom-file">
-                        <input type="file" class="custom-file-input" name="filename[]" lang="en">
+                  <div class="form-group">
+                    <label for="address">Remarks</label>
+                    <textarea class="form-control" id="remarks" name="treat[remarks]" rows="3" placeholder="Enter Remarks">{{ old('treat.remarks') }}</textarea>
+                    @error('treat.remarks')
+                    <small class="text-danger">{{ $message}}</small>
+                    @enderror
+                  </div>
+                </div>
+
+                <div class="col-12">
+                  <div class="form-group control-group increment after">
+                    <label>After Treat Upload</label>
+                    <div class="custom-file after">
+                        <input type="file" class="custom-file-input" name="filenameafter[]" lang="en">
                         <label class="custom-file-label" for="customFileLang">Select file</label>
-                        <button class="btn btn-icon btn-success" type="button">
+                        <button class="btn btn-icon btn-success btn-after" type="button">
                         	<span class="btn-inner--icon"><i class="ni ni-fat-add"></i></span>
                             <span class="btn-inner--text">Add</span>
                         </button>
@@ -77,10 +127,10 @@
                   </div>
 
 
-                  <div class="clone d-none">
+                  <div class="clone after d-none">
                     <div class="form-group control-group">
-                      <div class="custom-file">
-                          <input type="file" class="custom-file-input" name="filename[]" lang="en">
+                      <div class="custom-file after">
+                          <input type="file" class="custom-file-input" name="filenameafter[]" lang="en">
                           <label class="custom-file-label" for="customFileLang">Select file</label>
                           <button class="btn btn-icon btn-danger" type="button">
                             <span class="btn-inner--icon"><i class="ni ni-fat-delete"></i></span>
@@ -91,19 +141,9 @@
                   </div>
 
 
-                  @error('filename')
+                  @error('filenameafter')
                   <small class="text-danger">{{ $message}}</small>
                   @enderror
-                </div>
-
-                <div class="col-12">
-                  <div class="form-group">
-                    <label for="address">Remarks</label>
-                    <textarea class="form-control" id="remarks" name="treat[remarks]" rows="3" placeholder="Enter Remarks">{{ old('treat.remarks') }}</textarea>
-                    @error('treat.remarks')
-                    <small class="text-danger">{{ $message}}</small>
-                    @enderror
-                  </div>
                 </div>
 
 
@@ -280,9 +320,14 @@ $(document).ready(function() {
 
   };
 
-  $('.btn-success').click(function(){
-    var html = $('.clone').html();
-    $('.increment').after(html);
+  $('.btn-before').click(function(){
+    var html = $('.clone.before').html();
+    $('.increment.before').after(html);
+  });
+
+  $('.btn-after').click(function(){
+    var html = $('.clone.after').html();
+    $('.increment.after').after(html);
   });
 
   $('body').on('click', '.btn-danger', function(){

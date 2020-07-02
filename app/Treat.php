@@ -36,4 +36,9 @@ class Treat extends Model
     return $this->hasMany(Images::class, 'treat_id');
   }
 
+  public function checkins()
+  {
+    return $this->hasMany(CheckIn::class);
+  }
+
 }
