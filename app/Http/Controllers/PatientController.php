@@ -8,6 +8,7 @@ use App\Patient;
 use App\Branches;
 use App\Country;
 use App\State;
+use App\Appointment;
 use App\Macros\whereLike;
 
 class PatientController extends Controller
@@ -45,12 +46,27 @@ class PatientController extends Controller
       return view('patient.index', compact('patients', 'searchTerm'));
   }
 
-  public function create()
+  public function create(Request $request)
   {
+
+      $appo['salutation'] = '';
+      $appo['branch_id'] = null;
+      $appo['name'] = '';
+      $appo['email'] = '';
+      $appo['provider'] = '';
+      $appo['contact'] = '';
+      //dd($appo);
+      if($request->input('appo')) {
+        $appo = Appointment::find($request->input('appo'));
+        $appo->state = 'checkin';
+        $appo->save();
+        $appo->toArray();
+      }
+      //dd($appo);
       $branches = Branches::pluck('name','id')->all();
       $countries = Country::pluck('name', 'name')->all();
       $states = State::where('country_id', 111)->pluck('name', 'name')->all();
-      return view('patient.create', compact('branches', 'countries', 'states'));
+      return view('patient.create', compact('branches', 'countries', 'states', 'appo'));
   }
 
   public function edit($pid)
@@ -155,6 +171,10 @@ class PatientController extends Controller
 
           case 'new-case':
             return redirect()->route('matter.create', ['patient' => $patient]);
+          break;
+
+          case 'new-checkin':
+            return redirect()->route('checkin.store', ['patient' => $patient]);
           break;
         }
 

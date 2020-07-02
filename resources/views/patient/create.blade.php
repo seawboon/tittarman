@@ -12,7 +12,7 @@
                   <div class="col-6">
                     <div class="form-group">
                       <label for="branch_id" class="d-block">Branch</label>
-                      {!! Form::select('branch_id', [null=>'Please Select'] + $branches, null, array('class' => 'form-control', 'id' => 'branch_id')) !!}
+                      {!! Form::select('branch_id', [null=>'Please Select'] + $branches, $appo['branch_id'], array('class' => 'form-control', 'id' => 'branch_id')) !!}
                       @error('branch_id')
                       <small class="text-danger">{{ $message}}</small>
                       @enderror
@@ -42,20 +42,20 @@
                       <label for="title">Title</label>
                       <select class="form-control" id="salutation" name="salutation">
                         <option value="" selected="selected">Please Select</option>
-                        <option value="Datuk Seri" {{(old('salutation') == 'Datuk Seri') ? 'selected' : ''}}>Datuk Seri</option>
-                        <option value="Dato Sri" {{(old('salutation') == 'Dato Sri') ? 'selected' : ''}}>Dato Sri</option>
-                        <option value="Datin Seri" {{(old('salutation') == 'Datin Seri') ? 'selected' : ''}}>Datin Seri</option>
-                        <option value="Datuk" {{(old('salutation') == 'Datuk') ? 'selected' : ''}}>Datuk</option>
-                        <option value="Dato" {{(old('salutation') == 'Dato') ? 'selected' : ''}}>Dato</option>
-                        <option value="Datin" {{(old('salutation') == 'Datin') ? 'selected' : ''}}>Datin</option>
-                        <option value="Dr" {{(old('salutation') == 'Dr') ? 'selected' : ''}}>Dr</option>
-                        <option value="Mr" {{(old('salutation') == 'Mr') ? 'selected' : ''}}>Mr</option>
-                        <option value="Mrs" {{(old('salutation') == 'Mrs') ? 'selected' : ''}}>Mrs</option>
-                        <option value="Master" {{(old('salutation') == 'Master') ? 'selected' : ''}}>Master</option>
-                        <option value="Miss" {{(old('salutation') == 'Miss') ? 'selected' : ''}}>Miss</option>
-                        <option value="Prof" {{(old('salutation') == 'Prof') ? 'selected' : ''}}>Prof</option>
-                        <option value="Puan Sri" {{(old('salutation') == 'Puan Sri') ? 'selected' : ''}}>Puan Sri</option>
-                        <option value="Tan Sri" {{(old('salutation') == 'Tan Sri') ? 'selected' : ''}}>Tan Sri</option>
+                        <option value="Datuk Seri" {{(old('salutation') or $appo['salutation'] == 'Datuk Seri') ? 'selected' : ''}}>Datuk Seri</option>
+                        <option value="Dato Sri" {{(old('salutation') or $appo['salutation'] == 'Dato Sri') ? 'selected' : ''}}>Dato Sri</option>
+                        <option value="Datin Seri" {{(old('salutation') or $appo['salutation'] == 'Datin Seri') ? 'selected' : ''}}>Datin Seri</option>
+                        <option value="Datuk" {{(old('salutation') or $appo['salutation'] == 'Datuk') ? 'selected' : ''}}>Datuk</option>
+                        <option value="Dato" {{(old('salutation') or $appo['salutation'] == 'Dato') ? 'selected' : ''}}>Dato</option>
+                        <option value="Datin" {{(old('salutation') or $appo['salutation'] == 'Datin') ? 'selected' : ''}}>Datin</option>
+                        <option value="Dr" {{(old('salutation') or $appo['salutation'] == 'Dr') ? 'selected' : ''}}>Dr</option>
+                        <option value="Mr" {{(old('salutation') or $appo['salutation'] == 'Mr') ? 'selected' : ''}}>Mr</option>
+                        <option value="Mrs" {{(old('salutation') or $appo['salutation'] == 'Mrs') ? 'selected' : ''}}>Mrs</option>
+                        <option value="Master" {{(old('salutation') or $appo['salutation'] == 'Master') ? 'selected' : ''}}>Master</option>
+                        <option value="Miss" {{(old('salutation') or $appo['salutation'] == 'Miss') ? 'selected' : ''}}>Miss</option>
+                        <option value="Prof" {{(old('salutation') or $appo['salutation'] == 'Prof') ? 'selected' : ''}}>Prof</option>
+                        <option value="Puan Sri" {{(old('salutation') or $appo['salutation'] == 'Puan Sri') ? 'selected' : ''}}>Puan Sri</option>
+                        <option value="Tan Sri" {{(old('salutation') or $appo['salutation'] == 'Tan Sri') ? 'selected' : ''}}>Tan Sri</option>
                       </select>
 
                       @error('salutation')
@@ -67,7 +67,7 @@
                   <div class="col-8">
                     <div class="form-group">
                       <label for="fullname">Name <small>as per NRIC / Passport</small></label>
-                      <input type="text" class="form-control" id="fullname" name="fullname" placeholder="Enter Full Name" value="{{ old('fullname') }}">
+                      <input type="text" class="form-control" id="fullname" name="fullname" placeholder="Enter Full Name" value="{{ old('fullname', $appo['name']) }}">
                       @error('fullname')
                       <small class="text-danger">{{ $message}}</small>
                       @enderror
@@ -103,7 +103,7 @@
                   <div class="col-6">
                     <div class="form-group">
                       <label for="email">Email</label>
-                      <input type="email" class="form-control" id="email" name="email" placeholder="Enter Email" value="{{ old('email') }}">
+                      <input type="email" class="form-control" id="email" name="email" placeholder="Enter Email" value="{{ old('email', $appo['email']) }}">
                       @error('email')
                       <small class="text-danger">{{ $message}}</small>
                       @enderror
@@ -119,19 +119,19 @@
                         <div class="col-4">
                           <select class="form-control" id="provider" name="provider">
                             <option value="">Please Select</option>
-                            <option value="010" {{(old('provider') == '010') ? 'selected' : ''}}>010</option>
-                            <option value="011" {{(old('provider') == '011') ? 'selected' : ''}}>011</option>
-                            <option value="012" {{(old('provider') == '012') ? 'selected' : ''}}>012</option>
-                            <option value="013" {{(old('provider') == '013') ? 'selected' : ''}}>013</option>
-                            <option value="014" {{(old('provider') == '014') ? 'selected' : ''}}>014</option>
-                            <option value="016" {{(old('provider') == '016') ? 'selected' : ''}}>016</option>
-                            <option value="017" {{(old('provider') == '017') ? 'selected' : ''}}>017</option>
-                            <option value="018" {{(old('provider') == '018') ? 'selected' : ''}}>018</option>
-                            <option value="019" {{(old('provider') == '019') ? 'selected' : ''}}>019</option>
+                            <option value="010" {{(old('provider') or $appo['provider'] == '010') ? 'selected' : ''}}>010</option>
+                            <option value="011" {{(old('provider') or $appo['provider'] == '011') ? 'selected' : ''}}>011</option>
+                            <option value="012" {{(old('provider') or $appo['provider'] == '012') ? 'selected' : ''}}>012</option>
+                            <option value="013" {{(old('provider') or $appo['provider'] == '013') ? 'selected' : ''}}>013</option>
+                            <option value="014" {{(old('provider') or $appo['provider'] == '014') ? 'selected' : ''}}>014</option>
+                            <option value="016" {{(old('provider') or $appo['provider'] == '016') ? 'selected' : ''}}>016</option>
+                            <option value="017" {{(old('provider') or $appo['provider'] == '017') ? 'selected' : ''}}>017</option>
+                            <option value="018" {{(old('provider') or $appo['provider'] == '018') ? 'selected' : ''}}>018</option>
+                            <option value="019" {{(old('provider') or $appo['provider'] == '019') ? 'selected' : ''}}>019</option>
                           </select>
                         </div>
                         <div class="col-8">
-                          <input type="text" class="form-control" id="contact" name="contact" placeholder="Enter Contact" value="{{ old('contact') }}">
+                          <input type="text" class="form-control" id="contact" name="contact" placeholder="Enter Contact" value="{{ old('contact', $appo['contact']) }}">
                           @error('contact')
                           <small class="text-danger">{{ $message}}</small>
                           @enderror
@@ -248,6 +248,8 @@
 
 
                 <button type="submit" name="submit" value="save" class="btn btn-primary">Submit</button>
+
+                <button type="submit" name="submit" value="new-checkin" class="btn btn-primary">Submit & Check-In</button>
 
                 <button type="submit" name="submit" value="new-case" class="btn btn-primary">Submit & New Case</button>
 

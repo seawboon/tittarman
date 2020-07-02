@@ -61,15 +61,16 @@
                                           {{$part->part->name}}@if(!$loop->last) + @endif
                                         @endforeach
                                         </a>
+                                        <a class="btn btn-sm btn-info float-right" href="{{ route('appointments.create', ['patient' => $patient, 'matter' => $matter]) }}">Make Appointment</a>
                                         <a class="btn btn-sm btn-info float-right" href="{{ route('checkin.store', ['patient' => $patient, 'matter' => $matter]) }}">{{ __('ttm.checkin')}}</a>
                                         <div class="py-1" style="clear:both"></div>
                                       </li>
                                     @endforeach
-                                  @else
-                                    <li class="nav-item">
-                                      <a class="btn btn-sm btn-info float-right mr-2" href="{{ route('checkin.store', ['patient' => $patient]) }}">{{ __('ttm.checkin')}}</a>
-                                    </li>
                                   @endif
+                                  <li class="nav-item">
+                                    <a class="btn btn-sm btn-info float-right" href="{{ route('checkin.store', ['patient' => $patient]) }}">New Case Check-In</a>
+                                    <a class="btn btn-sm btn-info float-right mr-2" href="{{ route('appointments.create', ['patient' => $patient]) }}">New Case Appointment</a>
+                                  </li>
                                 </ul>
 
                                 {{--

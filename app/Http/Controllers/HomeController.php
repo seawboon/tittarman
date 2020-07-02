@@ -72,7 +72,11 @@ class HomeController extends Controller
       $checkin->save();
       if($request->input()) {
         if($request->input('matter')) {
-          return redirect()->route('matter.edit', ['patient' => $request->input('patient'), 'matter' => $request->input('matter') ]);
+          if($action=='paid' && $request->input('matter')) {
+            return redirect()->route('treat.edit', ['patient' => $request->input('patient'), 'matter' => $request->input('matter'), 'treat' => $request->input('treat') ]);
+          } else {
+            return redirect()->route('matter.edit', ['patient' => $request->input('patient'), 'matter' => $request->input('matter') ]);
+          }
         } else {
           return redirect()->route('patient.edit', ['patient' => $request->input('patient')]);
         }
@@ -109,12 +113,15 @@ class HomeController extends Controller
 
     }
 
-    public function storeCheckInFromAppointment(Patient $patient, Appointment $appo)
+    public function storeCheckInFromAppointment(Patient $patient, Appointment $appo, Request $request)
     {
       if(Session::get('myBranch')) {
         $myBranch = Session::get('myBranch');
         $myBranch = session('myBranch');
         $data['branch_id'] = $myBranch->id;
+        if(request()->matter) {
+          $data['matter_id'] = request()->matter;
+        }
 
         $appo->state = 'checkin';
         $appo->save();

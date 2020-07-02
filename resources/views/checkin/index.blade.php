@@ -133,7 +133,7 @@
                     <a class="btn btn-sm btn-success ml-2" href="{{ route('checkin.action', ['action'=>'treating', 'checkin' => $checkin]) }}">Treat Now</a>
                     @endif
                     @if($checkin->state=='treated')
-                    <a class="btn btn-sm btn-warning ml-2" href="{{ route('checkin.action', ['action'=>'paid', 'checkin' => $checkin, 'patient' => $checkin->patient, 'matter' => $checkin->matter, 'treat' => $checkin->treat]) }}">Pay</a>
+                    <a class="btn btn-sm btn-warning ml-2" href="{{ route('checkin.action', ['action'=>'paid', 'checkin' => $checkin, 'patient' => $checkin->patient, 'matter' => $checkin->matter, 'treat' => $checkin->treat_id]) }}">Pay</a>
                     @endif
                   </td>
               </tr>
