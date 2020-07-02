@@ -151,7 +151,7 @@
             </form>
          </div>
 
-
+         {!! $calendar_details->calendar() !!}
 
       </div>
 
@@ -164,8 +164,9 @@
 
 
 @endsection
-
-@push('js')
+@push('css')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.2.7/fullcalendar.min.css"/>
 <style>
 .datepicker table tr td.today,  .datepicker table tr td.today:hover {
   background-color: #ccc;
@@ -176,9 +177,14 @@
 }
 
 </style>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+@endpush
 
+@push('js')
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.2.7/fullcalendar.min.js"></script>
+{!! $calendar_details->script() !!}
 
 <script>
 $(document).ready(function() {
