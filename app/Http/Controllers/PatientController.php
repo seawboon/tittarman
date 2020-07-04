@@ -11,6 +11,8 @@ use App\State;
 use App\Appointment;
 use App\Macros\whereLike;
 
+use Session;
+
 class PatientController extends Controller
 {
   public function __construct()
@@ -48,9 +50,13 @@ class PatientController extends Controller
 
   public function create(Request $request)
   {
-
+      if(Session::get('myBranch')) {
+        $appo['branch_id'] = session('myBranch')->id;
+      } else {
+        $appo['branch_id'] = null;
+      }
       $appo['salutation'] = '';
-      $appo['branch_id'] = null;
+
       $appo['name'] = '';
       $appo['email'] = '';
       $appo['provider'] = '';

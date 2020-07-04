@@ -17,7 +17,14 @@
                 <div class="col-4">
                   <div class="form-group">
                     <label for="branch_id" class="d-block">Branch</label>
-                    {!! Form::select('branch_id', [null=>'Please Select'] + $branches, null, array('class' => 'form-control', 'id' => 'branch_id')) !!}
+                    @php
+                    if(Session::get('myBranch')) {
+                      $defBranch = session('myBranch')->id;
+                    } else {
+                      $defBranch = null;
+                    }
+                    @endphp
+                    {!! Form::select('branch_id', [null=>'Please Select'] + $branches, $defBranch, array('class' => 'form-control', 'id' => 'branch_id')) !!}
                     @error('branch_id')
                     <small class="text-danger">{{ $message}}</small>
                     @enderror

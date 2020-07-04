@@ -72,7 +72,7 @@ class MatterController extends Controller
       //dd($mfile);
 
       //dd($data);
-      $matter = $patient->matters()->create($data['matter']);
+      $matter = $patient->matters()->firstOrCreate($data['matter']);
       $matter->injuries()->createMany($data['injuries']);
       $matter->parts()->createMany($data['injury_parts']);
 

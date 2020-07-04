@@ -13,10 +13,19 @@ use App\User;
 use App\Branches;
 use App\Rules;
 use Calendar;
+use Session;
 
 class AppointmentController extends Controller
 {
     public function index()
+    {
+        $appos = Appointment::whereDate('created_at', Carbon::today())->paginate(10);
+
+
+        return view('appointment.index', compact('appos'));
+    }
+
+    public function calendar()
     {
         $appos = Appointment::paginate(10);
 

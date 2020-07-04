@@ -85,7 +85,7 @@ class TreatController extends Controller
 
         //dd($data['treat']['treat_date']);
 
-        $treat = $matter->treats()->create($data['treat']);
+        $treat = $matter->treats()->firstOrCreate($data['treat']);
 
         $treat->products()->createMany($data['product']);
         //$matter->injuries()->createMany($data['injuries']); ≈
@@ -156,9 +156,14 @@ class TreatController extends Controller
           $checkin->state = 'treated';
           $checkin->treat_id = $treat->id;
           $checkin->save();
+        } else {
+          $newC['branch_id'] = $data['treat']['branch_id'];
+          $newC['patient_id'] = $patient->id;
+          $newC['matter_id'] = $matter->id;
+          $newC['state'] = 'treated';
+          $newC['treat_id'] = $treat->id;
+          $patient->checkins()->firstOrCreate($newC);
         }
-
-
 
         switch(request('submit')) {
           case 'save':
