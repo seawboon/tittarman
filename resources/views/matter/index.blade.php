@@ -13,7 +13,7 @@
 
         <div class="col-xl-12 order-xl-1">
 
-          <h3><small>{{$patient->salutation}}</small> {{$patient->fullname}} <a class="btn btn-sm btn-info ml-2" href="{{ route('matter.create', ['patient' => $patient]) }}">New Case</a></h3>
+          <h3><small>{{$patient->salutation}}</small> {{$patient->fullname}} @role('Master')<a class="btn btn-sm btn-info ml-2 float-right" href="{{ route('matter.create', ['patient' => $patient]) }}">New Case</a>@endrole</h3>
           <div class="table-responsive mt-3">
 
                     <div>
@@ -85,7 +85,7 @@
 
 
                                     <td class="align-top px-0">
-                                      <a data-toggle="tooltip" data-placement="left" title="New Treat" class="badge badge-md badge-circle badge-floating badge-default border-white" href="{{ route('treat.create', ['patient' => $patient, 'matter' => $matter])}}"><i class="ni ni-fat-add"></i></a>
+                                      @role('Master')<a data-toggle="tooltip" data-placement="left" title="New Treat" class="badge badge-md badge-circle badge-floating badge-default border-white" href="{{ route('treat.create', ['patient' => $patient, 'matter' => $matter])}}"><i class="ni ni-fat-add"></i></a>@endrole
                                       {{--<div class="dropdown float-right">
                                           <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <i class="fas fa-ellipsis-v"></i>

@@ -14,6 +14,7 @@ use App\Branches;
 use App\Rules;
 use Calendar;
 use Session;
+use Auth;
 
 class AppointmentController extends Controller
 {
@@ -179,6 +180,44 @@ class AppointmentController extends Controller
 
       return redirect()->route('appointments.index');
 
+    }
+
+    public function myappointment()
+    {
+        //dd($request->input());
+        $events = Appointment::where('user_id', Auth::user()->id)->get();
+
+        $event_list = [];
+        foreach ($events as $key => $event) {
+          $event_list[] = Calendar::event(
+            $event->name,
+            false,
+            new \DateTime($event->appointment_date),
+            new \DateTime($event->appointment_date),
+            $event->id,
+            [
+              //'url' => 'https://fullcalendar.io/',
+              'description' => 'Lecture'
+            ]
+          );
+        }
+
+        $calendar_details = Calendar::addEvents($event_list, [ //set custom color fo this event
+                                //'color' => '#70db70',
+
+                                //'display' => 'list-item',
+                                //'textColor' => '#000',
+                                'backgroundColor' => '#fff'
+                            ])->setOptions([ //set fullcalendar options
+                                //'header'=>['left'=>'prev, next today', 'center'=>'title', 'right'=>'listDay,listWeek,listMonth'],
+                                'firstDay' => 1,
+                                //'initialView' => 'listWeek'
+                                //'editable' => true,
+                                //'navLinks' => true
+                            ]);
+
+
+        return view('users.appointment', compact('calendar_details'));
     }
 
 

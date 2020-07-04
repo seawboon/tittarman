@@ -14,8 +14,18 @@
         <div class="card-body">
             <form action="{{ route('treat.update', ['patient' => $patient, 'matter' => $matter, 'treat' => $treat]) }}" method="post" enctype="multipart/form-data">
               @csrf
+              @php
+                $permit['text'] = '';
+                $permit['class'] = '';
+                if(auth()->user()->cannot('master-edit')) {
+                  $permit['text'] = 'readonly';
+                  $permit['class'] = 'invisible h-0';
+                }
+              @endphp
 
-              <div class="row">
+
+
+              <div class="row {{$permit['class']}}">
                 <div class="col-6">
                   <div class="form-group">
                     <label for="branch_id" class="d-block">Branch</label>
@@ -97,7 +107,7 @@
                 <div class="col-12">
                   <div class="form-group">
                     <label for="address">Treatment</label>
-                    <textarea class="form-control" id="treatment" name="treat[treatment]" rows="3" placeholder="Enter Treatment">{{ $treat->treatment }}</textarea>
+                    <textarea class="form-control" id="treatment" name="treat[treatment]" rows="3" placeholder="Enter Treatment" >{{ $treat->treatment }}</textarea>
                     @error('treat.treatment')
                     <small class="text-danger">{{ $message}}</small>
                     @enderror
@@ -109,7 +119,7 @@
                 <div class="col-12">
                   <div class="form-group">
                     <label for="address">Remarks</label>
-                    <textarea class="form-control" id="remarks" name="treat[remarks]" rows="3" placeholder="Enter Remarks">{{ $treat->remarks }}</textarea>
+                    <textarea class="form-control" id="remarks" name="treat[remarks]" rows="3" placeholder="Enter Remarks" >{{ $treat->remarks }}</textarea>
                     @error('treat.remarks')
                     <small class="text-danger">{{ $message}}</small>
                     @enderror
@@ -166,7 +176,7 @@
 
               </div>
 
-              <hr />
+              <hr class="{{$permit['class']}}" / >
               <h3>Payment</h3>
 
               <div class="table-responsive products">
@@ -217,7 +227,7 @@
                                 </td>
                                 <td class="">
                                   <div class="form-group">
-                                    <input type="text" class="form-control treat-fee" name="treat[fee]" value="{{ old('treat.fee', $treat->fee) }}" />
+                                    <input type="text" class="form-control treat-fee" name="treat[fee]" value="{{ old('treat.fee', $treat->fee) }}" {{$permit['text']}}/>
                                   </div>
                                 </td>
                               </tr>
@@ -281,6 +291,14 @@
 
 .datetimepicker {
   background-color: #fff !important;
+}
+
+.h-0 {
+  height: 0;
+}
+
+hr.invisible {
+  display: none;
 }
 
 </style>

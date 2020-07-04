@@ -142,11 +142,11 @@
                     </a>
                 </li>
 
-                <li class="nav-item">
+                <!--<li class="nav-item">
                     <a class="nav-link" href="{{ route('appointments.index') }}">
                         <i class="ni ni-money-coins text-pink"></i> {{ __('ttm.sales') }}
                     </a>
-                </li>
+                </li>-->
 
                 <li class="nav-item dropdown">
                     <a class="nav-link pr-0" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -154,15 +154,28 @@
                     </a>
                     <div class="dropdown-menu dropdown-menu-arrow dropdown-menu-right">
 
-                        <a href="{{ route('products.index') }}" class="dropdown-item">
+                      <a href="{{ route('users.index') }}" class="dropdown-item">
+                          <i class="ni ni-app"></i>
+                          <span>{{ __('Users') }}</span>
+                      </a>
+
+                      @role('Admin')
+                      <a href="{{ route('roles.index') }}" class="dropdown-item">
+                          <i class="ni ni-app"></i>
+                          <span>{{ __('Role') }}</span>
+                      </a>
+                      @endrole
+
+                      <a href="{{ route('products.index') }}" class="dropdown-item">
                             <i class="ni ni-app"></i>
                             <span>{{ __('Products') }}</span>
-                        </a>
-                        <a href="{{ route('injuryparts.index') }}" class="dropdown-item">
-                            <i class="ni ni-app"></i>
-                            <span>{{ __('Injury Part') }}</span>
-                        </a>
-
+                      </a>
+                      @hasanyrole('Admin|Master')
+                      <a href="{{ route('injuryparts.index') }}" class="dropdown-item">
+                          <i class="ni ni-app"></i>
+                          <span>{{ __('Injury Part') }}</span>
+                      </a>
+                      @endhasanyrole
                     </div>
                 </li>
 
@@ -186,18 +199,18 @@
                     </a>
 
                 </li>
-
+                @can('master-create')
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('matter.create', ['patient' => $patient]) }}">
                         <i class="ni ni-fat-add text-pink"></i> New Case
                     </a>
                 </li>
-
-                <li class="nav-item">
+                @endcan
+                {{--<li class="nav-item">
                     <a class="nav-link" href="{{ route('patient.treats', ['patient' => $patient]) }}">
                         <i class="ni ni-badge text-pink"></i> Treatment(s)
                     </a>
-                </li>
+                </li>--}}
               </ul>
               @endif
             @endisset

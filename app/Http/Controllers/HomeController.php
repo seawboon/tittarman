@@ -10,6 +10,7 @@ use App\Treat;
 use App\CheckIn;
 use App\Branches;
 use App\Appointment;
+use Calendar;
 
 use Session;
 
@@ -32,11 +33,48 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $patients = Patient::get();
-        $treats = Treat::get();
-        $matters = Matter::get();
+      $myBranchID = '';
+      if(Session::get('myBranch')) {
+        $myBranch = Session::get('myBranch');
+        $myBranch = session('myBranch');
+        $myBranchID = $myBranch->id;
+      }
 
-        return view('dashboard', compact('patients', 'treats', 'matters'));
+      $patients = Patient::where('branch_id', 'like', '%'.$myBranchID.'%')->whereDate('created_at', Carbon::today())->get();
+      $appo = Appointment::where('branch_id', 'like', '%'.$myBranchID.'%')->whereDate('appointment_date', Carbon::today())->get();
+      $treats = Treat::where('branch_id', 'like', '%'.$myBranchID.'%')->whereDate('created_at', Carbon::today())->get();
+
+      $events = Appointment::where('branch_id', 'like', '%'.$myBranchID.'%')->get();
+      $event_list = [];
+      foreach ($events as $key => $event) {
+        $event_list[] = Calendar::event(
+          $event->user->name.' - '.$event->salutation.' '.$event->name,
+          false,
+          new \DateTime($event->appointment_date),
+          new \DateTime($event->appointment_date),
+          $event->id,
+          [
+            //'url' => 'https://fullcalendar.io/',
+            'description' => 'Lecture'
+          ]
+        );
+      }
+
+      $calendar_details = Calendar::addEvents($event_list, [ //set custom color fo this event
+                              //'color' => '#70db70',
+
+                              //'display' => 'list-item',
+                              //'textColor' => '#000',
+                              'backgroundColor' => '#fff'
+                          ])->setOptions([ //set fullcalendar options
+                              //'header'=>['left'=>'prev, next today', 'center'=>'title', 'right'=>'listDay,listWeek,listMonth'],
+                              'firstDay' => 1,
+                              //'initialView' => 'listWeek'
+                              //'editable' => true,
+                              //'navLinks' => true
+                          ]);
+
+      return view('dashboard', compact('patients', 'treats', 'appo', 'calendar_details'));
     }
 
     public function mybranch()

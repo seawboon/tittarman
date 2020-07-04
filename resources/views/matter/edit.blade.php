@@ -129,14 +129,15 @@
             </div>
 
 
+            @role('Master')
             <button type="submit" name="submit" value="save" class="btn btn-primary">Edit Case</button>
-
             <button type="submit" name="submit" value="new-treat" class="btn btn-primary">Edit & Add New Treatment</button>
+            @endrole
 
           </form>
 
           <hr />
-          <h3>Treatment List <a class="btn btn-sm btn-info float-right" href="{{ route('treat.create', ['patient' => $patient, 'matter' => $matter]) }}">New Treatment</a></h3>
+          <h3>Treatment List @role('Master')<a class="btn btn-sm btn-info float-right" href="{{ route('treat.create', ['patient' => $patient, 'matter' => $matter]) }}">New Treatment</a>@endrole</h3>
           <div class="table-responsive mt-3">
 
                     <div>

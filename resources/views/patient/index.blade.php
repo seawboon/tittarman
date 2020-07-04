@@ -98,7 +98,7 @@
                                           <h4 class="text-overflow m-0">Case</h4>
                                       </div>
                                       <a class="dropdown-item" href="{{ route('matter.index', $patient) }}"> {{ __('ttm.case.view')}}</a>
-                                      <a class="dropdown-item" href="{{ route('matter.create', ['patient' => $patient->id])}}"> {{ __('ttm.case.add')}}</a>
+                                      @role('Master')<a class="dropdown-item" href="{{ route('matter.create', ['patient' => $patient->id])}}"> {{ __('ttm.case.add')}}</a>@endrole
                                   </div>
 
                               </div>

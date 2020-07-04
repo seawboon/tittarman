@@ -251,7 +251,7 @@
 
                 <button type="submit" name="submit" value="new-checkin" class="btn btn-primary">Submit & Check-In</button>
 
-                <button type="submit" name="submit" value="new-case" class="btn btn-primary">Submit & New Case</button>
+                @hasanyrole('Admin|Master')<button type="submit" name="submit" value="new-case" class="btn btn-primary">Submit & New Case</button>@endhasanyrole
 
               </form>
            </div>

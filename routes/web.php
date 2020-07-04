@@ -23,12 +23,17 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::group(['middleware' => 'auth'], function () {
-	Route::resource('user', 'UserController', ['except' => ['show']]);
+	//Route::resource('user', 'UserController', ['except' => ['show']]);
+	Route::resource('roles','RoleController');
+  Route::resource('users','UserController');
+  Route::resource('products','ProductController');
 
 	Route::get('/mybranch', 'HomeController@mybranch')->name('checkin.mybranch');
 	Route::get('/setSession/{branch}', 'HomeController@setSession')->name('checkin.setSession');
 	Route::get('/getSession', 'HomeController@getSession')->name('checkin.getSession');
 	Route::get('/forgetSession', 'HomeController@forgetSession')->name('checkin.forgetSession');
+
+	Route::get('/myappointment', 'AppointmentController@myappointment')->name('user.appointment');
 
   Route::get('/checkin', 'HomeController@CheckIns')->name('checkin.index');
 	Route::get('/checkin/{action}/{checkin}', 'HomeController@actionCheckIn')->name('checkin.action');

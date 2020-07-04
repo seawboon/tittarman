@@ -49,10 +49,12 @@
                         <i class="ni ni-settings-gear-65"></i>
                         <span>{{ __('Settings') }}</span>
                     </a>-->
-                    <a href="#" class="dropdown-item">
+                    @hasanyrole('Admin|Master')
+                    <a href="{{ route('user.appointment')}}" class="dropdown-item">
                         <i class="ni ni-calendar-grid-58"></i>
-                        <span>{{ __('Activity') }}</span>
+                        <span>{{ __('My Appointment') }}</span>
                     </a>
+                    @endhasanyrole
                     <!--<a href="#" class="dropdown-item">
                         <i class="ni ni-support-16"></i>
                         <span>{{ __('Support') }}</span>

@@ -45,21 +45,16 @@
                     <div class="card-header bg-transparent">
                         <div class="row align-items-center">
                             <div class="col">
-                                <h6 class="text-uppercase text-muted ls-1 mb-1">{{ Carbon\Carbon::parse('today')->format('d M Y') }} - {{ Carbon\Carbon::parse('today')->addDays(14)->format('d M Y') }}</h6>
-                                <h2 class="mb-0">Coming Appointment</h2>
+                                <h2 class="mb-0">Appointment</h2>
                             </div>
                         </div>
                     </div>
                     <div class="card-body">
-                      coming soon
-                        <!-- Chart -->
-                        <div class="chart">
-                            <canvas id="chart-orders" class="chart-canvas"></canvas>
-                        </div>
+                      {!! $calendar_details->calendar() !!}
                     </div>
                 </div>
             </div>
-            
+
             <div id="carouselExampleIndicators" class="carousel slide bg-gradient-primary" data-ride="carousel" style="height:100%">
               <ol class="carousel-indicators">
                 <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
@@ -99,4 +94,12 @@
 @push('js')
     <script src="{{ asset('argon') }}/vendor/chart.js/dist/Chart.min.js"></script>
     <script src="{{ asset('argon') }}/vendor/chart.js/dist/Chart.extension.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.2.7/fullcalendar.min.js"></script>
+    {!! $calendar_details->script() !!}
+@endpush
+
+
+@push('css')
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.2.7/fullcalendar.min.css"/>
 @endpush
