@@ -14,6 +14,7 @@
 Route::get('/', 'HomeController@index');
 
 Route::view('/draw', 'signature');
+Route::view('/php', 'phpinfo');
 Route::post('/signature/post', 'SignaturePadController@store')->name('signaturepad.upload');
 
 
@@ -72,5 +73,5 @@ Route::group(['middleware' => 'auth'], function () {
 
 	Route::get('import-excel', 'ImportExcel\ImportExcelController@index');
 	Route::post('import-excel', 'ImportExcel\ImportExcelController@import');
-	
+
 });
