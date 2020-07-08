@@ -56,7 +56,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::any('/patients/search', 'PatientController@search')->name('patient.search');
 	Route::get('/patients/{pid}/edit', 'PatientController@edit')->name('patient.edit');
 	Route::post('/patients/{pid}/edit', 'PatientController@update')->name('patient.update');
-		Route::get('/patients/{patient}/treats', 'PatientController@treats')->name('patient.treats');
+	Route::get('/patients/{patient}/treats', 'PatientController@treats')->name('patient.treats');
 
 	Route::get('/patient/{patient}/matter/create', 'MatterController@create')->name('matter.create');
 	Route::get('/patient/{patient}/matters', 'MatterController@index')->name('matter.index');
@@ -69,4 +69,8 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::post('/patient/{patient}/matter/{matter}/treat/store', 'TreatController@store')->name('treat.store');
 	Route::get('/patient/{patient}/matter/{matter}/treat/{treat}', 'TreatController@edit')->name('treat.edit');
 	Route::post('/patient/{patient}/matter/{matter}/treat/{treat}/update', 'TreatController@update')->name('treat.update');
+
+	Route::get('import-excel', 'ImportExcel\ImportExcelController@index');
+	Route::post('import-excel', 'ImportExcel\ImportExcelController@import');
+	
 });
