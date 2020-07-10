@@ -25,7 +25,7 @@ class CheckIn extends Model
 
     public function treat()
     {
-      return $this->belongsTo(Matter::class, 'treat_id');
+      return $this->belongsTo(Treat::class, 'treat_id');
     }
 
 }

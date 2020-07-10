@@ -1,4 +1,4 @@
-@extends('layouts.app', ['titlePage' => 'Patient: '. $patient->fullname.', '.$patient->gender.', '.$age])
+@extends('layouts.app', ['titlePage' => 'New Treat: '. $patient->fullname])
 
 @section('content')
     <div class="header bg-gradient-secondary py-7 py-lg-8">
@@ -149,76 +149,90 @@
 
               </div>
               <hr />
-              <h3>Payment</h3>
+              @hasanyrole('Master|Admin')
+                <h3>Treatment Fee</h3>
+              @else
+                <h3>Payment</h3>
+              @endhasanyrole
               <div class="table-responsive products">
                 <div>
                   <table class="table align-items-center">
+                    @can('reception-edit')
                     <thead class="thead-light">
                         <tr>
                             <th scope="col" class="sort" data-sort="budget">Product Name</th>
                             <th scope="col" class="sort" data-sort="status">Price (RM)</th>
                             <th scope="col" class="sort" data-sort="branch">Unit</th>
                             <th scope="col">Total</th>
-                            <tbody class="list">
-                              @foreach($products as $key => $product)
-                              <tr>
-                                <td>
-                                  <input type="hidden" name="product[{{ $key }}][product_id]" value="{{$product->id}}" />
-                                  <input type="hidden" name="product[{{ $key }}][matter_id]" value="{{$matter->id}}" />
-                                  <input type="hidden" name="product[{{ $key }}][patient_id]" value="{{$patient->id}}" />
-
-                                  @if($product->id == 4)
-                                    <textarea class="form-control" name="product[{{ $key }}][remarks]" rows="1" placeholder="Enter Others">{{ old('product.'.$key.'.remarks') }}</textarea>
-                                  @else
-                                    <input type="hidden" name="product[{{ $key }}][remarks]" value="" />
-                                    {{ $product->name }}
-                                  @endif
-                                </td>
-                                <td class="w-25">
-                                  <div class="form-group">
-                                    <input type="text" class="form-control productprice" name="product[{{ $key }}][price]" value="{{ old('product.'.$key.'.price', $product->price) }}" />
-                                  </div>
-                                </td>
-                                <td class="w-15">
-                                  <div class="form-group">
-                                  {!! Form::select('product['.$key.'][unit]', range(0, 10) , null, array('class' => 'form-control productunit'.$key.'')) !!}
-
-
-                                  </div>
-
-                                </td>
-                                <td class="w-25">
-                                  <div class="form-group">
-                                    <input type="text" class="form-control producttotal{{ $key }}" name="product[{{ $key }}][total]" value="0" />
-                                  </div>
-                                </td>
-                              </tr>
-                              @endforeach
-
-                              <tr>
-                                <td colspan="3" class="text-right">
-                                  Treatment Fee (RM)
-                                </td>
-                                <td class="">
-                                  <div class="form-group">
-                                    <input type="text" class="form-control treat-fee" name="treat[fee]" value="{{ old('treat.fee', '0') }}" />
-                                  </div>
-                                </td>
-                              </tr>
-
-                              <tr>
-                                <td colspan="3" class="text-right">
-                                  Total Fees (RM)
-                                </td>
-                                <td class="">
-                                  <div class="form-group">
-                                    <input type="text" class="form-control productsum" name="treat[total]" value="{{ old('treat.total', '0') }}" readonly />
-                                  </div>
-                                </td>
-                              </tr>
-                            </tbody>
                         </tr>
                     </thead>
+                    @endcan
+                    <tbody class="list">
+                      @foreach($products as $key => $product)
+                      @can('reception-edit')
+                      <tr>
+                      @else
+                      <tr class="producut-hide">
+                      @endcan
+                        <td>
+                          <input type="hidden" name="product[{{ $key }}][product_id]" value="{{$product->id}}" />
+                          <input type="hidden" name="product[{{ $key }}][matter_id]" value="{{$matter->id}}" />
+                          <input type="hidden" name="product[{{ $key }}][patient_id]" value="{{$patient->id}}" />
+
+                          @if($product->id == 4)
+                            <textarea class="form-control" name="product[{{ $key }}][remarks]" rows="1" placeholder="Enter Others">{{ old('product.'.$key.'.remarks') }}</textarea>
+                          @else
+                            <input type="hidden" name="product[{{ $key }}][remarks]" value="" />
+                            {{ $product->name }}
+                          @endif
+                        </td>
+                        <td class="w-25">
+                          <div class="form-group">
+                            <input type="text" class="form-control productprice" name="product[{{ $key }}][price]" value="{{ old('product.'.$key.'.price', $product->price) }}" />
+                          </div>
+                        </td>
+                        <td class="w-15">
+                          <div class="form-group">
+                          {!! Form::select('product['.$key.'][unit]', range(0, 10) , null, array('class' => 'form-control productunit'.$key.'')) !!}
+
+
+                          </div>
+
+                        </td>
+                        <td class="w-25">
+                          <div class="form-group">
+                            <input type="text" class="form-control producttotal{{ $key }}" name="product[{{ $key }}][total]" value="0" />
+                          </div>
+                        </td>
+                      </tr>
+                      @endforeach
+
+                      <tr>
+                        <td colspan="3" class="text-right">
+                          Treatment Fee (RM)
+                        </td>
+                        <td class="">
+                          <div class="form-group">
+                            <input type="text" class="form-control treat-fee" name="treat[fee]" value="{{ old('treat.fee', '0') }}" />
+                          </div>
+                        </td>
+                      </tr>
+
+                      @can('reception-edit')
+                      <tr>
+                      @else
+                      <tr class="producut-hide">
+                      @endcan
+                        <td colspan="3" class="text-right">
+                          Total Fees (RM)
+                        </td>
+                        <td class="">
+                          <div class="form-group">
+                            <input type="text" class="form-control productsum" name="treat[total]" value="{{ old('treat.total', '0') }}" readonly />
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
                   </table>
                 </div>
               </div>
@@ -266,6 +280,17 @@
 
 .datetimepicker {
   background-color: #fff !important;
+}
+
+.table-responsive {
+  overflow-y: hidden;
+}
+
+
+.producut-hide, .producut-hide td{
+  visibility: hidden;
+  display: block;
+  height: 0;
 }
 
 </style>

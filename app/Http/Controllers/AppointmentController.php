@@ -10,6 +10,7 @@ use App\Appointment;
 use App\Patient;
 use App\Matter;
 use App\User;
+use Spatie\Permission\Models\Role;
 use App\Branches;
 use App\Rules;
 use Calendar;
@@ -104,7 +105,9 @@ class AppointmentController extends Controller
           }
         }
         $branches = Branches::pluck('name','id')->all();
-        $users = User::pluck('name','id')->all();
+        $role = Role::where('name', 'master')->first();
+        $users = $role->users()->pluck('name','id')->all();
+        //$users = User::pluck('name','id')->all();
         return view('appointment.create', compact('branches','users', 'extra', 'event', 'calendar_details'));
     }
 
@@ -145,7 +148,8 @@ class AppointmentController extends Controller
     {
         $appo = $appointment;
         $branches = Branches::pluck('name','id')->all();
-        $users = User::pluck('name','id')->all();
+        $role = Role::where('name', 'master')->first();
+        $users = $role->users()->pluck('name','id')->all();
         return view('appointment.edit', compact('appo','branches','users'));
     }
 

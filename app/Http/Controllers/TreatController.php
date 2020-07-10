@@ -12,6 +12,7 @@ use App\injury;
 use App\MatterInjury;
 use App\Treat;
 use App\User;
+use Spatie\Permission\Models\Role;
 use App\Product;
 use App\TreatProduct;
 use App\Images;
@@ -22,7 +23,11 @@ use File;
 class TreatController extends Controller
 {
     private $days = [
-      '2' => '2-6 Days',
+      '2' => '2 Days',
+      '3' => '3 Days',
+      '4' => '4 Days',
+      '5' => '5 Days',
+      '6' => '6 Days',
       '7' => '1 Week',
       '14' => '2 Weeks',
       '30' => '1 Month',
@@ -47,7 +52,8 @@ class TreatController extends Controller
     {
         $age = Carbon::parse($patient->dob)->age;
         $products = Product::where('status', 'yes')->get();
-        $users = User::pluck('name','id')->all();
+        $role = Role::where('name', 'master')->first();
+        $users = $role->users()->pluck('name','id')->all();
         $branches = Branches::pluck('name','id')->all();
         $days = $this->days;
 
@@ -167,7 +173,7 @@ class TreatController extends Controller
 
         switch(request('submit')) {
           case 'save':
-            return redirect()->route('matter.edit', ['patient' => $patient, 'matter' => $matter]);
+            return redirect()->route('checkin.index');
           break;
 
           case 'new-treat':
@@ -180,7 +186,8 @@ class TreatController extends Controller
     public function edit(Patient $patient, Matter $matter, Treat $treat)
     {
         $age = Carbon::parse($patient->dob)->age;
-        $users = User::pluck('name','id')->all();
+        $role = Role::where('name', 'master')->first();
+        $users = $role->users()->pluck('name','id')->all();
         $branches = Branches::pluck('name','id')->all();
         $products = Product::where('status', 'yes')->get();
         $ii = MatterInjury::with('injury')->where('matter_id', $matter->id)->get();
@@ -308,7 +315,7 @@ class TreatController extends Controller
 
         switch(request('submit')) {
           case 'save':
-            return redirect()->route('matter.edit', ['patient' => $patient, 'matter' => $matter]);
+            return redirect()->route('checkin.index');
           break;
 
           case 'new-appointment':

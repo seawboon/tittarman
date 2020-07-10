@@ -38,6 +38,8 @@ class HomeController extends Controller
         $myBranch = Session::get('myBranch');
         $myBranch = session('myBranch');
         $myBranchID = $myBranch->id;
+      } else {
+        return redirect()->route('checkin.mybranch');
       }
 
       $patients = Patient::where('branch_id', 'like', '%'.$myBranchID.'%')->whereDate('created_at', Carbon::today())->get();
@@ -116,7 +118,7 @@ class HomeController extends Controller
             return redirect()->route('matter.edit', ['patient' => $request->input('patient'), 'matter' => $request->input('matter') ]);
           }
         } else {
-          return redirect()->route('patient.edit', ['patient' => $request->input('patient')]);
+          return redirect()->route('matter.create', ['patient' => $request->input('patient')]);
         }
       } else {
         return redirect()->route('checkin.index');
