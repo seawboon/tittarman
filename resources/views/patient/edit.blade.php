@@ -124,7 +124,7 @@
                           </select>
                         </div>
                         <div class="col-8">
-                          <input type="text" class="form-control" id="contact" name="contact" placeholder="Enter Contact" value="{{ $patient->contact }}">
+                          <input type="text" class="form-control" id="contact" name="contact" placeholder="Enter Contact" minlength="7" maxlength="8" value="{{ $patient->contact }}">
                           @error('contact')
                           <small class="text-danger">{{ $message}}</small>
                           @enderror

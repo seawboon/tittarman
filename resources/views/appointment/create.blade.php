@@ -125,7 +125,7 @@
                         @enderror
                       </div>
                       <div class="col-8">
-                        <input type="text" class="form-control" id="contact" name="contact" placeholder="Enter Contact" value="{{ old('contact', $extra['patient']['contact']) }}">
+                        <input type="text" class="form-control" id="contact" name="contact" placeholder="Enter Contact" minlength="7" maxlength="8" value="{{ old('contact', $extra['patient']['contact']) }}">
                         @error('contact')
                         <small class="text-danger">{{ $message}}</small>
                         @enderror

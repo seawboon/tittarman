@@ -1,4 +1,4 @@
-@extends('layouts.app', ['titlePage' => 'New Treat: '. $patient->fullname])
+@extends('layouts.app', ['titlePage' => 'TREATMENT DETAIL: '. $patient->fullname])
 
 @section('content')
     <div class="header bg-gradient-secondary py-7 py-lg-8">
