@@ -50,7 +50,7 @@ class HomeController extends Controller
       $event_list = [];
       foreach ($events as $key => $event) {
         $event_list[] = Calendar::event(
-          if($event->user) {
+          if($event->user!=null) {
             $event->user->name.' - '.$event->salutation.' '.$event->name,
           } else {
             $event->salutation.' '.$event->name,
