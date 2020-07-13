@@ -49,7 +49,7 @@ class HomeController extends Controller
       $events = Appointment::where('branch_id', 'like', '%'.$myBranchID.'%')->get();
       $event_list = [];
       foreach ($events as $key => $event) {
-        if(isset($event->user)) {
+        if(isset($event->user->name)) {
           $eventKaka = $event->user->name.' - '.$event->salutation.' '.$event->name,
         } else {
           $eventKaka = $event->salutation.' '.$event->name,
