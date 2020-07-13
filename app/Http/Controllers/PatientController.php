@@ -164,9 +164,11 @@ class PatientController extends Controller
       $data['dob'] = $dateTime->format('Y-m-d');
 
       //$data['user_id'] = auth()->user()->id;
-      $user = Patient::where('email', $data['email'])
+      /*$user = Patient::where('email', $data['email'])
       ->orWhere('fullname', $data['fullname'])
-      ->orWhere('nric', $data['nric'])->first();
+      ->orWhere('nric', $data['nric'])->first();*/
+
+      $user = Patient::where('nric', $data['nric'])->first();
 
       if($user == null){
         $patient = Patient::create($data);
