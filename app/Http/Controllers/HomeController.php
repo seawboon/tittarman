@@ -49,13 +49,14 @@ class HomeController extends Controller
       $events = Appointment::where('branch_id', 'like', '%'.$myBranchID.'%')->get();
       $event_list = [];
       foreach ($events as $key => $event) {
-        if(isset($event->user->name)) {
-          $eventKaka = $event->user->name.' - '.$event->salutation.' '.$event->name,
+        if(isset($event->user)) {
+          $eventkk = $event->user->name.' - '.$event->salutation.' '.$event->name;
         } else {
-          $eventKaka = $event->salutation.' '.$event->name,
+          $eventkk = $event->salutation.' '.$event->name;
         }
+
         $event_list[] = Calendar::event(
-          $eventKaka,
+          $eventkk,
           false,
           new \DateTime($event->appointment_date),
           new \DateTime($event->appointment_date),
