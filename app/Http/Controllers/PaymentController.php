@@ -15,7 +15,6 @@ use App\User;
 use Spatie\Permission\Models\Role;
 use App\Product;
 use App\PaymentProduct;
-use App\TreatProduct;
 use App\Images;
 use App\Checkin;
 use App\Payment;
@@ -40,7 +39,6 @@ class PaymentController extends Controller
       //dd($payment->treat);
       $age = Carbon::parse($payment->patient->dob)->age;
       $products = Product::where('status', 'yes')->get();
-      $matter = $payment->matter;
       //$role = Role::where('name', 'master')->first();
       //$users = $role->users()->pluck('name','id')->all();
       //$branches = Branches::pluck('name','id')->all();
@@ -49,7 +47,7 @@ class PaymentController extends Controller
 
       //$treat->load('products');
 
-      return view('payment.edit', compact('payment','products', 'days', 'matter'));
+      return view('payment.edit', compact('payment','products', 'days'));
   }
 
   public function update(Payment $payment, Request $request)

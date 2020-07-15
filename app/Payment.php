@@ -15,7 +15,7 @@ class Payment extends Model
 
     public function matter()
     {
-      return $this->belongsTo(matter::class);
+      return $this->belongsTo(Matter::class);
     }
 
     public function branch()
