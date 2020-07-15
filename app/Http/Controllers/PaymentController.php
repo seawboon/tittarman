@@ -15,6 +15,7 @@ use App\User;
 use Spatie\Permission\Models\Role;
 use App\Product;
 use App\PaymentProduct;
+use App\TreatProduct;
 use App\Images;
 use App\Checkin;
 use App\Payment;
