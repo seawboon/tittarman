@@ -18,6 +18,11 @@ class Payment extends Model
       return $this->belongsTo(matter::class);
     }
 
+    public function branch()
+    {
+      return $this->belongsTo(Branches::class, 'branch_id');
+    }
+
     public function treat()
     {
       return $this->belongsTo(Treat::class);

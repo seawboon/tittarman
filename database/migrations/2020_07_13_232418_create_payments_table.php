@@ -18,6 +18,7 @@ class CreatePaymentsTable extends Migration
             $table->unsignedBigInteger('patient_id');
             $table->unsignedBigInteger('matter_id')->nullable();
             $table->unsignedBigInteger('treat_id')->nullable();
+            $table->unsignedBigInteger('branch_id')->nullable();
             $table->double('treatment_fee')->default('0');
             $table->double('product_amount')->default('0');
             $table->double('discount')->default('0');

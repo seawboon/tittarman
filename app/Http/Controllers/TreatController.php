@@ -98,7 +98,8 @@ class TreatController extends Controller
           'patient_id' => $patient->id,
           'matter_id' => $matter->id,
           'treatment_fee' =>   $data['treat']['fee'],
-          'total' =>   $data['treat']['fee']
+          'total' =>   $data['treat']['fee'],
+          'branch_id' => $data['treat']['branch_id']
         ];
 
         $treat->payment()->firstOrCreate($payment);

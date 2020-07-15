@@ -45,7 +45,7 @@ class HomeController extends Controller
 
       $patients = Patient::where('branch_id', 'like', '%'.$myBranchID.'%')->whereDate('created_at', Carbon::today())->get();
       $appo = Appointment::where('branch_id', 'like', '%'.$myBranchID.'%')->whereDate('appointment_date', Carbon::today())->get();
-      $treats = Treat::where('branch_id', 'like', '%'.$myBranchID.'%')->whereDate('created_at', Carbon::today())->get();
+      $treats = Payment::where('branch_id', 'like', '%'.$myBranchID.'%')->whereDate('created_at', Carbon::today())->get();
 
       $events = Appointment::where('branch_id', 'like', '%'.$myBranchID.'%')->get();
       $event_list = [];

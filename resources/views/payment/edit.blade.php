@@ -85,7 +85,7 @@
                                 </td>
                                 <td class="">
                                   <div class="form-group">
-                                    <input type="text" class="form-control treat-fee" name="treat[treatment_fee]" value="{{ old('treat.fee', $payment->treat->fee) }}" {{$permit['text']}} readonly />
+                                    <input type="text" class="form-control treat-fee" name="treat[fee]" value="{{ old('treat.fee', $payment->treat->fee) }}" {{$permit['text']}} readonly />
                                   </div>
                                 </td>
                               </tr>
@@ -135,8 +135,8 @@
                 </div>
               </div>
 
-              <button type="submit" name="submit" value="save" class="btn btn-primary">Edit Treatment</button>
-              <button type="submit" name="submit" value="new-appointment" class="btn btn-primary">Edit Treatment & Make Appointment</button>
+              <button type="submit" name="submit" value="save" class="btn btn-primary">Edit Payment</button>
+              <button type="submit" name="submit" value="new-appointment" class="btn btn-primary">Edit Payment & Make Appointment</button>
 
             </form>
          </div>
