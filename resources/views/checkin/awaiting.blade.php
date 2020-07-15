@@ -14,7 +14,7 @@
           </thead>
           <tbody class="list">
             @foreach($checkins as $key => $checkin)
-              @if($checkin->state=='awaiting')
+              @if($checkin->state=='awaiting' or $checkin->state=='treating')
               <tr>
                   <th scope="row" class="align-top">
                       <div class="media align-items-center">

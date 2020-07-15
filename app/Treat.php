@@ -41,4 +41,9 @@ class Treat extends Model
     return $this->hasMany(CheckIn::class);
   }
 
+  public function payment()
+  {
+    return $this->hasOne(Payment::class, 'treat_id');
+  }
+
 }

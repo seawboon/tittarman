@@ -182,45 +182,7 @@
               <div class="table-responsive products">
                 <div>
                   <table class="table align-items-center">
-                    <thead class="thead-light">
-                        <tr>
-                            <th scope="col" class="sort" data-sort="budget">Product Name</th>
-                            <th scope="col" class="sort" data-sort="status">Price (RM)</th>
-                            <th scope="col" class="sort" data-sort="branch">Unit</th>
-                            <th scope="col">Total</th>
                             <tbody class="list">
-                              @foreach($products as $key => $product)
-                              <tr>
-                                <td>
-                                  <input type="hidden" name="product[{{ $key }}][product_id]" value="{{$product->id}}" />
-                                  <input type="hidden" name="product[{{ $key }}][matter_id]" value="{{$matter->id}}" />
-                                  <input type="hidden" name="product[{{ $key }}][patient_id]" value="{{$patient->id}}" />
-                                  @if($product->id == 4)
-                                    <textarea class="form-control" name="product[{{ $key }}][remarks]" rows="1" placeholder="Enter Others">{{ old('product.'.$key.'.remarks', $treat->products[$key]->remarks) }}</textarea>
-                                  @else
-                                    <input type="hidden" name="product[{{ $key }}][remarks]" value="" />
-                                    {{ $product->name }}
-                                  @endif
-                                </td>
-                                <td class="w-25">
-                                  <div class="form-group">
-                                    <input type="text" class="form-control productprice" name="product[{{ $key }}][price]" value="{{ old('product.'.$key.'.price', $treat->products[$key]->price) }}" />
-                                  </div>
-                                </td>
-                                <td class="w-15">
-                                  <div class="form-group">
-                                  {!! Form::select('product['.$key.'][unit]', range(0, 10) , $treat->products[$key]->unit, array('class' => 'form-control productunit'.$key.'')) !!}
-                                  </div>
-
-                                </td>
-                                <td class="w-25">
-                                  <div class="form-group">
-                                    <input type="text" class="form-control producttotal{{ $key }}" name="product[{{ $key }}][total]" value="0" />
-                                  </div>
-                                </td>
-                              </tr>
-                              @endforeach
-
                               <tr>
                                 <td colspan="3" class="text-right">
                                   Treatment Fee (RM)
@@ -243,8 +205,6 @@
                                 </td>
                               </tr>
                             </tbody>
-                        </tr>
-                    </thead>
                   </table>
                 </div>
               </div>
@@ -264,7 +224,7 @@
               </div>
 
               <button type="submit" name="submit" value="save" class="btn btn-primary">Edit Treatment</button>
-              <button type="submit" name="submit" value="new-appointment" class="btn btn-primary">Edit Treatment & Make Appointment</button>
+              {{--<button type="submit" name="submit" value="new-appointment" class="btn btn-primary">Edit Treatment & Make Appointment</button>--}}
 
             </form>
          </div>
@@ -353,28 +313,14 @@ $(document).ready(function() {
 
   getvalues();
 
-  $('[class*=product], .treat-fee').change(function(){
+  $('.treat-fee').change(function(){
     getvalues();
   });
 
   function getvalues(){
-    $('[class*=productprice]').each(function (key, value) {
-       var price = $(this).val();
-       var unit = $('.productunit'+key).val();
-       var total = price*unit;
        var fee = $('.treat-fee').val();
-       $('.producttotal'+key).val(total);
-
        var productsum = parseFloat(fee);
-
-       $('[class*=producttotal]').each(function () {
-          productsum += parseFloat($(this).val());
-       });
-
        $('.productsum').val(productsum);
-
-    });
-
   };
 
   $('.btn-before').click(function(){

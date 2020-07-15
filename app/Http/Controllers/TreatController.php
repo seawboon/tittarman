@@ -17,6 +17,7 @@ use App\Product;
 use App\TreatProduct;
 use App\Images;
 use App\Checkin;
+use App\Payment;
 use Image;
 use File;
 
@@ -51,7 +52,6 @@ class TreatController extends Controller
     public function create(Patient $patient, Matter $matter)
     {
         $age = Carbon::parse($patient->dob)->age;
-        $products = Product::where('status', 'yes')->get();
         $role = Role::where('name', 'master')->first();
         $users = $role->users()->pluck('name','id')->all();
         $branches = Branches::pluck('name','id')->all();
@@ -59,7 +59,7 @@ class TreatController extends Controller
 
         $ii = MatterInjury::with('injury')->where('matter_id', $matter->id)->get();
 
-        return view('treat.create', compact('patient', 'matter', 'age', 'users', 'ii', 'branches', 'products', 'days'));
+        return view('treat.create', compact('patient', 'matter', 'age', 'users', 'ii', 'branches', 'days'));
     }
 
     public function store(Patient $patient, Matter $matter)
@@ -75,7 +75,7 @@ class TreatController extends Controller
           'treat.fee' => 'required',
           'treat.total' => 'required',
           'treat.days' => '',
-          'product.*' => '',
+          //'product.*' => '',
           'filenamebefore' => '',
           'filenamebefore.*' => 'image',
           'filenamebefore.*.state' => '',
@@ -84,16 +84,25 @@ class TreatController extends Controller
           'filenameafter.*.state' => '',
         ]);
 
-        $data['treat']['product_amount'] = $data['treat']['total'] - $data['treat']['fee'];
+        //$data['treat']['product_amount'] = $data['treat']['total'] - $data['treat']['fee'];
         //dd($data['treat']);
 
         $data['treat']['patient_id'] = $patient->id;
+        $data['treat']['product_amount'] = 0;
 
         //dd($data['treat']['treat_date']);
 
         $treat = $matter->treats()->firstOrCreate($data['treat']);
 
-        $treat->products()->createMany($data['product']);
+        $payment = [
+          'patient_id' => $patient->id,
+          'matter_id' => $matter->id,
+          'treatment_fee' =>   $data['treat']['fee'],
+          'total' =>   $data['treat']['fee']
+        ];
+
+        $treat->payment()->firstOrCreate($payment);
+        //$treat->products()->createMany($data['product']);
         //$matter->injuries()->createMany($data['injuries']); ≈
 
         if(isset($data['filenamebefore']))
@@ -189,13 +198,12 @@ class TreatController extends Controller
         $role = Role::where('name', 'master')->first();
         $users = $role->users()->pluck('name','id')->all();
         $branches = Branches::pluck('name','id')->all();
-        $products = Product::where('status', 'yes')->get();
         $ii = MatterInjury::with('injury')->where('matter_id', $matter->id)->get();
         $days = $this->days;
 
-        $treat->load('products');
+        //$treat->load('products');
 
-        return view('treat.edit', compact('patient', 'matter', 'treat', 'age', 'users', 'ii', 'branches', 'products', 'days'));
+        return view('treat.edit', compact('patient', 'matter', 'treat', 'age', 'users', 'ii', 'branches', 'days'));
     }
 
     public function update(Patient $patient, Matter $matter, Treat $treat)
@@ -208,7 +216,7 @@ class TreatController extends Controller
           'treat.fee' => 'required',
           'treat.total' => 'required',
           'treat.days' => '',
-          'product.*' => '',
+          //'product.*' => '',
           'filenamebefore' => '',
           'filenamebefore.*' => 'image',
           'filenamebefore.*.state' => '',
@@ -217,40 +225,14 @@ class TreatController extends Controller
           'filenameafter.*.state' => '',
         ]);
 
-        TreatProduct::where('treat_id', $treat->id)->delete();
+        //TreatProduct::where('treat_id', $treat->id)->delete();
 
         $treat->update($data['treat']);
-        $treat->products()->createMany($data['product']);
 
-        if(isset($data['filenamebefore']))
-        {
-          foreach ($data['filenamebefore'] as $key => $image) {
-
-            $name = $image->getClientOriginalName();
-            $extensss = $image->getClientOriginalExtension();
-            $newName = $matter->id.'_'.$key.'_'.Carbon::now()->timestamp.'.'.$extensss;
-            //$image->move(public_path().'/image/', $newName);
-            $image = Image::make($image)->resize(1280, null, function ($constraint) {
-                $constraint->aspectRatio();
-            });
-            $local = public_path().'/image/';
-            $savefile = $local.$newName;
-
-            if (!file_exists($local)) {
-                mkdir($local, 666, true);
-            }
-
-            $image->save($savefile,80);
-
-            Storage::put('public/'.$newName, $image);
-
-            File::delete($savefile);
-            //$newName = Storage::disk('public')->put('/', $image);
-            $mfile[] = ['filename' => $newName, 'state'=>'before'];
-          }
-
-          $treat->images()->createMany($mfile);
-        }
+        $payment = Payment::where('treat_id', $treat->id)->first();
+        $payment->treatment_fee = $data['treat']['fee'];
+        $payment->save();
+        //$treat->products()->createMany($data['product']);
 
         if(isset($data['filenamebefore']))
         {

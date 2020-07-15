@@ -52,6 +52,7 @@ class ProductController extends Controller
         'name' => 'required',
         'price' => 'required|regex:/^\d+(\.\d{1,2})?$/',
         'status' => 'required',
+        'type' => 'required',
         'description' => '',
       ]);
 

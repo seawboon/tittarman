@@ -10,6 +10,7 @@ use App\Treat;
 use App\CheckIn;
 use App\Branches;
 use App\Appointment;
+use App\Payment;
 use Calendar;
 
 use Session;
@@ -99,12 +100,14 @@ class HomeController extends Controller
         $checkins = Checkin::where('branch_id', $myBranch->id)->whereDate('created_at', Carbon::today())->get();
         $checkins->load('patient', 'branch', 'matter');
 
+        $payments = Payment::whereDate('created_at', Carbon::today())->get();
+
 
         /*$patient->load(['matters' => function ($query) {
             $query->orderBy('created_at', 'desc');
         }, 'treats']);*/
 
-        return view('checkin.index', compact('checkins'));
+        return view('checkin.index', compact('checkins','payments'));
       } else {
         return redirect()->route('checkin.mybranch');
       }

@@ -43,4 +43,9 @@ class Matter extends Model
       return $this->hasMany(CheckIn::class);
     }
 
+    public function payments()
+    {
+      return $this->hasMany(Payment::class, 'matter_id');
+    }
+
 }
