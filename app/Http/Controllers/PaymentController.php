@@ -74,7 +74,7 @@ class PaymentController extends Controller
         break;
 
         case 'new-appointment':
-          return redirect()->route('appointments.create', ['patient' => $patient, 'matter' => $matter]);
+          return redirect()->route('appointments.create', ['patient' => $payment->patient->id, 'matter' => $payment->matter->id]);
         break;
       }
 
