@@ -3,7 +3,35 @@
 @section('content')
     <div class="header bg-gradient-Secondary py-7 py-lg-8 vh-100">
         <div class="container">
-          <a class="btn btn-sm btn-info mb-3" href="{{ route('appointments.create') }}">New Appointment</a>
+          <div>
+            <a class="btn btn-sm btn-info mb-3" href="{{ route('appointments.create') }}">New Appointment</a>
+            <div class="row pb-3">
+              <div class="col-6">
+                <div class="btn-group btn-group-sm ml-auto" role="group" aria-label="Basic example">
+                  <a href="{{ route('appointments.index', ['show' => 'all']) }}" type="button" class="btn btn-secondary">All</a>
+                  <a href="{{ route('appointments.index', ['show' => 'today']) }}" type="button" class="btn btn-secondary">Today</a>
+                </div>
+              </div>
+
+              <div class="col-6 text-align-right">
+                <form class="navbar-search navbar-search-dark form-inline d-none d-md-flex ml-auto" action="{{ route('appointments.range') }}" method="POST" autocomplete="off">
+                  @csrf
+                    <div class="form-group mb-0 ml-auto">
+                        <div class="input-group input-group-alternative bg-primary">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text-sm"><i class="fas fa-search" style="font-size: 0.875rem; margin-top: 0.5rem; margin-left: 0.5rem;"></i></span>
+                            </div>
+                            <input class="form-control-sm flatpickr datetimepicker pl-2" name="dateRange" id="dateRange" placeholder="Date Range" type="text" value="{{ $searchTerm ?? '' }}">
+                        </div>
+
+                    </div>
+                    <button type="submit" class="btn-sm btn-primary">Search</button>
+                </form>
+              </div>
+
+            </div>
+
+          </div>
 
           <div class="table-responsive">
 
@@ -80,8 +108,12 @@
                     </tbody>
                 </table>
 
-                  {{ $appos->links() }}
 
+                  @if(empty(request('show')))
+                    {{ $appos->links() }}
+                  @else
+                    {{ $appos->appends(['show' => request('show')])->links() }}
+                  @endif
             </div>
 
 </div>
@@ -94,3 +126,48 @@
 
 
 @endsection
+
+@push('css')
+<style>
+.form-control-sm{
+  background-color: transparent;
+  outline:0;
+  border: 0;
+  color: rgba(255, 255, 255, .9);
+}
+
+.form-control-sm::placeholder, .input-group-text-sm
+{
+  color: rgba(255, 255, 255, .75);
+}
+
+</style>
+@endpush
+
+@push('js')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+<script>
+$(document).ready(function() {
+  //$("input").attr("autocomplete", "off");
+    flatpickr('.datetimepicker', {
+    mode: "range",
+    enableTime: false,
+    altInput: true,
+    altFormat: "F j, Y",
+    dateFormat: "Y-m-d",
+    //defaultDate: ['2020-07-09 00:00:00', '2020-07-19 00:00:00'],
+    /*disable: [
+        function(date) {
+            // disable every multiple of 8
+            return !(date.getDate() % 8);
+        }
+    ]*/
+  });
+
+
+});
+</script>
+
+@endpush

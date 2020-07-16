@@ -16,18 +16,59 @@ use App\Rules;
 use Calendar;
 use Session;
 use Auth;
+use App\Macros\whereLike;
 
 class AppointmentController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $appos = Appointment::whereDate('created_at', Carbon::today())->paginate(10);
+        /*if(request()->show == 'today') {
+          $appos = Appointment::whereDate('appointment_date', Carbon::today());
+        }*/
 
+
+        switch(request('show')) {
+          case 'range':
+            dd($request);
+            //$appos = Appointment::whereDate('appointment_date', Carbon::today());
+          break;
+
+          case 'all':
+            $appos = Appointment::whereLike(['appointment_date'], '');
+          break;
+
+
+
+          default:
+            $appos = Appointment::whereDate('appointment_date', Carbon::today());
+        }
+
+
+        $appos = $appos->orderBy('appointment_date')->paginate(10);
 
         return view('appointment.index', compact('appos'));
     }
 
-    public function calendar()
+    public function range(Request $request)
+    {
+      //dd($request->dateRange);
+
+      //if($request->dateRange) {
+        $date = explode(' to ',$request->dateRange);
+        $start = new Carbon($date[0]);
+        $end = new Carbon($date[1]);
+        //dd($date);
+        $appos = Appointment::whereBetween('appointment_date', [$start, $end]);
+        $appos = $appos->orderBy('appointment_date')->paginate(10);
+        return view('appointment.index', compact('appos', 'start', 'end'));
+      //} else {
+        //return redirect()->route('appointments.index');
+      //}
+
+
+    }
+
+    public function calendar(Request $request)
     {
         $appos = Appointment::paginate(10);
 

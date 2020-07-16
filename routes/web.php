@@ -46,6 +46,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::resource('products', 'ProductController', ['except' => ['show']]);
 	Route::resource('injuryparts', 'InjuryPartController', ['except' => ['show']]);
 	Route::resource('appointments', 'AppointmentController', ['except' => ['show']]);
+	Route::post('/appointments', 'AppointmentController@range')->name('appointments.range');
 
 	Route::get('profile', ['as' => 'profile.edit', 'uses' => 'ProfileController@edit']);
 	Route::put('profile', ['as' => 'profile.update', 'uses' => 'ProfileController@update']);

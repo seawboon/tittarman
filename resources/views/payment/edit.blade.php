@@ -80,6 +80,27 @@
                               @endforeach
 
                               <tr>
+                                <td>
+                                  Treatment Fee (RM)
+                                </td>
+                                <td class="w-25">
+                                  <div class="form-group">
+                                    <input type="text" class="form-control treat-fee" name="treat[fee]" value="{{ old('treat.fee', $payment->treat->fee) }}" {{$permit['text']}} readonly />
+                                  </div>
+                                </td>
+                                <td class="w-15">
+                                  <div class="form-group">
+                                    <input type="text" class="form-control productdiscount" name="treat[discount]" value="{{ old('treat.discount', $payment->discount) }}" />
+                                  </div>
+                                </td>
+                                <td class="w-25">
+                                  <div class="form-group">
+                                    <input type="text" class="form-control productdiscountcode" name="treat[discount_code]" placeholder="voucher code" value="{{ old('treat.discount_code', $payment->discount_code) }}" />
+                                  </div>
+                                </td>
+                              </tr>
+
+                              {{--<tr>
                                 <td colspan="3" class="text-right">
                                   Treatment Fee (RM)
                                 </td>
@@ -103,7 +124,7 @@
                                   </div>
                                 </td>
                               </tr>
-
+                              --}}
                               <tr>
                                 <td colspan="3" class="text-right">
                                   Total Fees (RM)
@@ -135,8 +156,8 @@
                 </div>
               </div>
 
-              <button type="submit" name="submit" value="save" class="btn btn-primary">Edit Payment</button>
-              <button type="submit" name="submit" value="new-appointment" class="btn btn-primary">Edit Payment & Make Appointment</button>
+              <button type="submit" name="submit" value="save" class="btn btn-primary">Submit</button>
+              <button type="submit" name="submit" value="new-appointment" class="btn btn-primary">Submit & Make Appointment</button>
 
             </form>
          </div>

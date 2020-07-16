@@ -43,7 +43,7 @@
                 </div>
 
                 <div class="col-12">
-                  <label for="gemder" class="d-block">Treatment Date & Time</label>
+                  <label for="gemder" class="d-block">Treatment Date & Time <small class="text-danger">required</small></label>
                   <div class="form-group">
                     <div class="input-group">
                       <div class="input-group-prepend">
@@ -91,9 +91,9 @@
                   @enderror
                 </div>
 
-                <div class="col-12">
+                <div class="col-12 pt-3">
                   <div class="form-group">
-                    <label for="address">Treatment</label>
+                    <label for="address">Treatment <small class="text-danger">required</small></label>
                     <textarea class="form-control" id="treatment" name="treat[treatment]" rows="3" placeholder="Enter Treatment">{{ old('treat.treatment') }}</textarea>
                     @error('treat.treatment')
                     <small class="text-danger">{{ $message}}</small>
