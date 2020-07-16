@@ -73,7 +73,7 @@
                                 </td>
                                 <td class="w-25">
                                   <div class="form-group">
-                                    <input type="text" class="form-control producttotal{{ $key }}" name="product[{{ $key }}][total]" value="0" />
+                                    <input type="text" class="form-control producttotal{{ $key }}" name="product[{{ $key }}][total]" value="0" readonly />
                                   </div>
                                 </td>
                               </tr>
@@ -84,19 +84,36 @@
                                   Treatment Fee (RM)
                                 </td>
                                 <td class="w-25">
-                                  <div class="form-group">
+                                  <div class="form-group mb-0">
+                                    <small>&nbsp;</small>
                                     <input type="text" class="form-control treat-fee" name="treat[fee]" value="{{ old('treat.fee', $payment->treat->fee) }}" {{$permit['text']}} readonly />
                                   </div>
                                 </td>
                                 <td class="w-15">
-                                  <div class="form-group">
+                                  <div class="form-group mb-0">
+                                    <small>Discount (RM)</small>
                                     <input type="text" class="form-control productdiscount" name="treat[discount]" value="{{ old('treat.discount', $payment->discount) }}" />
                                   </div>
                                 </td>
                                 <td class="w-25">
-                                  <div class="form-group">
+                                  <div class="form-group mb-0">
+                                    <small>&nbsp;</small>
+                                    <input type="text" class="form-control treatmentfinal" name="treat[treat_final]" value="0" readonly />
+                                  </div>
+                                </td>
+                              </tr>
+
+                              <tr>
+                                <td colspan="2">
+
+                                </td>
+                                <td class="w-15">
+                                  <div class="form-group mb-0">
                                     <input type="text" class="form-control productdiscountcode" name="treat[discount_code]" placeholder="voucher code" value="{{ old('treat.discount_code', $payment->discount_code) }}" />
                                   </div>
+                                </td>
+                                <td class="w-25">
+
                                 </td>
                               </tr>
 
@@ -260,6 +277,8 @@ $(document).ready(function() {
        $('.producttotal'+key).val(total);
 
        var productsum = parseFloat(fee - discount);
+
+       $('.treatmentfinal').val(productsum);
 
        $('[class*=producttotal]').each(function () {
           productsum += parseFloat($(this).val());
