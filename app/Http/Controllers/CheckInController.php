@@ -73,6 +73,28 @@ class CheckInController extends Controller
         return redirect()->route('checkin.index');
     }
 
+    public function edit(CheckIn $checkin, Request $request)
+    {
+        $branches = Branches::pluck('name','id')->all();
+        $role = Role::where('name', 'master')->first();
+        $users = $role->users()->pluck('name','id')->all();
+        return view('checkin.edit', compact('checkin', 'branches', 'users'));
+    }
+
+    public function update(CheckIn $checkin, Request $request)
+    {
+        $data = request()->validate([
+          'branch_id' => 'required',
+          'user_id' => '',
+          'matter_id' => '',
+          'patient_id' => 'required',
+        ]);
+
+        $checkin->update($data);
+
+        return redirect()->route('checkin.index');
+    }
+
     public function actionCheckIn($action, CheckIn $checkin, Request $request )
     {
       $checkin->state = $action;

@@ -39,7 +39,10 @@ Route::group(['middleware' => 'auth'], function () {
   Route::get('/checkin', 'CheckInController@CheckIns')->name('checkin.index');
 	Route::get('/checkin/create/{patient}', 'CheckInController@create')->name('checkin.create');
 	Route::post('/checkin/create/{patient}', 'CheckInController@storeCreate')->name('checkin.storeCreate');
+	Route::get('/checkin/edit/{checkin}', 'CheckInController@edit')->name('checkin.edit');
+	Route::post('/checkin/edit/{checkin}/update', 'CheckInController@update')->name('checkin.update');
 	Route::get('/checkin/{action}/{checkin}', 'CheckInController@actionCheckIn')->name('checkin.action');
+
 
 
 	Route::get('/checkin/{patient}', 'CheckInController@storeCheckIn')->name('checkin.store');
