@@ -28,11 +28,6 @@ class AppointmentController extends Controller
 
 
         switch(request('show')) {
-          case 'range':
-            dd($request);
-            //$appos = Appointment::whereDate('appointment_date', Carbon::today());
-          break;
-
           case 'all':
             $appos = Appointment::whereLike(['appointment_date'], '');
           break;
@@ -51,7 +46,7 @@ class AppointmentController extends Controller
 
     public function range(Request $request)
     {
-      //dd($request->dateRange);
+      //dd($request->all());
 
       //if($request->dateRange) {
         $date = explode(' to ',$request->dateRange);

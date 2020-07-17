@@ -14,7 +14,7 @@
               </div>
 
               <div class="col-6 text-align-right">
-                <form class="navbar-search navbar-search-dark form-inline d-none d-md-flex ml-auto" action="{{ route('appointments.range') }}" method="POST" autocomplete="off">
+                <form class="navbar-search navbar-search-dark form-inline d-none d-md-flex ml-auto" action="{{ route('appointments.range') }}" method="GET" autocomplete="off">
                   @csrf
                     <div class="form-group mb-0 ml-auto">
                         <div class="input-group input-group-alternative bg-primary">

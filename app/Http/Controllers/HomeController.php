@@ -100,7 +100,7 @@ class HomeController extends Controller
         $checkins = Checkin::where('branch_id', $myBranch->id)->whereDate('created_at', Carbon::today())->get();
         $checkins->load('patient', 'branch', 'matter');
 
-        $payments = Payment::whereDate('created_at', Carbon::today())->get();
+        $payments = Payment::where('branch_id', $myBranch->id)->whereDate('created_at', Carbon::today())->get();
 
 
         /*$patient->load(['matters' => function ($query) {
