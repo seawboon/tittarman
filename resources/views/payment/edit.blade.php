@@ -63,10 +63,20 @@
                                 </td>
                                 <td class="w-15">
                                   <div class="form-group">
+                                    @php $pType = 'item';
+                                      if($product->type == 'voucher') {
+                                          $pType = 'voucher';
+                                      }
+
+                                    @endphp
                                   @if($payment->products->isNotEmpty())
-                                  {!! Form::select('product['.$key.'][unit]', range(0, 10) , $payment->products[$key]->unit, array('class' => 'form-control productunit'.$key.'')) !!}
+                                    @if($product->type == 'voucher')
+                                      {!! Form::select('product['.$key.'][unit]', array_combine(range($payment->products[$key]->unit,10),range($payment->products[$key]->unit,10)) , $payment->products[$key]->unit, array('class' => 'form-control productunit'.$key.' '.$pType.'')) !!}
+                                    @else
+                                      {!! Form::select('product['.$key.'][unit]', range(0, 10) , $payment->products[$key]->unit, array('class' => 'form-control productunit'.$key.' '.$pType.'')) !!}
+                                    @endif
                                   @else
-                                  {!! Form::select('product['.$key.'][unit]', range(0, 10) , null, array('class' => 'form-control productunit'.$key.'')) !!}
+                                    {!! Form::select('product['.$key.'][unit]', range(0, 10) , null, array('class' => 'form-control productunit'.$key.' '.$pType.'')) !!}
                                   @endif
                                   </div>
 
@@ -77,6 +87,35 @@
                                   </div>
                                 </td>
                               </tr>
+
+                              @if($product->type == 'voucher')
+                                @if($payment->products[$key]->unit > 0)
+                                  <tr>
+                                    <td colspan="4">
+                                      <div class="row">
+                                        @foreach($payment->vouchers as $key => $voucher)
+                                        <div class="col-3">
+                                          {{$loop->iteration}}. {{ $voucher->code}}
+                                        </div>
+                                        @endforeach
+                                      </div>
+                                    </td>
+                                  </tr>
+                                @else
+                                  <tr class="typeVoucher d-none">
+                                    <td colspan="4">
+                                      <div class="row typeVoucherRow">
+                                      </div>
+                                    </td>
+                                  </tr>
+                                @endif
+
+
+                                <script>
+                                var VproductID = {{$product->id}};
+                                </script>
+                              @endif
+
                               @endforeach
 
                               <tr>
@@ -292,6 +331,30 @@ $(document).ready(function() {
     });
 
   };
+
+  $('.voucher').change(function(){
+    var vQuantity = $(this).val()*2;
+    if(vQuantity > 0) {
+      $('.typeVoucher').addClass('d-table-row')
+      vFields(vQuantity);
+    } else {
+      vFields(0);
+      $('.typeVoucher').addClass('d-none').removeClass('d-table-row');
+    }
+
+  });
+
+  function vFields(vQuantity){
+    var vField ='';
+    for (var i = 0; i < vQuantity; i++) {
+      vField += '<div class="col-4 mb-2">';
+      vField += '<input type="hidden" class="form-control" name="voucher['+i+'][product_id]" placeholder="voucher code" value="'+VproductID+'">';
+      vField += '<input type="text" class="form-control voucherCode" name="voucher['+i+'][code]" placeholder="voucher code" required>';
+      vField += '</div>';
+    }
+
+    $('.typeVoucherRow').html(vField);
+  }
 
   $('.btn-before').click(function(){
     var html = $('.clone.before').html();

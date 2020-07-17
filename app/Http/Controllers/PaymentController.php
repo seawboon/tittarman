@@ -18,6 +18,7 @@ use App\PaymentProduct;
 use App\Images;
 use App\Checkin;
 use App\Payment;
+use App\Voucher;
 use Image;
 use File;
 
@@ -48,6 +49,7 @@ class PaymentController extends Controller
       //dd($request->all());
       $data = request()->validate([
         'product.*' => 'required',
+        'voucher.*' => '',
         'treat.discount' => 'required',
         'treat.discount_code' => '',
         'treat.total' => 'required',
@@ -68,9 +70,19 @@ class PaymentController extends Controller
       $payment->state = 'paid';
       $payment->save();
 
+      if($data['voucher']) {
+        foreach ($data['voucher'] as $key => $voucher) {
+          $uptV = Voucher::where('code', $voucher['code'])->where('patient_id', null)->first();
+          $uptV->patient_id = $patient->id;
+          $uptV->payment_id = $payment->id;
+          $uptV->product_id = $voucher['product_id'];
+          $uptV->save();
+        }
+      }
+
       PaymentProduct::where('payment_id', $payment->id)->delete();
       $payment->products()->createMany($data['product']);
-      
+
       return redirect()->route('checkin.index');
 
   }
@@ -95,6 +107,7 @@ class PaymentController extends Controller
   {
       $data = request()->validate([
         'product.*' => '',
+        'voucher.*' => '',
         'treat.discount' => 'required',
         'treat.discount_code' => '',
         'treat.total' => 'required',
@@ -108,6 +121,16 @@ class PaymentController extends Controller
       PaymentProduct::where('payment_id', $payment->id)->delete();
 
       $payment->products()->createMany($data['product']);
+
+      if($data['voucher']) {
+        foreach ($data['voucher'] as $key => $voucher) {
+          $uptV = Voucher::where('code', $voucher['code'])->where('patient_id', null)->first();
+          $uptV->patient_id = $payment->patient->id;
+          $uptV->payment_id = $payment->id;
+          $uptV->product_id = $voucher['product_id'];
+          $uptV->save();
+        }
+      }
 
       switch(request('submit')) {
         case 'save':

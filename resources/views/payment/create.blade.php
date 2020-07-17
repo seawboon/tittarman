@@ -59,7 +59,14 @@
                                 </td>
                                 <td class="w-15">
                                   <div class="form-group">
-                                  {!! Form::select('product['.$key.'][unit]', range(0, 10) , null, array('class' => 'form-control productunit'.$key.'')) !!}
+                                  @php $pType = 'item';
+                                    if($product->type == 'voucher') {
+                                        $pType = 'voucher';
+                                    }
+
+                                  @endphp
+
+                                  {!! Form::select('product['.$key.'][unit]', range(0, 10) , null, array('class' => 'form-control productunit'.$key.' '.$pType.'')) !!}
                                   </div>
 
                                 </td>
@@ -69,6 +76,19 @@
                                   </div>
                                 </td>
                               </tr>
+
+                              @if($product->type == 'voucher')
+                                <tr class="typeVoucher d-none">
+                                  <td colspan="4">
+                                    <div class="row typeVoucherRow">
+                                    </div>
+                                  </td>
+                                </tr>
+
+                                <script>
+                                var VproductID = {{$product->id}};
+                                </script>
+                              @endif
                               @endforeach
 
                               <tr>
@@ -215,9 +235,37 @@ $(document).ready(function() {
 
   getvalues();
 
+
   $('[class*=product], .treat-fee, .productdiscount').change(function(){
     getvalues();
   });
+
+  $('.voucher').change(function(){
+    var vQuantity = $(this).val()*2;
+    if(vQuantity > 0) {
+      $('.typeVoucher').addClass('d-table-row')
+      vFields(vQuantity);
+    } else {
+      vFields(0);
+      $('.typeVoucher').addClass('d-none').removeClass('d-table-row');
+    }
+
+  });
+
+  function vFields(vQuantity){
+    var vField ='';
+    for (var i = 0; i < vQuantity; i++) {
+      vField += '<div class="col-4 mb-2">';
+      vField += '<input type="hidden" class="form-control" name="voucher['+i+'][product_id]" placeholder="voucher code" value="'+VproductID+'">';
+      vField += '<input type="text" class="form-control voucherCode" name="voucher['+i+'][code]" placeholder="voucher code" required>';
+      vField += '</div>';
+    }
+
+    $('.typeVoucherRow').html(vField);
+  }
+
+  /*<input type="hidden" class="form-control" name="voucher[1][product_id]" placeholder="voucher code" value="{{$product->id}}" >
+  <input type="text" class="form-control voucherCode" name="voucher[1][code]" placeholder="voucher code" required>*/
 
   function getvalues(){
     $('[class*=productprice]').each(function (key, value) {

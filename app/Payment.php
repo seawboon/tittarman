@@ -32,4 +32,9 @@ class Payment extends Model
       return $this->hasMany(PaymentProduct::class);
     }
 
+    public function vouchers()
+    {
+      return $this->hasMany(Voucher::class, 'payment_id');
+    }
+
 }

@@ -39,4 +39,9 @@ class Patient extends Model
       return $this->hasMany(Payment::class, 'patient_id');
     }
 
+    public function vouchers()
+    {
+      return $this->hasMany(Voucher::class, 'patient_id');
+    }
+
 }
