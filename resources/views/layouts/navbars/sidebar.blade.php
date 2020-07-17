@@ -135,13 +135,13 @@
                         <i class="ni ni-bullet-list-67 text-pink"></i> {{ __('ttm.patientL') }}
                     </a>
                 </li>
-
+                @if(Session::get('myBranch'))
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('appointments.index', ['show'=>'today']) }}">
                         <i class="ni ni-calendar-grid-58 text-pink"></i> {{ __('ttm.appo.title') }}
                     </a>
                 </li>
-
+                @endif
                 <!--<li class="nav-item">
                     <a class="nav-link" href="{{ route('appointments.index') }}">
                         <i class="ni ni-money-coins text-pink"></i> {{ __('ttm.sales') }}

@@ -29,17 +29,18 @@ class AppointmentController extends Controller
 
         switch(request('show')) {
           case 'all':
-            $appos = Appointment::whereLike(['appointment_date'], '');
+            //$appos = Appointment::whereLike(['appointment_date'], '');
+            $appos = Appointment::where('appointment_date', '>',Carbon::today());
           break;
-
-
 
           default:
             $appos = Appointment::whereDate('appointment_date', Carbon::today());
         }
 
+        $myBranch = Session::get('myBranch');
+        $myBranch = session('myBranch');
 
-        $appos = $appos->orderBy('appointment_date')->paginate(10);
+        $appos = $appos->where('branch_id', $myBranch->id)->orderBy('appointment_date')->paginate(10);
 
         return view('appointment.index', compact('appos'));
     }
@@ -49,13 +50,21 @@ class AppointmentController extends Controller
       //dd($request->all());
 
       //if($request->dateRange) {
+      if($request->dateRange) {
         $date = explode(' to ',$request->dateRange);
         $start = new Carbon($date[0]);
         $end = new Carbon($date[1]);
         //dd($date);
         $appos = Appointment::whereBetween('appointment_date', [$start, $end]);
-        $appos = $appos->orderBy('appointment_date')->paginate(10);
+
+        $myBranch = Session::get('myBranch');
+        $myBranch = session('myBranch');
+
+        $appos = $appos->where('branch_id', $myBranch->id)->orderBy('appointment_date')->paginate(10);
         return view('appointment.index', compact('appos', 'start', 'end'));
+      } else {
+        return redirect()->route('appointments.index',['show'=>'all']);
+      }
       //} else {
         //return redirect()->route('appointments.index');
       //}
