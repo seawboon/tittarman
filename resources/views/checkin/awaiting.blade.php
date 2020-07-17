@@ -7,7 +7,8 @@
                   <th scope="col" class="sort" data-sort="name">No.</th>
                   <th scope="col" class="sort" data-sort="budget">Name</th>
                   <th scope="col" class="sort" data-sort="budget">{{ __('ttm.case.title')}}</th>
-                  <th scope="col">{{ __('ttm.treat.title')}}</th>
+                  {{--<th scope="col">{{ __('ttm.treat.title')}}</th>--}}
+                  <th scope="col">Master</th>
                   <th scope="col">Status</th>
                   <th scope="col"></th>
               </tr>
@@ -38,7 +39,7 @@
                       </div>
                     @endif
                   </td>
-                  <td>
+                  {{--<td>
                     @if($checkin->matter)
                     @foreach($checkin->matter->treats as $treat)
                     <a class="d-block" href="{{ route('treat.edit', ['patient' => $checkin->patient, 'matter' => $checkin->matter, 'treat' => $treat]) }}">
@@ -47,13 +48,19 @@
                     @endforeach
                     @endif
                   </td>
+                  --}}
+                  <td class="text-capitalize align-top font-weight-bold">
+                    {{ $checkin->user->name ?? ''}}
+                  </td>
                   <td class="text-capitalize align-top font-weight-bold">
                     {{ $checkin->state }}
                   </td>
                   <td class="align-top">
                     @if($checkin->state=='awaiting')
                     <a class="btn btn-sm btn-danger ml-2" href="{{ route('checkin.action', ['action'=>'cancelled', 'checkin' => $checkin]) }}">Cancel</a>
-                    <a class="btn btn-sm btn-success ml-2" href="{{ route('checkin.action', ['action'=>'treating', 'checkin' => $checkin, 'patient' => $checkin->patient, 'matter' => $checkin->matter]) }}">Treat Now</a>
+                    @role('Master')
+                    <a class="btn btn-sm btn-success ml-2" href="{{ route('checkin.action', ['action'=>'treating', 'checkin' => $checkin, 'patient' => $checkin->patient, 'matter' => $checkin->matter, 'user' => auth()->user()]) }}">Treat Now</a>
+                    @endrole
                     @endif
                   </td>
               </tr>

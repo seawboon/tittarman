@@ -62,13 +62,13 @@
                                         @endforeach
                                         </a>
                                         <a class="btn btn-sm btn-info float-right" href="{{ route('appointments.create', ['patient' => $patient, 'matter' => $matter]) }}">Make Appointment</a>
-                                        <a class="btn btn-sm btn-info float-right" href="{{ route('checkin.store', ['patient' => $patient, 'matter' => $matter]) }}">{{ __('ttm.checkin')}}</a>
+                                        <a class="btn btn-sm btn-info float-right" href="{{ route('checkin.create', ['patient' => $patient, 'matter' => $matter]) }}">{{ __('ttm.checkin')}}</a>
                                         <div class="py-1" style="clear:both"></div>
                                       </li>
                                     @endforeach
                                   @endif
                                   <li class="nav-item">
-                                    <a class="btn btn-sm btn-info float-right" href="{{ route('checkin.store', ['patient' => $patient]) }}">New Case Check-In</a>
+                                    <a class="btn btn-sm btn-info float-right" href="{{ route('checkin.create', ['patient' => $patient]) }}">New Case Check-In</a>
                                     <a class="btn btn-sm btn-info float-right mr-2" href="{{ route('appointments.create', ['patient' => $patient]) }}">New Case Appointment</a>
                                   </li>
                                 </ul>
@@ -93,6 +93,7 @@
                                   </a>
                                   <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
                                       <a class="dropdown-item" href="{{ route('appointments.create', ['patient' => $patient]) }}">{{ __('ttm.appo.add')}}</a>
+                                      <a class="dropdown-item" href="{{ route('payment.create', ['patient' => $patient]) }}">Make Payment</a>
                                       <div class="dropdown-divider"></div>
                                       <div class=" dropdown-header noti-title">
                                           <h4 class="text-overflow m-0">Case</h4>

@@ -1,4 +1,4 @@
-@extends('layouts.app', ['titlePage' => 'Payment DETAIL: '. $payment->patient->fullname])
+@extends('layouts.app', ['titlePage' => 'PAYMENT DETAIL: '. $patient->fullname])
 
 @section('content')
     <div class="header bg-secondary py-7 py-lg-8">
@@ -11,7 +11,7 @@
 
       <div class="col-xl-8 order-xl-1">
         <div class="card-body">
-            <form action="{{ route('payment.update', $payment)}}" method="post">
+            <form action="{{ route('payment.store', $patient)}}" method="post">
               @csrf
               @php
                 $permit['text'] = '';
@@ -42,9 +42,9 @@
                               <tr>
                                 <td>
                                   <input type="hidden" name="product[{{ $key }}][product_id]" value="{{$product->id}}" />
-                                  <input type="hidden" name="product[{{ $key }}][treat_id]" value="{{$payment->treat->id ?? ''}}" />
-                                  <input type="hidden" name="product[{{ $key }}][matter_id]" value="{{$payment->matter->id ?? ''}}" />
-                                  <input type="hidden" name="product[{{ $key }}][patient_id]" value="{{$payment->patient->id ?? ''}}" />
+                                  <input type="hidden" name="product[{{ $key }}][treat_id]" value="" />
+                                  <input type="hidden" name="product[{{ $key }}][matter_id]" value="" />
+                                  <input type="hidden" name="product[{{ $key }}][patient_id]" value="" />
                                   @if($product->id == 4)
                                     <textarea class="form-control" name="product[{{ $key }}][remarks]" rows="1" placeholder="Enter Others">{{ old('product.'.$key.'.remarks') }}</textarea>
                                   @else
@@ -54,20 +54,12 @@
                                 </td>
                                 <td class="w-25">
                                   <div class="form-group">
-                                    @if($payment->products->isNotEmpty())
-                                    <input type="text" class="form-control productprice" name="product[{{ $key }}][price]" value="{{ old('product.'.$key.'.price', $payment->products[$key]->price) }}" />
-                                    @else
                                     <input type="text" class="form-control productprice" name="product[{{ $key }}][price]" value="{{ old('product.'.$key.'.price', $product->price) }}" />
-                                    @endif
                                   </div>
                                 </td>
                                 <td class="w-15">
                                   <div class="form-group">
-                                  @if($payment->products->isNotEmpty())
-                                  {!! Form::select('product['.$key.'][unit]', range(0, 10) , $payment->products[$key]->unit, array('class' => 'form-control productunit'.$key.'')) !!}
-                                  @else
                                   {!! Form::select('product['.$key.'][unit]', range(0, 10) , null, array('class' => 'form-control productunit'.$key.'')) !!}
-                                  @endif
                                   </div>
 
                                 </td>
@@ -86,13 +78,13 @@
                                 <td class="w-25">
                                   <div class="form-group mb-0">
                                     <small>&nbsp;</small>
-                                    <input type="text" class="form-control treat-fee" name="treat[fee]" value="{{ old('treat.fee', $payment->treatment_fee) }}" {{$permit['text']}} readonly />
+                                    <input type="text" class="form-control treat-fee" name="treat[fee]" value="{{ old('treat.fee', 0) }}" {{$permit['text']}} readonly />
                                   </div>
                                 </td>
                                 <td class="w-15">
                                   <div class="form-group mb-0">
                                     <small>Discount (RM)</small>
-                                    <input type="text" class="form-control productdiscount" name="treat[discount]" value="{{ old('treat.discount', $payment->discount) }}" />
+                                    <input type="text" class="form-control productdiscount" name="treat[discount]" value="{{ old('treat.discount', 0) }}" />
                                   </div>
                                 </td>
                                 <td class="w-25">
@@ -109,7 +101,7 @@
                                 </td>
                                 <td class="w-15">
                                   <div class="form-group mb-0">
-                                    <input type="text" class="form-control productdiscountcode" name="treat[discount_code]" placeholder="voucher code" value="{{ old('treat.discount_code', $payment->discount_code) }}" />
+                                    <input type="text" class="form-control productdiscountcode" name="treat[discount_code]" placeholder="voucher code" value="{{ old('treat.discount_code') }}" />
                                   </div>
                                 </td>
                                 <td class="w-25">
@@ -117,38 +109,13 @@
                                 </td>
                               </tr>
 
-                              {{--<tr>
-                                <td colspan="3" class="text-right">
-                                  Treatment Fee (RM)
-                                </td>
-                                <td class="">
-                                  <div class="form-group">
-                                    <input type="text" class="form-control treat-fee" name="treat[fee]" value="{{ old('treat.fee', $payment->treat->fee) }}" {{$permit['text']}} readonly />
-                                  </div>
-                                </td>
-                              </tr>
-
-                              <tr>
-                                <td colspan="3" class="text-right">
-                                  Discount (RM)
-                                  <div class="form-group">
-                                    <input type="text" class="form-control productdiscountcode w-auto ml-auto" name="treat[discount_code]" placeholder="voucher code" value="{{ old('treat.discount_code', $payment->discount_code) }}" />
-                                  </div>
-                                </td>
-                                <td class="">
-                                  <div class="form-group">
-                                    <input type="text" class="form-control productdiscount" name="treat[discount]" value="{{ old('treat.discount', $payment->discount) }}" />
-                                  </div>
-                                </td>
-                              </tr>
-                              --}}
                               <tr>
                                 <td colspan="3" class="text-right">
                                   Total Fees (RM)
                                 </td>
                                 <td class="">
                                   <div class="form-group">
-                                    <input type="text" class="form-control productsum" name="treat[total]" value="{{ old('treat.total', '0') }}" readonly />
+                                    <input type="text" class="form-control productsum" name="treat[total]" value="{{ old('treat.total', 0) }}" readonly />
                                   </div>
                                 </td>
                               </tr>
@@ -159,25 +126,7 @@
                 </div>
               </div>
 
-              @if($payment->treat)
-              <h3>Appointment</h3>
-              <div class="row">
-                <div class="col-6">
-                  <div class="form-group">
-                    <label for="days" class="d-block">Next Treatment</label>
-                    {!! Form::select('treat[days]', [null=>'Please Select'] + $days, $payment->treat->days, array('class' => 'form-control', 'id' => 'days','readonly' => true)) !!}
-                    @error('treat.days')
-                    <small class="text-danger">{{ $message}}</small>
-                    @enderror
-                  </div>
-                </div>
-              </div>
-              @endif
-
               <button type="submit" name="submit" value="save" class="btn btn-primary">Submit</button>
-              @if($payment->treat)
-              <button type="submit" name="submit" value="new-appointment" class="btn btn-primary">Submit & Make Appointment</button>
-              @endif
 
             </form>
          </div>
@@ -260,7 +209,7 @@ $(document).ready(function() {
 
   $('.treat-fee').on('change blur',function(){
       if($(this).val().trim().length === 0){
-        $(this).val({{ old('fee', '0') }});
+        $(this).val({{ old('fee', 0) }});
       }
     });
 

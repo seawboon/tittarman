@@ -34,6 +34,47 @@ class PaymentController extends Controller
     '30' => '1 Month',
   ];
 
+  public function create(Patient $patient)
+  {
+      //dd($payment->treat);
+      //$age = Carbon::parse($payment->patient->dob)->age;
+      $products = Product::where('status', 'yes')->get();
+
+      return view('payment.create', compact('patient','products'));
+  }
+
+  public function store(Patient $patient, Request $request)
+  {
+      //dd($request->all());
+      $data = request()->validate([
+        'product.*' => 'required',
+        'treat.discount' => 'required',
+        'treat.discount_code' => '',
+        'treat.total' => 'required',
+      ]);
+
+      $data['treat']['product_amount'] = $request->treat['total'] + $request->treat['discount'] - $request->treat['fee'];
+      $data['treat']['state'] = 'paid';
+      $data['treat'] = $request->treat['fee'];
+
+      $payment = new Payment;
+      $payment->patient_id = $patient->id;
+      $payment->branch_id = session('myBranch')->id;
+      $payment->treatment_fee = $request->treat['fee'];
+      $payment->product_amount = $request->treat['total'] + $request->treat['discount'] - $request->treat['fee'];
+      $payment->discount = $request->treat['discount'];
+      $payment->discount_code = $request->treat['discount_code'];
+      $payment->total = $request->treat['total'];
+      $payment->state = 'paid';
+      $payment->save();
+
+      PaymentProduct::where('payment_id', $payment->id)->delete();
+      $payment->products()->createMany($data['product']);
+      
+      return redirect()->route('checkin.index');
+
+  }
+
   public function edit(Payment $payment)
   {
       //dd($payment->treat);

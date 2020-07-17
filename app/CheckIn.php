@@ -28,4 +28,9 @@ class CheckIn extends Model
       return $this->belongsTo(Treat::class, 'treat_id');
     }
 
+    public function user()
+    {
+      return $this->belongsTo(User::class, 'user_id');
+    }
+
 }

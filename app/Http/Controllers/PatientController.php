@@ -182,7 +182,7 @@ class PatientController extends Controller
           break;
 
           case 'new-checkin':
-            return redirect()->route('checkin.store', ['patient' => $patient]);
+            return redirect()->route('checkin.create', ['patient' => $patient]);
           break;
         }
 

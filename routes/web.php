@@ -36,12 +36,14 @@ Route::group(['middleware' => 'auth'], function () {
 
 	Route::get('/myappointment', 'AppointmentController@myappointment')->name('user.appointment');
 
-  Route::get('/checkin', 'HomeController@CheckIns')->name('checkin.index');
-	Route::get('/checkin/{action}/{checkin}', 'HomeController@actionCheckIn')->name('checkin.action');
+  Route::get('/checkin', 'CheckInController@CheckIns')->name('checkin.index');
+	Route::get('/checkin/create/{patient}', 'CheckInController@create')->name('checkin.create');
+	Route::post('/checkin/create/{patient}', 'CheckInController@storeCreate')->name('checkin.storeCreate');
+	Route::get('/checkin/{action}/{checkin}', 'CheckInController@actionCheckIn')->name('checkin.action');
 
 
-	Route::get('/checkin/{patient}', 'HomeController@storeCheckIn')->name('checkin.store');
-	Route::get('/checkin/{patient}/appointment/{appo}', 'HomeController@storeCheckInFromAppointment')->name('checkin.appointment');
+	Route::get('/checkin/{patient}', 'CheckInController@storeCheckIn')->name('checkin.store');
+	Route::get('/checkin/{patient}/appointment/{appo}', 'CheckInController@storeCheckInFromAppointment')->name('checkin.appointment');
 
 	Route::resource('products', 'ProductController', ['except' => ['show']]);
 	Route::resource('injuryparts', 'InjuryPartController', ['except' => ['show']]);
@@ -72,6 +74,8 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('/patient/{patient}/matter/{matter}/treat/{treat}', 'TreatController@edit')->name('treat.edit');
 	Route::post('/patient/{patient}/matter/{matter}/treat/{treat}/update', 'TreatController@update')->name('treat.update');
 
+	Route::get('/payment/create/{patient}', 'PaymentController@create')->name('payment.create');
+	Route::post('/payment/create/{patient}', 'PaymentController@store')->name('payment.store');
 	Route::get('/payment/{payment}', 'PaymentController@edit')->name('payment.edit');
 	Route::post('/payment/{payment}/update', 'PaymentController@update')->name('payment.update');
 
