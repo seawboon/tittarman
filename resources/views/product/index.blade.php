@@ -3,6 +3,10 @@
 @section('content')
     <div class="header bg-gradient-Secondary py-7 py-lg-8 vh-100">
         <div class="container">
+          <div class="mb-2">
+            <a href="{{ route('products.create') }}" class="btn btn-sm btn-primary">Add New Product</a>
+          </div>
+
           <div class="table-responsive">
 
             <div>
@@ -12,6 +16,7 @@
                             <th scope="col" class="sort" data-sort="name">No.</th>
                             <th scope="col" class="sort" data-sort="budget">Name</th>
                             <th scope="col" class="sort" data-sort="price">Price</th>
+                            <th scope="col" class="sort" data-sort="price">Type</th>
                             <th scope="col" class="sort" data-sort="status">Publish</th>
                             <th scope="col"></th>
                         </tr>
@@ -32,6 +37,10 @@
                             </td>
                             <td>
                               {{ $product->price }}
+                            </td>
+
+                            <td class="text-capitalize">
+                              {{ $product->type }}
                             </td>
 
                             <td class="text-capitalize">
@@ -63,9 +72,6 @@
 
 </div>
 
-<div class="text-center">
-  <a href="{{ route('products.create') }}" class="btn btn-sm btn-primary">Add New Product</a>
-</div>
         </div>
 
     </div>

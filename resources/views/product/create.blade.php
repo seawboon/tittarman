@@ -31,7 +31,7 @@
                   </div>
                 </div>
 
-                <div class="col-6">
+                <div class="col-4">
                   <div class="form-group">
                     <label for="address">Product Price</label>
                     <input type="text" class="form-control" id="price" name="price" rows="3" placeholder="Enter Price" value="{{ old('price') }}">
@@ -41,7 +41,17 @@
                   </div>
                 </div>
 
-                <div class="col-6">
+                <div class="col-4">
+                  <div class="form-group">
+                    <label for="type" class="d-block">Type</label>
+                    {!! Form::select('type', ['item' => 'Item', 'voucher' => 'Voucher'], null, array('class' => 'form-control', 'id' => 'type')) !!}
+                    @error('type')
+                    <small class="text-danger">{{ $message}}</small>
+                    @enderror
+                  </div>
+                </div>
+
+                <div class="col-4">
                   <div class="form-group">
                     <label for="gemder" class="d-block">Status</label>
                     <div class="form-check form-check-inline">
