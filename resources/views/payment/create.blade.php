@@ -11,6 +11,10 @@
 
       <div class="col-xl-8 order-xl-1">
         <div class="card-body">
+          @if(Session::has('message'))
+          <p class="alert {{ Session::get('alert-class', 'alert-info') }}">{{ Session::get('message') }}</p>
+          @endif
+
             <form action="{{ route('payment.store', $patient)}}" method="post">
               @csrf
               @php

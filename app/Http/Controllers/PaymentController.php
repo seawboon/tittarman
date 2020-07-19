@@ -22,6 +22,8 @@ use App\Voucher;
 use Image;
 use File;
 
+use Session;
+
 class PaymentController extends Controller
 {
   private $days = [
@@ -59,31 +61,51 @@ class PaymentController extends Controller
       $data['treat']['state'] = 'paid';
       $data['treat'] = $request->treat['fee'];
 
-      $payment = new Payment;
-      $payment->patient_id = $patient->id;
-      $payment->branch_id = session('myBranch')->id;
-      $payment->treatment_fee = $request->treat['fee'];
-      $payment->product_amount = $request->treat['total'] + $request->treat['discount'] - $request->treat['fee'];
-      $payment->discount = $request->treat['discount'];
-      $payment->discount_code = $request->treat['discount_code'];
-      $payment->total = $request->treat['total'];
-      $payment->state = 'paid';
-      $payment->save();
+      $vvE = 'yes';
 
       if($data['voucher']) {
         foreach ($data['voucher'] as $key => $voucher) {
-          $uptV = Voucher::where('code', $voucher['code'])->where('patient_id', null)->first();
-          $uptV->patient_id = $patient->id;
-          $uptV->payment_id = $payment->id;
-          $uptV->product_id = $voucher['product_id'];
-          $uptV->save();
+          $lols = Voucher::where('code', $voucher['code'])->where('patient_id', null)->first();
+          if($lols == null) {
+            $vvE = 'no';
+            Session::flash('message', 'Voucher invalid!');
+            Session::flash('alert-class', 'alert-danger');
+            break;
+          }
         }
       }
 
-      PaymentProduct::where('payment_id', $payment->id)->delete();
-      $payment->products()->createMany($data['product']);
+      if($vvE == 'yes') {
+        $payment = new Payment;
+        $payment->patient_id = $patient->id;
+        $payment->branch_id = session('myBranch')->id;
+        $payment->treatment_fee = $request->treat['fee'];
+        $payment->product_amount = $request->treat['total'] + $request->treat['discount'] - $request->treat['fee'];
+        $payment->discount = $request->treat['discount'];
+        $payment->discount_code = $request->treat['discount_code'];
+        $payment->total = $request->treat['total'];
+        $payment->state = 'paid';
+        $payment->save();
 
-      return redirect()->route('checkin.index');
+        if($data['voucher']) {
+          foreach ($data['voucher'] as $key => $voucher) {
+            $uptV = Voucher::where('code', $voucher['code'])->where('patient_id', null)->first();
+            $uptV->patient_id = $patient->id;
+            $uptV->payment_id = $payment->id;
+            $uptV->product_id = $voucher['product_id'];
+            $uptV->save();
+          }
+        }
+
+        PaymentProduct::where('payment_id', $payment->id)->delete();
+        $payment->products()->createMany($data['product']);
+
+        return redirect()->route('checkin.index');
+
+      } else {
+        return redirect()->route('payment.create', $patient);
+      }
+
 
   }
 
@@ -117,30 +139,50 @@ class PaymentController extends Controller
       $data['treat']['state'] = 'paid';
       //TreatProduct::where('treat_id', $treat->id)->delete();
 
-      $payment->update($data['treat']);
-      PaymentProduct::where('payment_id', $payment->id)->delete();
-
-      $payment->products()->createMany($data['product']);
+      $vvE = 'yes';
 
       if($data['voucher']) {
         foreach ($data['voucher'] as $key => $voucher) {
-          $uptV = Voucher::where('code', $voucher['code'])->where('patient_id', null)->first();
-          $uptV->patient_id = $payment->patient->id;
-          $uptV->payment_id = $payment->id;
-          $uptV->product_id = $voucher['product_id'];
-          $uptV->save();
+          $lols = Voucher::where('code', $voucher['code'])->where('patient_id', null)->first();
+          if($lols == null) {
+            $vvE = 'no';
+            Session::flash('message', 'Voucher invalid!');
+            Session::flash('alert-class', 'alert-danger');
+            break;
+          }
         }
       }
 
-      switch(request('submit')) {
-        case 'save':
-          return redirect()->route('checkin.index');
-        break;
+      if($vvE == 'yes') {
+        $payment->update($data['treat']);
+        PaymentProduct::where('payment_id', $payment->id)->delete();
 
-        case 'new-appointment':
-          return redirect()->route('appointments.create', ['patient' => $payment->patient->id, 'matter' => $payment->matter->id]);
-        break;
+        $payment->products()->createMany($data['product']);
+
+        if($data['voucher']) {
+          foreach ($data['voucher'] as $key => $voucher) {
+            $uptV = Voucher::where('code', $voucher['code'])->where('patient_id', null)->first();
+            $uptV->patient_id = $payment->patient->id;
+            $uptV->payment_id = $payment->id;
+            $uptV->product_id = $voucher['product_id'];
+            $uptV->save();
+          }
+        }
+
+        switch(request('submit')) {
+          case 'save':
+            return redirect()->route('checkin.index');
+          break;
+
+          case 'new-appointment':
+            return redirect()->route('appointments.create', ['patient' => $payment->patient->id, 'matter' => $payment->matter->id]);
+          break;
+        }
+      } else {
+        return redirect()->route('payment.edit', $payment);
       }
+
+
 
 
 

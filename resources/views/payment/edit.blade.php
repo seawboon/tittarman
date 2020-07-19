@@ -11,6 +11,10 @@
 
       <div class="col-xl-8 order-xl-1">
         <div class="card-body">
+          @if(Session::has('message'))
+          <p class="alert {{ Session::get('alert-class', 'alert-info') }}">{{ Session::get('message') }}</p>
+          @endif
+          
             <form action="{{ route('payment.update', $payment)}}" method="post">
               @csrf
               @php
@@ -89,26 +93,28 @@
                               </tr>
 
                               @if($product->type == 'voucher')
-                                @if($payment->products[$key]->unit > 0)
-                                  <tr>
-                                    <td colspan="4">
-                                      <div class="row">
-                                        @foreach($payment->vouchers as $key => $voucher)
-                                        <div class="col-3">
-                                          {{$loop->iteration}}. {{ $voucher->code}}
+                               @if(isset($payment->products[$key]))
+                                  @if($payment->products[$key]->unit > 0)
+                                    <tr>
+                                      <td colspan="4">
+                                        <div class="row">
+                                          @foreach($payment->vouchers as $key => $voucher)
+                                          <div class="col-3">
+                                            {{$loop->iteration}}. {{ $voucher->code}}
+                                          </div>
+                                          @endforeach
                                         </div>
-                                        @endforeach
-                                      </div>
-                                    </td>
-                                  </tr>
-                                @else
-                                  <tr class="typeVoucher d-none">
-                                    <td colspan="4">
-                                      <div class="row typeVoucherRow">
-                                      </div>
-                                    </td>
-                                  </tr>
-                                @endif
+                                      </td>
+                                    </tr>
+                                  @else
+                                    <tr class="typeVoucher d-none">
+                                      <td colspan="4">
+                                        <div class="row typeVoucherRow">
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  @endif
+                              @endif
 
 
                                 <script>

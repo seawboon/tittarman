@@ -78,8 +78,8 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::post('/patient/{patient}/matter/{matter}/treat/{treat}/update', 'TreatController@update')->name('treat.update');
 
 	Route::get('/payment/create/{patient}', 'PaymentController@create')->name('payment.create');
-	Route::post('/payment/create/{patient}', 'PaymentController@store')->name('payment.store');
-	Route::get('/payment/{payment}', 'PaymentController@edit')->name('payment.edit');
+	Route::post('/payment/create/{patient}/store', 'PaymentController@store')->name('payment.store');
+	Route::get('/payment/{payment}/edit', 'PaymentController@edit')->name('payment.edit');
 	Route::post('/payment/{payment}/update', 'PaymentController@update')->name('payment.update');
 
 	Route::get('import-excel', 'ImportExcel\ImportExcelController@index');

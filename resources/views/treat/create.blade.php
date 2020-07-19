@@ -255,7 +255,7 @@ $(document).ready(function() {
     dateFormat: "Y-m-d H:i",
     maxDate: new Date().fp_incr(1),
     minTime: "10:00",
-    maxTime: "18:00",
+    maxTime: "20:00",
     defaultHour: {{date('H')}},
     defaultMinute: {{date('i')}}
   });
