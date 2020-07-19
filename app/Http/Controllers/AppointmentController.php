@@ -112,7 +112,18 @@ class AppointmentController extends Controller
     public function create(Request $request)
     {
         //dd($request->input());
-        $events = Appointment::get();
+        $myBranch = Session::get('myBranch');
+        $myBranch = session('myBranch');
+
+        $defBranch = $myBranch->id;
+
+        if($request->input('branch')) {
+          $defBranch = $request->input('branch');
+        }
+
+        $showBranch = Branches::find($defBranch);
+
+        $events = $showBranch->appointments;
         $event_list = [];
         foreach ($events as $key => $event) {
           $event_list[] = Calendar::event(
@@ -153,7 +164,7 @@ class AppointmentController extends Controller
         $role = Role::where('name', 'master')->first();
         $users = $role->users()->pluck('name','id')->all();
         //$users = User::pluck('name','id')->all();
-        return view('appointment.create', compact('branches','users', 'extra', 'event', 'calendar_details'));
+        return view('appointment.create', compact('branches','users', 'extra', 'event', 'calendar_details', 'defBranch'));
     }
 
     public function store(Request $request)

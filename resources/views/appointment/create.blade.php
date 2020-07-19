@@ -17,13 +17,6 @@
                 <div class="col-4">
                   <div class="form-group">
                     <label for="branch_id" class="d-block">Branch</label>
-                    @php
-                    if(Session::get('myBranch')) {
-                      $defBranch = session('myBranch')->id;
-                    } else {
-                      $defBranch = null;
-                    }
-                    @endphp
                     {!! Form::select('branch_id', [null=>'Please Select'] + $branches, $defBranch, array('class' => 'form-control', 'id' => 'branch_id')) !!}
                     @error('branch_id')
                     <small class="text-danger">{{ $message}}</small>
@@ -206,6 +199,15 @@ $(document).ready(function() {
     maxTime: "18:00",
     minuteIncrement: 60,
     defaultHour: {{date('H')}}
+  });
+
+  $('#branch_id').change(function() {
+    var nV = '?&branch='+$(this).val();
+    var scUrl = $(location).attr('href');
+    var rep1 = scUrl.replace("?&branch=1", "");
+    var rep1 = scUrl.replace("?&branch=2", "");
+    var newUrl = rep1+nV;
+    window.location.href = newUrl;
   });
 
 });

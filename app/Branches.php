@@ -23,7 +23,7 @@ class Branches extends Model
 
   public function appointments()
   {
-    return $this->hasMany(Appointment::class);
+    return $this->hasMany(Appointment::class, 'branch_id');
   }
 
   public function payments()

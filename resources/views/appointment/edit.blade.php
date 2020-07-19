@@ -1,4 +1,4 @@
-@extends('layouts.app', ['titlePage' => 'New Product'])
+@extends('layouts.app', ['titlePage' => 'Edit Appointment'])
 
 @section('content')
     <div class="header bg-gradient-secondary py-7 py-lg-8">
@@ -155,8 +155,6 @@
 
 
             <button type="submit" name="submit" value="save" class="btn btn-primary">Submit</button>
-
-            <button type="submit" name="submit" value="new" class="btn btn-primary">Submit & New Appointment</button>
 
           {{ Form::close() }}
 
