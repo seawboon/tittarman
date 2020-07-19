@@ -14,7 +14,7 @@
           @if(Session::has('message'))
           <p class="alert {{ Session::get('alert-class', 'alert-info') }}">{{ Session::get('message') }}</p>
           @endif
-          
+
             <form action="{{ route('payment.update', $payment)}}" method="post">
               @csrf
               @php
@@ -75,7 +75,14 @@
                                     @endphp
                                   @if($payment->products->isNotEmpty())
                                     @if($product->type == 'voucher')
-                                      {!! Form::select('product['.$key.'][unit]', array_combine(range($payment->products[$key]->unit,10),range($payment->products[$key]->unit,10)) , $payment->products[$key]->unit, array('class' => 'form-control productunit'.$key.' '.$pType.'')) !!}
+                                      @php
+                                      $maxx=10;
+                                      if($payment->products[$key]->unit > 0) {
+                                        $maxx = $payment->products[$key]->unit;
+                                      }
+
+                                      @endphp
+                                      {!! Form::select('product['.$key.'][unit]', array_combine(range($payment->products[$key]->unit,$maxx),range($payment->products[$key]->unit,$maxx)) , $payment->products[$key]->unit, array('class' => 'form-control productunit'.$key.' '.$pType.'')) !!}
                                     @else
                                       {!! Form::select('product['.$key.'][unit]', range(0, 10) , $payment->products[$key]->unit, array('class' => 'form-control productunit'.$key.' '.$pType.'')) !!}
                                     @endif
@@ -94,26 +101,33 @@
 
                               @if($product->type == 'voucher')
                                @if(isset($payment->products[$key]))
-                                  @if($payment->products[$key]->unit > 0)
-                                    <tr>
-                                      <td colspan="4">
-                                        <div class="row">
-                                          @foreach($payment->vouchers as $key => $voucher)
-                                          <div class="col-3">
-                                            {{$loop->iteration}}. {{ $voucher->code}}
+                                    @if($payment->products[$key]->unit > 0)
+                                      <tr>
+                                        <td colspan="4">
+                                          <div class="row">
+                                            @foreach($payment->vouchers as $key => $voucher)
+                                            <div class="col-3">
+                                              {{$loop->iteration}}. {{ $voucher->code}}
+                                            </div>
+                                            @endforeach
                                           </div>
-                                          @endforeach
-                                        </div>
-                                      </td>
-                                    </tr>
-                                  @else
+                                        </td>
+                                      </tr>
+                                    @else
                                     <tr class="typeVoucher d-none">
                                       <td colspan="4">
                                         <div class="row typeVoucherRow">
                                         </div>
                                       </td>
                                     </tr>
-                                  @endif
+                                    @endif
+                                  @else
+                                  <tr class="typeVoucher d-none">
+                                    <td colspan="4">
+                                      <div class="row typeVoucherRow">
+                                      </div>
+                                    </td>
+                                  </tr>
                               @endif
 
 

@@ -63,7 +63,7 @@ class PaymentController extends Controller
 
       $vvE = 'yes';
 
-      if($data['voucher']) {
+      if(isset($data['voucher'])) {
         foreach ($data['voucher'] as $key => $voucher) {
           $lols = Voucher::where('code', $voucher['code'])->where('patient_id', null)->first();
           if($lols == null) {
@@ -87,7 +87,7 @@ class PaymentController extends Controller
         $payment->state = 'paid';
         $payment->save();
 
-        if($data['voucher']) {
+        if(isset($data['voucher'])) {
           foreach ($data['voucher'] as $key => $voucher) {
             $uptV = Voucher::where('code', $voucher['code'])->where('patient_id', null)->first();
             $uptV->patient_id = $patient->id;
@@ -135,13 +135,14 @@ class PaymentController extends Controller
         'treat.total' => 'required',
       ]);
 
+
       $data['treat']['product_amount'] = $data['treat']['total'] + $data['treat']['discount'] - $request->treat['fee'];
       $data['treat']['state'] = 'paid';
       //TreatProduct::where('treat_id', $treat->id)->delete();
 
       $vvE = 'yes';
 
-      if($data['voucher']) {
+      if(isset($data['voucher'])) {
         foreach ($data['voucher'] as $key => $voucher) {
           $lols = Voucher::where('code', $voucher['code'])->where('patient_id', null)->first();
           if($lols == null) {
@@ -159,7 +160,7 @@ class PaymentController extends Controller
 
         $payment->products()->createMany($data['product']);
 
-        if($data['voucher']) {
+        if(isset($data['voucher'])) {
           foreach ($data['voucher'] as $key => $voucher) {
             $uptV = Voucher::where('code', $voucher['code'])->where('patient_id', null)->first();
             $uptV->patient_id = $payment->patient->id;
