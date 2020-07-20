@@ -41,6 +41,7 @@ class PaymentController extends Controller
   {
       //dd($payment->treat);
       //$age = Carbon::parse($payment->patient->dob)->age;
+      //$patient->load('vouchers');
       $products = Product::where('status', 'yes')->get();
 
       return view('payment.create', compact('patient','products'));
@@ -85,6 +86,19 @@ class PaymentController extends Controller
         $payment->discount_code = $request->treat['discount_code'];
         $payment->total = $request->treat['total'];
         $payment->state = 'paid';
+
+        if(!empty($payment->discount_code)) {
+          $disCode = Voucher::where('code', $payment->discount_code)->where('patient_id', $payment->patient_id)->where('state', 'enable')->first();
+          if($disCode == null) {
+            Session::flash('message', 'Discount Code invalid!');
+            Session::flash('alert-class', 'alert-danger');
+            return redirect()->route('payment.create', $patient);
+          } else {
+            $disCode->state = 'claimed';
+            $disCode->save();
+          }
+        }
+
         $payment->save();
 
         if(isset($data['voucher'])) {
@@ -155,6 +169,19 @@ class PaymentController extends Controller
       }
 
       if($vvE == 'yes') {
+
+        if($payment->discount_code=='' && $data['treat']['discount_code'] != '') {
+          $disCode = Voucher::where('code', $data['treat']['discount_code'])->where('patient_id', $payment->patient_id)->where('state', 'enable')->first();
+          if($disCode == null) {
+            Session::flash('message', 'Discount Code invalid!');
+            Session::flash('alert-class', 'alert-danger');
+            return redirect()->route('payment.edit', $payment);
+          } else {
+            $disCode->state = 'claimed';
+            $disCode->save();
+          }
+        }
+
         $payment->update($data['treat']);
         PaymentProduct::where('payment_id', $payment->id)->delete();
 

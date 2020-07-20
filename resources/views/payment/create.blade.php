@@ -120,10 +120,38 @@
                               </tr>
 
                               <tr>
-                                <td colspan="2">
+                                <td  class="text-right">
+                                @if(count($patient->vouchers))
+                                  <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#voucherModal">
+                                    My Vouchers
+                                  </button>
 
+                                  <div class="modal fade" id="voucherModal" tabindex="-1" role="dialog" aria-labelledby="voucherModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg">
+                                      <div class="modal-content">
+                                         <div class="modal-body">
+
+                                           <div class="row">
+                                             @foreach($patient->vouchers as $voucher)
+                                              @if($voucher->state == 'enable')
+                                               <div class="col-3">
+                                                 <span class="code-{{$loop->iteration}} mr-2">{{ $voucher->code }}</span>
+                                                 <span class="copyCode border-0 bg-transparent" data-vcode="{{ $voucher->code }}"><i class="ni ni-single-copy-04"></i></span>
+                                               </div>
+                                               @endif
+                                             @endforeach
+                                           </div>
+
+                                           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                             <span aria-hidden="true">&times;</span>
+                                           </button>
+                                         </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  @endif
                                 </td>
-                                <td class="w-15">
+                                <td colspan="2">
                                   <div class="form-group mb-0">
                                     <input type="text" class="form-control productdiscountcode" name="treat[discount_code]" placeholder="voucher code" value="{{ old('treat.discount_code') }}" />
                                   </div>
@@ -191,35 +219,14 @@ hr.invisible {
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-<div class="modal-dialog modal-lg">
-<div class="modal-content">
-
- <div class="modal-body">
-   <img class="modalimage w-100" src="" />
-   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-     <span aria-hidden="true">&times;</span>
-   </button>
- </div>
-</div>
-</div>
-</div>
-<script>
-$(function(){
-  $('#exampleModal').on('show.bs.modal', function (event) {
-    var button = $(event.relatedTarget); // Button that triggered the modal
-    var recipient = button.data('whatever'); // Extract info from data-* attributes
-    // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
-    // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-    var modal = $(this);
-    modal.find('.modal-title').text(recipient);
-    modal.find('.modalimage').attr('src', recipient);
-  });
-});
-</script>
-
 <script>
 $(document).ready(function() {
+
+    $('.copyCode').click(function(){
+      var tisCode = $(this).data('vcode');
+      $('.productdiscountcode').val(tisCode);
+      $("#voucherModal").modal("hide");
+    });
   //$("input").attr("autocomplete", "off");
     flatpickr('.datetimepicker', {
     enableTime: true,

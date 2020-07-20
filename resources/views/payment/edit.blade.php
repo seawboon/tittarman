@@ -163,12 +163,41 @@
                               </tr>
 
                               <tr>
-                                <td colspan="2">
+                                <td  class="text-right">
+                                @if(count($payment->patient->vouchers) && $payment->discount_code=='')
+                                  <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#voucherModal">
+                                    My Vouchers
+                                  </button>
 
+                                  <div class="modal fade" id="voucherModal" tabindex="-1" role="dialog" aria-labelledby="voucherModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg">
+                                      <div class="modal-content">
+                                         <div class="modal-body">
+
+                                           <div class="row">
+                                             @foreach($payment->patient->vouchers as $voucher)
+                                              @if($voucher->state == 'enable')
+                                               <div class="col-3">
+                                                 <span class="code-{{$loop->iteration}} mr-2">{{ $voucher->code }}</span>
+                                                 <span class="copyCode border-0 bg-transparent" data-vcode="{{ $voucher->code }}"><i class="ni ni-single-copy-04"></i></span>
+                                               </div>
+                                               @endif
+                                             @endforeach
+                                           </div>
+
+                                           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                             <span aria-hidden="true">&times;</span>
+                                           </button>
+                                         </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  @endif
                                 </td>
-                                <td class="w-15">
+
+                                <td colspan="2">
                                   <div class="form-group mb-0">
-                                    <input type="text" class="form-control productdiscountcode" name="treat[discount_code]" placeholder="voucher code" value="{{ old('treat.discount_code', $payment->discount_code) }}" />
+                                    <input type="text" class="form-control productdiscountcode" name="treat[discount_code]" placeholder="voucher code" value="{{ old('treat.discount_code', $payment->discount_code) }}" {{ $payment->discount_code!='' ? 'readonly':'' }}/>
                                   </div>
                                 </td>
                                 <td class="w-25">
@@ -306,6 +335,13 @@ $(function(){
 
 <script>
 $(document).ready(function() {
+
+  $('.copyCode').click(function(){
+    var tisCode = $(this).data('vcode');
+    $('.productdiscountcode').val(tisCode);
+    $("#voucherModal").modal("hide");
+  });
+
   //$("input").attr("autocomplete", "off");
     flatpickr('.datetimepicker', {
     enableTime: true,

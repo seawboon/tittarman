@@ -182,7 +182,9 @@
             </ul>
             <!-- Divider -->
             <hr class="my-3">
-
+            @isset($payment->patient)
+              @php $patient = $payment->patient; @endphp
+            @endisset
             @isset($patient)
               @if(Route::currentRouteName()!='patient.index' && Route::currentRouteName() != 'patient.search')
               <h6 class="navbar-heading text-muted">{{ $patient->fullname }}</h6>
@@ -196,6 +198,12 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('matter.index', ['patient' => $patient]) }}">
                         <i class="ni ni-badge text-pink"></i> Case(s)
+                    </a>
+
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('voucher.index', ['patient' => $patient]) }}">
+                        <i class="ni ni-badge text-pink"></i> Voucher(s)
                     </a>
 
                 </li>

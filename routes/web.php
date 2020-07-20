@@ -71,6 +71,8 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('/patient/{patient}/matter/{matter}', 'MatterController@edit')->name('matter.edit');
 	Route::post('/patient/{patient}/matter/{matter}/update', 'MatterController@update')->name('matter.update');
 
+	Route::get('/patient/{patient}/vouchers', 'VoucherController@index')->name('voucher.index');
+
 	Route::get('/patient/{patient}/matter/{matter}/treats', 'TreatController@index')->name('treat.index');
 	Route::get('/patient/{patient}/matter/{matter}/treat/create', 'TreatController@create')->name('treat.create');
 	Route::post('/patient/{patient}/matter/{matter}/treat/store', 'TreatController@store')->name('treat.store');
