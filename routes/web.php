@@ -89,4 +89,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('import-excel', 'ImportExcel\ImportExcelController@index');
 	Route::post('import-excel', 'ImportExcel\ImportExcelController@import');
 
+	Route::get('import-patient', 'ImportExcel\ImportExcelController@create');
+	Route::post('import-patient', 'ImportExcel\ImportExcelController@importPatient');
+
 });
