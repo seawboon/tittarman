@@ -159,6 +159,11 @@
                           <span>{{ __('Users') }}</span>
                       </a>
 
+                      <a href="{{ route('voucher.admin.index') }}" class="dropdown-item">
+                          <i class="ni ni-app"></i>
+                          <span>Vouchers</span>
+                      </a>
+
                       @role('Admin')
                       <a href="{{ route('roles.index') }}" class="dropdown-item">
                           <i class="ni ni-app"></i>

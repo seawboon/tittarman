@@ -26,4 +26,28 @@ class VoucherController extends Controller
         //$matters = Patient::paginate(10);
         return view('voucher.index', compact('patient', 'vouchers'));
     }
+
+    public function adminIndex(Request $request)
+    {
+        switch(request('show')) {
+          case 'all':
+            $vouchers = Voucher::where('state', 'like', '%%');
+          break;
+
+          case 'sold':
+            $vouchers = Voucher::where('patient_id', '!=', '');
+          break;
+
+          case 'claimed':
+          $vouchers = Voucher::where('state', 'claimed');
+          break;
+
+          default:
+            $vouchers = Voucher::where('state', 'enable')->where('patient_id', null);
+        }
+
+        $vouchers = $vouchers->paginate(10);
+        return view('voucher.admin.index', compact('vouchers'));
+    }
+
 }
