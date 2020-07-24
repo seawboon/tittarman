@@ -199,7 +199,7 @@ $(document).ready(function() {
     dateFormat: "Y-m-d H:i",
     minDate: new Date().fp_incr(0),
     minTime: "10:00",
-    maxTime: "18:00",
+    maxTime: "20:00",
     minuteIncrement: 60,
     defaultHour: {{date('H')}}
   });

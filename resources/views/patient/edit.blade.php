@@ -11,7 +11,7 @@
                 <div class="row">
                   <div class="col-6">
                     <div class="form-group">
-                      <label for="title">Branch</label>
+                      <label for="title">Branch <small class="text-danger">required</small></label>
                       {!! Form::select('branch_id', $branches, $patient->branch_id, array('class' => 'form-control')) !!}
                       @error('salutation')
                       <small class="text-danger">{{ $message}}</small>
@@ -21,7 +21,7 @@
 
                   <div class="col-6">
                     <div class="form-group">
-                      <label for="gemder" class="d-block">Gender</label>
+                      <label for="gemder" class="d-block">Gender <small class="text-danger">required</small></label>
                       <div class="form-check form-check-inline">
                         <input class="form-check-input" type="radio" name="gender" id="Male" value="male" {{ $patient->gender == 'male' ? 'checked' : ''}}>
                         <label class="form-check-label" for="Male">Male</label>
@@ -39,7 +39,7 @@
 
                   <div class="col-3">
                     <div class="form-group">
-                      <label for="title">Title</label>
+                      <label for="title">Title <small class="text-danger">required</small></label>
                       <select class="form-control" id="salutation" name="salutation">
                         <option value="" selected="selected">Please Select</option>
                         <option value="Datuk Seri" {{($patient->salutation == 'Datuk Seri') ? 'selected' : ''}}>Datuk Seri</option>
@@ -65,7 +65,7 @@
 
                   <div class="col-9">
                     <div class="form-group">
-                      <label for="fullname">Name <small>as per NRIC / Passport</small></label>
+                      <label for="fullname">Name <small>as per NRIC / Passport</small> <small class="text-danger">required</small></label>
                       <input type="text" class="form-control" id="fullname" name="fullname" placeholder="Enter Full Name" value="{{ $patient->fullname }}">
                       @error('fullname')
                       <small class="text-danger">{{ $message}}</small>
@@ -74,7 +74,7 @@
                   </div>
 
                   <div class="col-6">
-                    <label for="gemder" class="d-block">Date of Birth</label>
+                    <label for="gemder" class="d-block">Date of Birth <small class="text-danger">required</small></label>
                     <div class="form-group">
                         <div class="input-group input-group-alternative">
                             <div class="input-group-prepend">
@@ -87,7 +87,7 @@
 
                   <div class="col-6">
                     <div class="form-group">
-                      <label for="nric">NRIC / Passport</label>
+                      <label for="nric">NRIC / Passport <small class="text-danger">required</small></label>
                       <input type="text" class="form-control" id="nric" name="nric" placeholder="Enter NRIC/Passport" value="{{ $patient->nric }}">
                       @error('nric')
                       <small class="text-danger">{{ $message}}</small>
@@ -97,7 +97,7 @@
 
                   <div class="col-6">
                     <div class="form-group">
-                      <label for="email">Email</label>
+                      <label for="email">Email <small class="text-danger">required</small></label>
                       <input type="email" class="form-control" id="email" name="email" placeholder="Enter Email" value="{{ $patient->email }}">
                       @error('email')
                       <small class="text-danger">{{ $message}}</small>
@@ -107,7 +107,7 @@
 
                   <div class="col-6">
                     <div class="form-group">
-                      <label for="contact">Contact</label>
+                      <label for="contact">Contact <small class="text-danger">required</small></label>
                       <div class="row">
                         <div class="col-4">
                           <select class="form-control" id="provider" name="provider">
@@ -149,7 +149,7 @@
 
                   <div class="col-6">
                     <div class="form-group">
-                      <label for="sensitive_skin" class="d-block">Sensitive Skin</label>
+                      <label for="sensitive_skin" class="d-block">Sensitive Skin <small class="text-danger">required</small></label>
                       <div class="form-check form-check-inline">
                         <input class="form-check-input" type="radio" name="sensitive_skin" id="ss_yes" value="yes" {{ $patient->sensitive_skin == 'yes' ? 'checked' : ''}} >
                         <label class="form-check-label" for="ss_yes">Yes</label>

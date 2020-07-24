@@ -82,11 +82,22 @@
                               </tr>
 
                               @if($product->type == 'voucher')
-                                <tr class="typeVoucher d-none">
-                                  <td colspan="4">
+
+                              <tr class="typeVoucher d-none">
+                                  <td colspan="4" style="white-space:initial">
                                     <div class="row typeVoucherRow">
+                                      <div class="col-12">
+                                        <select class="js-example-basic-multiple w-100" name="voucher[][code]" multiple="multiple">
+                                          @foreach($vouchers as $voucher)
+                                            <option value="{{$voucher->code}}">{{$voucher->code}}</option>
+                                          @endforeach
+                                        </select>
+                                      </div>
+
+                                      <div class="voucherHidden"></div>
                                     </div>
                                   </td>
+
                                 </tr>
 
                                 <script>
@@ -197,7 +208,7 @@
 
 @endsection
 
-@push('js')
+@push('css')
 <style>
 .datepicker table tr td.today,  .datepicker table tr td.today:hover {
   background-color: #ccc;
@@ -215,9 +226,20 @@ hr.invisible {
   display: none;
 }
 
+.select2-selection--multiple{
+    overflow: hidden !important;
+    height: auto !important;
+}
+
 </style>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+@endpush
+
+@push('js')
+
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 
 <script>
 $(document).ready(function() {
@@ -229,14 +251,14 @@ $(document).ready(function() {
     });
   //$("input").attr("autocomplete", "off");
     flatpickr('.datetimepicker', {
-    enableTime: true,
-    altInput: true,
-    altFormat: "d M Y H:i",
-    dateFormat: "Y-m-d H:i",
-    maxDate: new Date().fp_incr(1),
-    minTime: "10:00",
-    maxTime: "18:00",
-  });
+      enableTime: true,
+      altInput: true,
+      altFormat: "d M Y H:i",
+      dateFormat: "Y-m-d H:i",
+      maxDate: new Date().fp_incr(1),
+      minTime: "10:00",
+      maxTime: "18:00",
+    });
 
   $('.treat-fee').on('change blur',function(){
       if($(this).val().trim().length === 0){
@@ -254,7 +276,17 @@ $(document).ready(function() {
   $('.voucher').change(function(){
     var vQuantity = $(this).val()*2;
     if(vQuantity > 0) {
+      var $select = $('.js-example-basic-multiple');
+      var values = $select.val();
+      var valuesLength = values.length;
+      if(valuesLength > vQuantity) {
+        var delItems = valuesLength - vQuantity;
+        values.splice(-delItems);
+        $select.val(values).change();
+      }
+
       $('.typeVoucher').addClass('d-table-row')
+      vSelect(vQuantity);
       vFields(vQuantity);
     } else {
       vFields(0);
@@ -263,16 +295,22 @@ $(document).ready(function() {
 
   });
 
+  function vSelect(vQuantity){
+    $('.js-example-basic-multiple').select2({
+      maximumSelectionLength: vQuantity
+    });
+  }
+
   function vFields(vQuantity){
     var vField ='';
     for (var i = 0; i < vQuantity; i++) {
-      vField += '<div class="col-4 mb-2">';
+      //vField += '<div class="col-4 mb-2">';
       vField += '<input type="hidden" class="form-control" name="voucher['+i+'][product_id]" placeholder="voucher code" value="'+VproductID+'">';
-      vField += '<input type="text" class="form-control voucherCode" name="voucher['+i+'][code]" placeholder="voucher code" required>';
-      vField += '</div>';
+      //vField += '<input type="text" class="form-control voucherCode" name="voucher['+i+'][code]" placeholder="voucher code" required>';
+      //vField += '</div>';
     }
 
-    $('.typeVoucherRow').html(vField);
+    $('.voucherHidden').html(vField);
   }
 
   /*<input type="hidden" class="form-control" name="voucher[1][product_id]" placeholder="voucher code" value="{{$product->id}}" >
@@ -320,6 +358,9 @@ $(document).ready(function() {
       $(this).next('.custom-file-label').html(e.target.files[0].name);
     }
   });
+
+
+
 
 });
 </script>

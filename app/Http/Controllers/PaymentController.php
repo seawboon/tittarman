@@ -43,8 +43,9 @@ class PaymentController extends Controller
       //$age = Carbon::parse($payment->patient->dob)->age;
       //$patient->load('vouchers');
       $products = Product::where('status', 'yes')->get();
+      $vouchers = Voucher::where('state', 'enable')->where('payment_id', null)->get();
 
-      return view('payment.create', compact('patient','products'));
+      return view('payment.create', compact('patient','products', 'vouchers'));
   }
 
   public function store(Patient $patient, Request $request)
@@ -133,10 +134,11 @@ class PaymentController extends Controller
       //$branches = Branches::pluck('name','id')->all();
       //$ii = MatterInjury::with('injury')->where('matter_id', $matter->id)->get();
       $days = $this->days;
+      $vouchers = Voucher::where('state', 'enable')->where('payment_id', null)->get();
 
       //$treat->load('products');
 
-      return view('payment.edit', compact('payment','products', 'days'));
+      return view('payment.edit', compact('payment','products', 'days', 'vouchers'));
   }
 
   public function update(Payment $payment, Request $request)
