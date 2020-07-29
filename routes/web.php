@@ -72,8 +72,11 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::post('/patient/{patient}/matter/{matter}/update', 'MatterController@update')->name('matter.update');
 
 	Route::get('/patient/{patient}/vouchers', 'VoucherController@index')->name('voucher.index');
+	Route::get('/patient/{patient}/vouchers/{voucher}/transfer', 'VoucherController@transfer')->name('voucher.transfer');
+	Route::post('/patient/{patient}/vouchers/{voucher}/update', 'VoucherController@transferUpdate')->name('voucher.transfer.update');
 
 	Route::get('/admin/vouchers', 'VoucherController@adminIndex')->name('voucher.admin.index');
+
 
 	Route::get('/patient/{patient}/matter/{matter}/treats', 'TreatController@index')->name('treat.index');
 	Route::get('/patient/{patient}/matter/{matter}/treat/create', 'TreatController@create')->name('treat.create');

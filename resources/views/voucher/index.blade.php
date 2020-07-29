@@ -45,6 +45,21 @@
                                     <td colspan="2" class="align-top">
                                         {{ Carbon\Carbon::parse($voucher->updated_at)->format('d M Y') }}
                                     </td>
+                                    <td class="align-top px-0">
+                                      @if($voucher->state == 'enable')
+                                      <div class="dropdown float-right">
+                                          <!--<a class="btn btn-sm btn-info ml-2" href="{{ route('checkin.store', ['patient' => $patient]) }}">{{ __('ttm.checkin')}}</a>-->
+
+                                          <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fas fa-ellipsis-v"></i>
+                                          </a>
+                                          <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                                              <a class="dropdown-item" href="{{ route('voucher.transfer', ['patient'=>$patient, 'voucher' => $voucher]) }}">Transfer Voucher</a>
+                                          </div>
+
+                                      </div>
+                                      @endif
+                                    </td>
                                 </tr>
                                 @endforeach
 

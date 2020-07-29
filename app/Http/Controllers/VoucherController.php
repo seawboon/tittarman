@@ -27,6 +27,30 @@ class VoucherController extends Controller
         return view('voucher.index', compact('patient', 'vouchers'));
     }
 
+    public function transfer(Patient $patient, Voucher $voucher)
+    {
+      $patients = Patient::where('id', '!=', $voucher->patient_id)->get();
+      return view('voucher.transfer', compact('patients', 'voucher', 'patient'));
+    }
+
+    public function transferUpdate(Patient $patient, Voucher $voucher, Request $request)
+    {
+
+      $data = request()->validate([
+        'patient_id' => 'required',
+        'owner_id' => 'required',
+      ]);
+
+      $voucher->owner_id = $request->owner_id;
+      $voucher->patient_id = $request->patient_id;
+      $voucher->transfer = 'yes';
+      $voucher->transfer_date = now();
+      $voucher->update();
+
+      return redirect()->route('voucher.index', $request->patient_id);
+
+    }
+
     public function adminIndex(Request $request)
     {
         switch(request('show')) {
