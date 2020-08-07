@@ -15,6 +15,11 @@ class Voucher extends Model
       return $this->belongsTo(Patient::class);
     }
 
+    public function owner()
+    {
+      return $this->belongsTo(Patient::class, 'owner_id');
+    }
+
     public function payment()
     {
       return $this->belongsTo(Payment::class);

@@ -101,11 +101,12 @@
 
                               @if($product->type == 'voucher')
                                @if(isset($payment->products[$key]))
+                               dasd d asd
                                     @if($payment->products[$key]->unit > 0)
                                       <tr>
                                         <td colspan="4">
                                           <div class="row">
-                                            @foreach($payment->vouchers as $key => $voucher)
+                                            @foreach($payment->vouchers as $ckey => $voucher)
                                             <div class="col-3">
                                               {{$loop->iteration}}. {{ $voucher->code}}
                                             </div>
@@ -113,8 +114,55 @@
                                           </div>
                                         </td>
                                       </tr>
-                                    @else
+                                      <tr>
+                                        <td style="white-space:initial">
+                                          <div class="row typeVoucherRow">
+                                            <div class="col-12">
+                                              Remarks
+                                            </div>
+                                          </div>
+                                        </td>
+                                        <td colspan="3" style="white-space:initial">
+                                          <div class="row typeVoucherRow">
+                                            <textarea class="form-control" id="notes" name="product[{{ $key }}][remarks]" rows="2" placeholder="Enter Remarks">{{ old('product.'.$key.'.remark', $payment->products[$key]->remarks) }}</textarea>
+                                          </div>
+                                        </td>
 
+                                      </tr>
+                                    @else
+                                    <tr class="typeVoucher d-none">
+                                        <td colspan="4" style="white-space:initial">
+                                          <div class="row typeVoucherRow">
+                                            <div class="col-12">
+                                              <select class="js-example-basic-multiple w-100" name="voucher[][code]" multiple="multiple">
+                                                @foreach($vouchers as $voucher)
+                                                 @if($voucher->state == 'enable' && $voucher->payment_id == null)
+                                                  <option value="{{$voucher->code}}">{{$voucher->code}}</option>
+                                                 @endif
+                                                @endforeach
+                                              </select>
+                                            </div>
+
+                                            <div class="voucherHidden"></div>
+                                          </div>
+                                        </td>
+
+                                      </tr>
+                                      <tr class="typeVoucher d-none">
+                                        <td style="white-space:initial">
+                                          <div class="row typeVoucherRow">
+                                            <div class="col-12">
+                                              Remarks
+                                            </div>
+                                          </div>
+                                        </td>
+                                        <td colspan="3" style="white-space:initial">
+                                          <div class="row typeVoucherRow">
+                                            <textarea class="form-control" id="notes" name="product[{{ $key }}][remarks]" rows="2" placeholder="Enter Remarks">{{ old('product.'.$key.'.remark', $product->remarks) }}</textarea>
+                                          </div>
+                                        </td>
+
+                                      </tr>
                                     @endif
                                 @else
                                 <tr class="typeVoucher d-none">
@@ -123,7 +171,9 @@
                                         <div class="col-12">
                                           <select class="js-example-basic-multiple w-100" name="voucher[][code]" multiple="multiple">
                                             @foreach($vouchers as $voucher)
+                                             @if($voucher->state == 'enable' && $voucher->payment_id == null)
                                               <option value="{{$voucher->code}}">{{$voucher->code}}</option>
+                                             @endif
                                             @endforeach
                                           </select>
                                         </div>
@@ -169,8 +219,8 @@
 
                               <tr>
                                 <td  class="text-right">
-                                @if(count($payment->patient->vouchers) && $payment->discount_code=='')
-                                  <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#voucherModal">
+
+                                  <button type="button" class="btn btn-info btn-sm {{$payment->discount_code!='' ? 'd-none':''}}" data-toggle="modal" data-target="#voucherModal">
                                     My Vouchers
                                   </button>
 
@@ -178,16 +228,17 @@
                                     <div class="modal-dialog modal-lg">
                                       <div class="modal-content">
                                          <div class="modal-body">
-
+                                           <div class="row newVouchers">
+                                           </div>
                                            <div class="row">
-                                             @foreach($payment->patient->vouchers as $voucher)
-                                              @if($voucher->state == 'enable')
-                                               <div class="col-3">
-                                                 <span class="code-{{$loop->iteration}} mr-2">{{ $voucher->code }}</span>
-                                                 <span class="copyCode border-0 bg-transparent" data-vcode="{{ $voucher->code }}"><i class="ni ni-single-copy-04"></i></span>
-                                               </div>
-                                               @endif
-                                             @endforeach
+                                               @foreach($vouchers as $voucher)
+                                                @if($voucher->state == 'enable' && $voucher->payment_id!=null)
+                                                 <div class="col-3">
+                                                   <span class="code-{{$loop->iteration}} mr-2 {{ $voucher->patient_id == $payment->patient->id ? 'text-white bg-primary px-1':'' }}" data-toggle="tooltip" data-placement="bottom" title="{{$voucher->patient->id}}. {{$voucher->patient->salutation}} {{$voucher->patient->fullname}}">{{ $voucher->code }}</span>
+                                                   <span class="copyCode border-0 bg-transparent" data-vcode="{{ $voucher->code }}"><i class="ni ni-single-copy-04"></i></span>
+                                                 </div>
+                                                 @endif
+                                               @endforeach
                                            </div>
 
                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -197,7 +248,7 @@
                                       </div>
                                     </div>
                                   </div>
-                                  @endif
+
                                 </td>
 
                                 <td colspan="2">
@@ -236,7 +287,15 @@
                               </tr>
                               --}}
                               <tr>
-                                <td colspan="3" class="text-right">
+                                <td class="text-left">
+                                  <div class="form-group">
+                                    {!! Form::select('treat[method_id]', [null=>'Payment Method'] + $methods, $payment->method_id, array('class' => 'form-control', 'id' => 'method_id')) !!}
+                                    @error('treat.method_id')
+                                    <small class="text-danger">{{ $message}}</small>
+                                    @enderror
+                                  </div>
+                                </td>
+                                <td colspan="2" class="text-right">
                                   Total Fees (RM)
                                 </td>
                                 <td class="">
@@ -354,7 +413,7 @@ $(function(){
 <script>
 $(document).ready(function() {
 
-  $('.copyCode').click(function(){
+  $(document).on('click', '.copyCode', function(){
     var tisCode = $(this).data('vcode');
     $('.productdiscountcode').val(tisCode);
     $("#voucherModal").modal("hide");
@@ -446,6 +505,30 @@ $(document).ready(function() {
     $('.voucherHidden').html(vField);
   }
 
+  $('.js-example-basic-multiple').on("select2:select select2:unselect", function (e) {
+
+      //this returns all the selected item
+      var items= $(this).val();
+      //console.log(items);
+
+      var Vmodal = $('#voucherModal .modal-body .row.newVouchers');
+
+      if(items.length > 0) {
+        var newtemp = '';
+        $.each( items, function( i, val ) {
+          newtemp += '<div class="col-3"><span class="code-2 mr-2 text-info">'+val+'</span><span class="copyCode border-0 bg-transparent" data-vcode="'+val+'"><i class="ni ni-single-copy-04"></i></span></div>';
+        });
+
+        Vmodal.html(newtemp);
+      } else {
+        Vmodal.html('');
+      }
+
+      //Gets the last selected item
+      //var lastSelectedItem = e.params.data.id;
+
+  });
+
   $('.btn-before').click(function(){
     var html = $('.clone.before').html();
     $('.increment.before').after(html);
@@ -466,6 +549,10 @@ $(document).ready(function() {
     }
   });
 
+});
+
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
 });
 </script>
 @endpush

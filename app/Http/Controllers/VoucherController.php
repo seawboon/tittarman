@@ -19,12 +19,14 @@ class VoucherController extends Controller
         }, 'treats']);*/
         $vouchers = $patient->vouchers()->paginate(10);
 
+        $transfers = $patient->transfers()->paginate(10);
+
         //dd($patient);
 
         //$age = Carbon::parse($patient->dob)->age;
         //dd($patient);
         //$matters = Patient::paginate(10);
-        return view('voucher.index', compact('patient', 'vouchers'));
+        return view('voucher.index', compact('patient', 'vouchers', 'transfers'));
     }
 
     public function transfer(Patient $patient, Voucher $voucher)
@@ -41,7 +43,9 @@ class VoucherController extends Controller
         'owner_id' => 'required',
       ]);
 
-      $voucher->owner_id = $request->owner_id;
+      if($voucher->owner_id == null) {
+        $voucher->owner_id = $request->owner_id;
+      }
       $voucher->patient_id = $request->patient_id;
       $voucher->transfer = 'yes';
       $voucher->transfer_date = now();

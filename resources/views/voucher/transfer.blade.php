@@ -42,7 +42,7 @@
                     <select class="js-example-basic-single w-100" id="patient_id" name="patient_id" required>
                       <option value="">Transfer To</option>
                       @foreach($patients as $tpatient)
-                        <option value="{{$tpatient->id}}"><small>{{$tpatient->salutation}}</small> {{$tpatient->fullname}}</option>
+                        <option value="{{$tpatient->id}}">{{$tpatient->id}}. <small>{{$tpatient->salutation}}</small> {{$tpatient->fullname}}</option>
                       @endforeach
                     </select>
 

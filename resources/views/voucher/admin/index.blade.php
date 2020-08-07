@@ -31,6 +31,7 @@
                                     <th scope="col" class="sort" data-sort="name">No.</th>
                                     <th scope="col" class="sort" data-sort="budget">Code</th>
                                     <th scope="col" class="sort" data-sort="budget">Patient</th>
+                                    <th scope="col" class="sort" data-sort="budget">Owner</th>
                                     <th scope="col" class="sort" data-sort="status">Status</th>
                                     <th scope="col" class="sort" data-sort="status">Date</th>
                                     <th scope="col" class="sort" data-sort="branch" style="width:40px !important; padding: .75rem 0"></th>
@@ -53,6 +54,9 @@
                                     <td class="budget align-top text-capitalize">
                                       <a href="{{ route('patient.edit', [ 'pid' => $voucher->patient]) }}"><small>{{$voucher->patient->salutation ?? ''}}</small> {{$voucher->patient->fullname ?? ''}}</a>
                                     </td>
+                                    <td class="budget align-top text-capitalize">
+                                      <a href="{{ route('patient.edit', [ 'pid' => $voucher->patient]) }}"><small>{{$voucher->owner->salutation ?? ''}}</small> {{$voucher->owner->fullname ?? ''}}</a>
+                                    </td>
                                     <td class="align-top">
                                       <span class="{{ $voucher->state=='enable' ? 'text-success':'text-danger'}}">
                                         {{ $voucher->state }}
@@ -63,7 +67,7 @@
                                         {{ Carbon\Carbon::parse($voucher->updated_at)->format('d M Y') }}
                                     </td>
                                     <td class="align-top px-0">
-                                      @if($voucher->state == 'enable')
+                                      @if($voucher->state == 'enable' && isset($voucher->patient->fullname))
                                       <div class="dropdown float-right">
                                           <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <i class="fas fa-ellipsis-v"></i>

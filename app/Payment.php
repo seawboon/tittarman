@@ -37,4 +37,9 @@ class Payment extends Model
       return $this->hasMany(Voucher::class, 'payment_id');
     }
 
+    public function method()
+    {
+      return $this->belongsTo(PaymentMethod::class, 'method_id');
+    }
+
 }

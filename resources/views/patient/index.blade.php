@@ -9,7 +9,7 @@
                 <table class="table align-items-center">
                     <thead class="thead-light">
                         <tr>
-                            <th scope="col" class="sort" data-sort="name">Patient No.</th>
+                            <th scope="col" class="sort" data-sort="name">Patient ID</th>
                             <th scope="col" class="sort" data-sort="budget">Name</th>
                             <th scope="col" class="sort" data-sort="branch">Branch</th>
                             <th scope="col">{{ __('ttm.case.title') }}</th>

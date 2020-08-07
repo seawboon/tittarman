@@ -100,6 +100,22 @@
 
                                 </tr>
 
+                                <tr class="typeVoucher d-none">
+                                  <td style="white-space:initial">
+                                    <div class="row typeVoucherRow">
+                                      <div class="col-12">
+                                        Remarks
+                                      </div>
+                                    </div>
+                                  </td>
+                                  <td colspan="3" style="white-space:initial">
+                                    <div class="row typeVoucherRow">
+                                      <textarea class="form-control" id="notes" name="product[{{ $key }}][remarks]" rows="2" placeholder="Enter Remarks">{{ old('product.'.$key.'.remark', $product->remarks) }}</textarea>
+                                    </div>
+                                  </td>
+
+                                </tr>
+
                                 <script>
                                 var VproductID = {{$product->id}};
                                 </script>
@@ -132,35 +148,38 @@
 
                               <tr>
                                 <td  class="text-right">
-                                @if(count($patient->vouchers))
-                                  <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#voucherModal">
-                                    My Vouchers
-                                  </button>
 
-                                  <div class="modal fade" id="voucherModal" tabindex="-1" role="dialog" aria-labelledby="voucherModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog modal-lg">
-                                      <div class="modal-content">
-                                         <div class="modal-body">
+                                <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#voucherModal">
+                                  My Vouchers
+                                </button>
 
-                                           <div class="row">
-                                             @foreach($patient->vouchers as $voucher)
-                                              @if($voucher->state == 'enable')
-                                               <div class="col-3">
-                                                 <span class="code-{{$loop->iteration}} mr-2">{{ $voucher->code }}</span>
-                                                 <span class="copyCode border-0 bg-transparent" data-vcode="{{ $voucher->code }}"><i class="ni ni-single-copy-04"></i></span>
-                                               </div>
-                                               @endif
-                                             @endforeach
-                                           </div>
-
-                                           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                             <span aria-hidden="true">&times;</span>
-                                           </button>
+                                <div class="modal fade" id="voucherModal" tabindex="-1" role="dialog" aria-labelledby="voucherModalLabel" aria-hidden="true">
+                                  <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                       <div class="modal-body">
+                                         <div class="row newVouchers">
                                          </div>
-                                      </div>
+                                         <div class="row">
+                                           @if(count($patient->vouchers))
+                                           @foreach($patient->vouchers as $voucher)
+                                            @if($voucher->state == 'enable')
+                                             <div class="col-3">
+                                               <span class="code-{{$loop->iteration}} mr-2">{{ $voucher->code }}</span>
+                                               <span class="copyCode border-0 bg-transparent" data-vcode="{{ $voucher->code }}"><i class="ni ni-single-copy-04"></i></span>
+                                             </div>
+                                             @endif
+                                           @endforeach
+                                           @endif
+                                         </div>
+
+                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                           <span aria-hidden="true">&times;</span>
+                                         </button>
+                                       </div>
                                     </div>
                                   </div>
-                                  @endif
+                                </div>
+
                                 </td>
                                 <td colspan="2">
                                   <div class="form-group mb-0">
@@ -173,10 +192,18 @@
                               </tr>
 
                               <tr>
-                                <td colspan="3" class="text-right">
+                                <td class="text-left">
+                                  <div class="form-group">
+                                    {!! Form::select('treat[method_id]', [null=>'Payment Method'] + $methods, '', array('class' => 'form-control', 'id' => 'method_id')) !!}
+                                    @error('treat.method_id')
+                                    <small class="text-danger">{{ $message}}</small>
+                                    @enderror
+                                  </div>
+                                </td>
+                                <td colspan="2" class="text-right">
                                   Total Fees (RM)
                                 </td>
-                                <td class="">
+                                <td  class="">
                                   <div class="form-group">
                                     <input type="text" class="form-control productsum" name="treat[total]" value="{{ old('treat.total', 0) }}" readonly />
                                   </div>
@@ -244,7 +271,7 @@ hr.invisible {
 <script>
 $(document).ready(function() {
 
-    $('.copyCode').click(function(){
+    $(document).on('click', '.copyCode', function(){
       var tisCode = $(this).data('vcode');
       $('.productdiscountcode').val(tisCode);
       $("#voucherModal").modal("hide");
@@ -312,6 +339,30 @@ $(document).ready(function() {
 
     $('.voucherHidden').html(vField);
   }
+
+  $('.js-example-basic-multiple').on("select2:select select2:unselect", function (e) {
+
+      //this returns all the selected item
+      var items= $(this).val();
+      //console.log(items);
+
+      var Vmodal = $('#voucherModal .modal-body .row.newVouchers');
+
+      if(items.length > 0) {
+        var newtemp = '';
+        $.each( items, function( i, val ) {
+          newtemp += '<div class="col-3"><span class="code-2 mr-2 text-info">'+val+'</span><span class="copyCode border-0 bg-transparent" data-vcode="'+val+'"><i class="ni ni-single-copy-04"></i></span></div>';
+        });
+
+        Vmodal.html(newtemp);
+      } else {
+        Vmodal.html('');
+      }
+
+      //Gets the last selected item
+      //var lastSelectedItem = e.params.data.id;
+
+  });
 
   /*<input type="hidden" class="form-control" name="voucher[1][product_id]" placeholder="voucher code" value="{{$product->id}}" >
   <input type="text" class="form-control voucherCode" name="voucher[1][code]" placeholder="voucher code" required>*/

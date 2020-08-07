@@ -44,4 +44,9 @@ class Patient extends Model
       return $this->hasMany(Voucher::class, 'patient_id');
     }
 
+    public function transfers()
+    {
+      return $this->hasMany(Voucher::class, 'owner_id');
+    }
+
 }

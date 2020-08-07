@@ -33,8 +33,6 @@ class CheckInController extends Controller
         $checkins->load('patient', 'branch', 'matter');
 
         $payments = Payment::where('branch_id', $myBranch->id)->whereDate('created_at', Carbon::today())->get();
-
-
         /*$patient->load(['matters' => function ($query) {
             $query->orderBy('created_at', 'desc');
         }, 'treats']);*/

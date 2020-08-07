@@ -18,6 +18,7 @@ use App\PaymentProduct;
 use App\Images;
 use App\Checkin;
 use App\Payment;
+use App\PaymentMethod;
 use App\Voucher;
 use Image;
 use File;
@@ -44,8 +45,9 @@ class PaymentController extends Controller
       //$patient->load('vouchers');
       $products = Product::where('status', 'yes')->get();
       $vouchers = Voucher::where('state', 'enable')->where('payment_id', null)->get();
+      $methods = PaymentMethod::where('status', 'yes')->pluck('name','id')->all();
 
-      return view('payment.create', compact('patient','products', 'vouchers'));
+      return view('payment.create', compact('patient','products', 'vouchers','methods'));
   }
 
   public function store(Patient $patient, Request $request)
@@ -57,6 +59,7 @@ class PaymentController extends Controller
         'treat.discount' => 'required',
         'treat.discount_code' => '',
         'treat.total' => 'required',
+        'treat.method_id' => 'required',
       ]);
 
       $data['treat']['product_amount'] = $request->treat['total'] + $request->treat['discount'] - $request->treat['fee'];
@@ -84,22 +87,10 @@ class PaymentController extends Controller
         $payment->treatment_fee = $request->treat['fee'];
         $payment->product_amount = $request->treat['total'] + $request->treat['discount'] - $request->treat['fee'];
         $payment->discount = $request->treat['discount'];
-        $payment->discount_code = $request->treat['discount_code'];
+        $payment->method_id = $request->treat['method_id'];
+        //$payment->discount_code = $request->treat['discount_code'];
         $payment->total = $request->treat['total'];
         $payment->state = 'paid';
-
-        if(!empty($payment->discount_code)) {
-          $disCode = Voucher::where('code', $payment->discount_code)->where('patient_id', $payment->patient_id)->where('state', 'enable')->first();
-          if($disCode == null) {
-            Session::flash('message', 'Discount Code invalid!');
-            Session::flash('alert-class', 'alert-danger');
-            return redirect()->route('payment.create', $patient);
-          } else {
-            $disCode->state = 'claimed';
-            $disCode->save();
-          }
-        }
-
         $payment->save();
 
         if(isset($data['voucher'])) {
@@ -114,6 +105,24 @@ class PaymentController extends Controller
 
         PaymentProduct::where('payment_id', $payment->id)->delete();
         $payment->products()->createMany($data['product']);
+
+        $payment->discount_code = $request->treat['discount_code'];
+        if(!empty($payment->discount_code)) {
+          $disCode = Voucher::where('code', $payment->discount_code)->where('patient_id', $payment->patient_id)->where('state', 'enable')->first();
+          if($disCode == null) {
+            Session::flash('message', 'Discount Code invalid!');
+            Session::flash('alert-class', 'alert-danger');
+            return redirect()->route('payment.create', $patient);
+          } else {
+            $payment->save();
+            $disCode->state = 'claimed';
+            $disCode->save();
+          }
+        }
+
+        //$payment->save();
+
+
 
         return redirect()->route('checkin.index');
 
@@ -134,11 +143,13 @@ class PaymentController extends Controller
       //$branches = Branches::pluck('name','id')->all();
       //$ii = MatterInjury::with('injury')->where('matter_id', $matter->id)->get();
       $days = $this->days;
-      $vouchers = Voucher::where('state', 'enable')->where('payment_id', null)->get();
+      //$vouchers = Voucher::where('state', 'enable')->where('payment_id', null)->get();
+      $vouchers = Voucher::get();
+      $methods = PaymentMethod::where('status', 'yes')->pluck('name','id')->all();
 
       //$treat->load('products');
 
-      return view('payment.edit', compact('payment','products', 'days', 'vouchers'));
+      return view('payment.edit', compact('payment','products', 'days', 'vouchers','methods'));
   }
 
   public function update(Payment $payment, Request $request)
@@ -149,6 +160,7 @@ class PaymentController extends Controller
         'treat.discount' => 'required',
         'treat.discount_code' => '',
         'treat.total' => 'required',
+        'treat.method_id' => 'required',
       ]);
 
 
@@ -172,23 +184,6 @@ class PaymentController extends Controller
 
       if($vvE == 'yes') {
 
-        if($payment->discount_code=='' && $data['treat']['discount_code'] != '') {
-          $disCode = Voucher::where('code', $data['treat']['discount_code'])->where('patient_id', $payment->patient_id)->where('state', 'enable')->first();
-          if($disCode == null) {
-            Session::flash('message', 'Discount Code invalid!');
-            Session::flash('alert-class', 'alert-danger');
-            return redirect()->route('payment.edit', $payment);
-          } else {
-            $disCode->state = 'claimed';
-            $disCode->save();
-          }
-        }
-
-        $payment->update($data['treat']);
-        PaymentProduct::where('payment_id', $payment->id)->delete();
-
-        $payment->products()->createMany($data['product']);
-
         if(isset($data['voucher'])) {
           foreach ($data['voucher'] as $key => $voucher) {
             $uptV = Voucher::where('code', $voucher['code'])->where('patient_id', null)->first();
@@ -198,6 +193,39 @@ class PaymentController extends Controller
             $uptV->save();
           }
         }
+
+        if($payment->discount_code=='' && $data['treat']['discount_code'] != '') {
+          //$disCode = Voucher::where('code', $data['treat']['discount_code'])->where('patient_id', $payment->patient_id)->where('state', 'enable')->first();
+          $disCode = Voucher::where('code', $data['treat']['discount_code'])->where('state', 'enable')->first();
+          if($disCode == null) {
+            Session::flash('message', 'Discount Code invalid!');
+            Session::flash('alert-class', 'alert-danger');
+            return redirect()->route('payment.edit', $payment);
+          } else {
+            if($disCode->patient_id == $payment->patient->id) {
+              $disCode->state = 'claimed';
+            } else {
+              $disCode->state = 'claimed';
+              if($disCode->owner_id == null) {
+                $disCode->owner_id = $disCode->patient_id;
+              }
+              $disCode->transfer = 'yes';
+              $disCode->transfer_date = now();
+              $disCode->patient_id = $payment->patient->id;
+              Session::flash('message', 'Voucher transfer from '.$payment->patient->fullname);
+              Session::flash('alert-class', 'alert-success');
+            }
+
+            $disCode->save();
+          }
+        }
+
+        $payment->update($data['treat']);
+        PaymentProduct::where('payment_id', $payment->id)->delete();
+
+        $payment->products()->createMany($data['product']);
+
+
 
         switch(request('submit')) {
           case 'save':

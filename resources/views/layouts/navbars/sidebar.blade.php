@@ -175,6 +175,11 @@
                             <i class="ni ni-app"></i>
                             <span>{{ __('Products') }}</span>
                       </a>
+
+                      <a href="{{ route('methods.index') }}" class="dropdown-item">
+                            <i class="ni ni-app"></i>
+                            <span>{{ __('Payment Methods') }}</span>
+                      </a>
                       @hasanyrole('Admin|Master')
                       <a href="{{ route('injuryparts.index') }}" class="dropdown-item">
                           <i class="ni ni-app"></i>
