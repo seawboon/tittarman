@@ -44,6 +44,12 @@ class Patient extends Model
       return $this->hasMany(Voucher::class, 'patient_id');
     }
 
+    public function AvailabelVoucher()
+    {
+      //return $this->hasMany(Voucher::class, 'patient_id');
+      return $this->vouchers()->where('state','enable');
+    }
+
     public function transfers()
     {
       return $this->hasMany(Voucher::class, 'owner_id');

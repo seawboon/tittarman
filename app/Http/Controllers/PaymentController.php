@@ -145,11 +145,27 @@ class PaymentController extends Controller
       $days = $this->days;
       //$vouchers = Voucher::where('state', 'enable')->where('payment_id', null)->get();
       $vouchers = Voucher::get();
+
+      $voucherHasVoucher = Patient::has('AvailabelVoucher')->get();
+
+      $voucherEd = collect($voucherHasVoucher);
+      $voucherE = $voucherEd->firstWhere('id', $payment->patient->id);
+
+      //push current patient to top
+      if($voucherE!=null) {
+        $bbid = $payment->patient->id;
+        $voucherEd = $voucherEd->filter(function($item) use ($bbid) {
+            return $item->id != $bbid;
+        });
+        $voucherEd->prepend($voucherE);
+      }
+      
+
       $methods = PaymentMethod::where('status', 'yes')->pluck('name','id')->all();
 
       //$treat->load('products');
 
-      return view('payment.edit', compact('payment','products', 'days', 'vouchers','methods'));
+      return view('payment.edit', compact('payment','products', 'days', 'vouchers', 'voucherEd', 'methods'));
   }
 
   public function update(Payment $payment, Request $request)

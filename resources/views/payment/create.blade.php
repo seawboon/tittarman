@@ -194,7 +194,7 @@
                               <tr>
                                 <td class="text-left">
                                   <div class="form-group">
-                                    {!! Form::select('treat[method_id]', [null=>'Payment Method'] + $methods, '', array('class' => 'form-control', 'id' => 'method_id')) !!}
+                                    {!! Form::select('treat[method_id]', [null=>'Payment Method'] + $methods, '', array('class' => 'form-control', 'id' => 'method_id', 'required')) !!}
                                     @error('treat.method_id')
                                     <small class="text-danger">{{ $message}}</small>
                                     @enderror

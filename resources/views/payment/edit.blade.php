@@ -101,7 +101,6 @@
 
                               @if($product->type == 'voucher')
                                @if(isset($payment->products[$key]))
-                               dasd d asd
                                     @if($payment->products[$key]->unit > 0)
                                       <tr>
                                         <td colspan="4">
@@ -220,7 +219,7 @@
                               <tr>
                                 <td  class="text-right">
 
-                                  <button type="button" class="btn btn-info btn-sm {{$payment->discount_code!='' ? 'd-none':''}}" data-toggle="modal" data-target="#voucherModal">
+                                  {{-- <button type="button" class="btn btn-info btn-sm {{$payment->discount_code!='' ? 'd-none':''}}" data-toggle="modal" data-target="#voucherModal">
                                     My Vouchers
                                   </button>
 
@@ -247,49 +246,35 @@
                                          </div>
                                       </div>
                                     </div>
-                                  </div>
+                                  </div>--}}
 
                                 </td>
 
                                 <td colspan="2">
-                                  <div class="form-group mb-0">
+                                  <!--<div class="form-group mb-0">
                                     <input type="text" class="form-control productdiscountcode" name="treat[discount_code]" placeholder="voucher code" value="{{ old('treat.discount_code', $payment->discount_code) }}" {{ $payment->discount_code!='' ? 'readonly':'' }}/>
-                                  </div>
+                                  </div>-->
+                                  <select class="voucherselect w-100" name="treat[discount_code]">
+                                    <option value="">voucher code</option>
+                                    @foreach($voucherEd as $owner)
+                                    <optgroup label="{{$owner->id}}. {{$owner->fullname}}">
+                                      @foreach($owner->AvailabelVoucher as $voucher)
+                                      <option value="{{$voucher->code}}" {{$payment->discount_code==$voucher->code ? 'selected="selected"':''}}>{{$voucher->code}}</option>
+                                      @endforeach
+                                    </optgroup>
+                                    @endforeach
+                                  </select>
+                                  @if($payment->discount_code!='')
+                                  <span class="text-white bg-warning py-1 px-2 mt-1 d-block">Claimed: {{$payment->discount_code}}</span>
+                                  @endif
                                 </td>
-                                <td class="w-25">
-
-                                </td>
+                                <td class="w-25"></td>
                               </tr>
 
-                              {{--<tr>
-                                <td colspan="3" class="text-right">
-                                  Treatment Fee (RM)
-                                </td>
-                                <td class="">
-                                  <div class="form-group">
-                                    <input type="text" class="form-control treat-fee" name="treat[fee]" value="{{ old('treat.fee', $payment->treat->fee) }}" {{$permit['text']}} readonly />
-                                  </div>
-                                </td>
-                              </tr>
-
-                              <tr>
-                                <td colspan="3" class="text-right">
-                                  Discount (RM)
-                                  <div class="form-group">
-                                    <input type="text" class="form-control productdiscountcode w-auto ml-auto" name="treat[discount_code]" placeholder="voucher code" value="{{ old('treat.discount_code', $payment->discount_code) }}" />
-                                  </div>
-                                </td>
-                                <td class="">
-                                  <div class="form-group">
-                                    <input type="text" class="form-control productdiscount" name="treat[discount]" value="{{ old('treat.discount', $payment->discount) }}" />
-                                  </div>
-                                </td>
-                              </tr>
-                              --}}
                               <tr>
                                 <td class="text-left">
                                   <div class="form-group">
-                                    {!! Form::select('treat[method_id]', [null=>'Payment Method'] + $methods, $payment->method_id, array('class' => 'form-control', 'id' => 'method_id')) !!}
+                                    {!! Form::select('treat[method_id]', [null=>'Payment Method'] + $methods, $payment->method_id, array('class' => 'form-control', 'id' => 'method_id', 'required')) !!}
                                     @error('treat.method_id')
                                     <small class="text-danger">{{ $message}}</small>
                                     @enderror
@@ -505,7 +490,7 @@ $(document).ready(function() {
     $('.voucherHidden').html(vField);
   }
 
-  $('.js-example-basic-multiple').on("select2:select select2:unselect", function (e) {
+  $('.js-example-basic-multiple').on("select2:select", function (e) {
 
       //this returns all the selected item
       var items= $(this).val();
@@ -516,10 +501,18 @@ $(document).ready(function() {
       if(items.length > 0) {
         var newtemp = '';
         $.each( items, function( i, val ) {
-          newtemp += '<div class="col-3"><span class="code-2 mr-2 text-info">'+val+'</span><span class="copyCode border-0 bg-transparent" data-vcode="'+val+'"><i class="ni ni-single-copy-04"></i></span></div>';
-        });
+          //newtemp += '<div class="col-3"><span class="code-2 mr-2 text-info">'+val+'</span><span class="copyCode border-0 bg-transparent" data-vcode="'+val+'"><i class="ni ni-single-copy-04"></i></span></div>';
 
-        Vmodal.html(newtemp);
+
+          if($(".voucherselect option[value='"+val+"']").length == 0) {
+            newtemp += '<option value="'+val+'">'+val+'</option>';
+          }
+
+
+        });
+        $('.voucherselect').prepend(newtemp);
+        $('.voucherselect').trigger('change');
+        //Vmodal.html(newtemp);
       } else {
         Vmodal.html('');
       }
@@ -528,6 +521,17 @@ $(document).ready(function() {
       //var lastSelectedItem = e.params.data.id;
 
   });
+
+  $('.js-example-basic-multiple').on("select2:unselect", function (e) {
+    $(".voucherselect option[value='"+e.params.data.id+"']").remove();
+  });
+
+  $('.voucherselect').select2();
+
+  @if($payment->discount_code!='')
+
+  $(".voucherselect").prop("disabled", true);
+  @endif
 
   $('.btn-before').click(function(){
     var html = $('.clone.before').html();
