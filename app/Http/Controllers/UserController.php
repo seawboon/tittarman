@@ -36,7 +36,10 @@ class UserController extends Controller
     public function create()
     {
         $roles = Role::pluck('name','name')->all();
-        return view('users.create',compact('roles'));
+
+        $randomcolor = '#' . dechex(rand(0,10000000));
+
+        return view('users.create',compact('roles', 'randomcolor'));
     }
 
     public function store(Request $request)
@@ -45,6 +48,7 @@ class UserController extends Controller
             'name' => 'required',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|same:confirm-password',
+            'color' => 'required|unique:users',
             'roles' => 'required'
         ]);
 
@@ -70,16 +74,16 @@ class UserController extends Controller
     public function edit($id)
     {
         $user = User::find($id);
+        $randomcolor = '#' . dechex(rand(0,10000000));
         if(Auth::user()->can('role-edit') or $user->id == Auth::user()->id)
         {
           $roles = Role::pluck('name','name')->all();
           $userRole = $user->roles->pluck('name','name')->all();
 
-          return view('users.edit',compact('user','roles','userRole'));
+          return view('users.edit',compact('user','roles','userRole', 'randomcolor'));
         } else {
           return redirect()->route('users.index');
         }
-
 
     }
 
@@ -89,6 +93,7 @@ class UserController extends Controller
             'name' => 'required',
             'email' => 'required|email|unique:users,email,'.$id,
             'password' => 'same:confirm-password',
+            'color' => 'required|unique:users',
             'roles' => 'required'
         ]);
 

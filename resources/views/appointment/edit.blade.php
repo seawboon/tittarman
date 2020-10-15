@@ -142,6 +142,16 @@
 
               <div class="col-4">
                 <div class="form-group">
+                  <label for="branch_id" class="d-block">Source</label>
+                  {!! Form::select('source', [null=>'Please Select'] + \App\AppointmentSource::pluck('name','id')->all(), $appo->source, array('class' => 'form-control', 'id' => 'source')) !!}
+                  @error('source')
+                  <small class="text-danger">{{ $message}}</small>
+                  @enderror
+                </div>
+              </div>
+
+              <div class="col-4">
+                <div class="form-group">
                   <label for="state" class="d-block">State</label>
                   {!! Form::select('state', ['awaiting'=>'Awaiting', 'cancelled'=>'Cancelled', 'checkin'=>'Check In'], $appo->state, array('class' => 'form-control', 'id' => 'state')) !!}
                   @error('state')

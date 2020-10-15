@@ -4,7 +4,7 @@
     <div class="header bg-gradient-secondary py-7 py-lg-8">
         <div class="container">
           <div class="card-body">
-              <form action="{{ route('patient.store') }}" method="post" autocomplete="off">
+              <form action="{{ route('patient.store', ['appo' => $appo]) }}" method="post" autocomplete="off">
                 <input autocomplete="false" name="hidden" type="text" style="display:none;">
                 @csrf
 

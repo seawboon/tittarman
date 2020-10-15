@@ -192,6 +192,7 @@ class AppointmentController extends Controller
              }),
         ],
         'remarks' => '',
+        'source' => '',
       ]);
 
       Appointment::updateOrCreate($data);
@@ -233,12 +234,23 @@ class AppointmentController extends Controller
              }),
         ],
         'remarks' => '',
+        'source' => '',
         'state' => '',
       ]);
 
       $appointment->update($data);
 
-      return redirect()->route('appointments.index');
+      if($appointment->state == 'checkin') {
+        if($appointment->patient_id == null) {
+          return redirect()->route('patient.create', ['appo' => $appointment]);
+        } else {
+          return redirect()->route('checkin.appointment', ['patient' => $appointment->patient_id, 'appo' => $appointment, 'matter' => $appointment->matter_id, 'user' => $appointment->user_id]);
+        }
+
+      } else {
+        return redirect()->route('appointments.index');
+      }
+
 
     }
 

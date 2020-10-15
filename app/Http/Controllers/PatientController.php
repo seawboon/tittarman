@@ -137,7 +137,7 @@ class PatientController extends Controller
       //return redirect()->route('patient.edit', ['pid' => $pid]);
   }
 
-  public function store()
+  public function store(Request $request)
   {
       $data = request()->validate([
         'branch_id' => 'required',
@@ -172,6 +172,11 @@ class PatientController extends Controller
 
       if($user == null){
         $patient = Patient::create($data);
+        if(!is_array($request->appo)) {
+          $newAPPo = Appointment::find($request->appo);
+          $newAPPo->patient_id = $patient->id;
+          $newAPPo->update();
+        }
         switch(request('submit')) {
           case 'save':
             return redirect()->route('matter.index', ['patient' => $patient]);

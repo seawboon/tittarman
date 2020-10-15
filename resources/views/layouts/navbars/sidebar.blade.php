@@ -180,6 +180,12 @@
                             <i class="ni ni-app"></i>
                             <span>{{ __('Payment Methods') }}</span>
                       </a>
+
+                      <a href="{{ route('sources.index') }}" class="dropdown-item">
+                            <i class="ni ni-app"></i>
+                            <span>{{ __('Appointment Sources') }}</span>
+                      </a>
+
                       @hasanyrole('Admin|Master')
                       <a href="{{ route('injuryparts.index') }}" class="dropdown-item">
                           <i class="ni ni-app"></i>

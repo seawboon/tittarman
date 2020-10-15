@@ -138,6 +138,15 @@
                   </div>
                 </div>
 
+                <div class="col-4">
+                  <div class="form-group">
+                    <label for="branch_id" class="d-block">Source</label>
+                    {!! Form::select('source', [null=>'Please Select'] + \App\AppointmentSource::pluck('name','id')->all(), '', array('class' => 'form-control', 'id' => 'source')) !!}
+                    @error('source')
+                    <small class="text-danger">{{ $message}}</small>
+                    @enderror
+                  </div>
+                </div>
 
 
               </div>
@@ -151,7 +160,7 @@
             </form>
          </div>
 
-         {!! $calendar_details->calendar() !!}
+         @include('calendar.full')
 
       </div>
 
@@ -166,7 +175,6 @@
 @endsection
 @push('css')
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.2.7/fullcalendar.min.css"/>
 <style>
 .datepicker table tr td.today,  .datepicker table tr td.today:hover {
   background-color: #ccc;
@@ -183,8 +191,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.2.7/fullcalendar.min.js"></script>
-{!! $calendar_details->script() !!}
 
 <script>
 $(document).ready(function() {

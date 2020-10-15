@@ -38,6 +38,16 @@
                       {!! Form::password('confirm-password', array('placeholder' => 'Confirm Password','class' => 'form-control')) !!}
                   </div>
               </div>
+
+              <div class="col-xs-12 col-sm-12 col-md-6">
+                <div class="form-group">
+                  <div id="cp2" class="input-group colorpicker colorpicker-component">
+                    <input type="text" id="color" name="color" value="{{$randomcolor}}" class="form-control" />
+                    <span class="input-group-addon"><i></i></span>
+                  </div>
+                </div>
+              </div>
+
               <div class="col-xs-12 col-sm-12 col-md-12">
                   <div class="form-group">
                       <strong>Role:</strong>
@@ -62,3 +72,22 @@
 
 
     @endsection
+
+@push('css')
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-colorpicker/2.5.1/css/bootstrap-colorpicker.min.css" rel="stylesheet">
+<style>
+  .colorpicker:before {
+    display: none;
+  }
+  .colorpicker-element .add-on i, .colorpicker-element .input-group-addon i {
+    height: 100%;
+    width: 30px;
+  }
+</style>
+@endpush
+@push('js')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-colorpicker/2.5.1/js/bootstrap-colorpicker.min.js"></script>
+<script type="text/javascript">
+  $('.colorpicker').colorpicker({});
+</script>
+@endpush

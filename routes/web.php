@@ -29,6 +29,7 @@ Route::group(['middleware' => 'auth'], function () {
   Route::resource('users','UserController');
   Route::resource('products','ProductController');
 	Route::resource('methods','MethodController');
+	Route::resource('sources','SourceController');
 
 	Route::get('/mybranch', 'HomeController@mybranch')->name('checkin.mybranch');
 	Route::get('/setSession/{branch}', 'HomeController@setSession')->name('checkin.setSession');

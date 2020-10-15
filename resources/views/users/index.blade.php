@@ -40,7 +40,7 @@
                         @foreach ($data as $key => $user)
                         <tr>
                               <td>{{ ++$i }}</td>
-                              <td>{{ $user->name }}</td>
+                              <td>{{ $user->name }} <span class="badge badge-circle badge-floating border-white" style="background-color:{{$user->color}}; width:1rem; height:1rem">&nbsp;</span></td>
                               <td>{{ $user->email }}</td>
                               <td>
                                @if(!empty($user->getRoleNames()))
@@ -85,6 +85,8 @@
                       </tbody>
                 </table>
             </div>
+
+            {{ $data->links() }}
 
         </div>
     </div>

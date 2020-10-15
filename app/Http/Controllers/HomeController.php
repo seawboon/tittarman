@@ -11,7 +11,7 @@ use App\CheckIn;
 use App\Branches;
 use App\Appointment;
 use App\Payment;
-use Calendar;
+use Spatie\Permission\Models\Role;
 
 use Session;
 
@@ -43,12 +43,18 @@ class HomeController extends Controller
         return redirect()->route('checkin.mybranch');
       }
 
+      $branches = Branches::pluck('name','id')->all();
+
+      $nranc = Branches::all(['id','name as title']);
+      $tiBranch = json_encode($nranc);
+
       $patients = Patient::where('branch_id', 'like', '%'.$myBranchID.'%')->whereDate('created_at', Carbon::today())->get();
       $appo = Appointment::where('branch_id', 'like', '%'.$myBranchID.'%')->whereDate('appointment_date', Carbon::today())->get();
       $treats = Payment::where('branch_id', 'like', '%'.$myBranchID.'%')->whereDate('created_at', Carbon::today())->get();
 
-      $events = Appointment::where('branch_id', 'like', '%'.$myBranchID.'%')->get();
+      $events = Appointment::whereDate('appointment_date', '>',Carbon::today()->subDays(30))->whereDate('appointment_date', '<',Carbon::today()->addDays(60))->get();
       $event_list = [];
+      $hs = [];
       foreach ($events as $key => $event) {
         if(isset($event->user)) {
           $eventkk = $event->user->name.' - '.$event->salutation.' '.$event->name;
@@ -56,34 +62,37 @@ class HomeController extends Controller
           $eventkk = $event->salutation.' '.$event->name;
         }
 
-        $event_list[] = Calendar::event(
-          $eventkk,
-          false,
-          new \DateTime($event->appointment_date),
-          new \DateTime($event->appointment_date),
-          $event->id,
-          [
-            //'url' => 'https://fullcalendar.io/',
-            'description' => 'Lecture'
-          ]
-        );
+        $kk = new class{};
+
+        $kk->id = $event->id;
+        $kk->resourceId = $event->branch_id;
+        $kk->start = $event->appointment_date;
+        $kk->end = '';
+        $kk->title = $event->salutation.'. '.$event->name.' ('.$event->state.')';
+        $kk->url = route('appointments.edit', $event->id);
+        if(isset($event->user)) {
+          //$kk->title .= ' - '.$event->user->name;
+          $kk->color = $event->user->color;
+        }
+
+
+        array_push($hs, $kk);
       }
 
-      $calendar_details = Calendar::addEvents($event_list, [ //set custom color fo this event
-                              //'color' => '#70db70',
 
-                              //'display' => 'list-item',
-                              //'textColor' => '#000',
-                              'backgroundColor' => '#fff'
-                          ])->setOptions([ //set fullcalendar options
-                              //'header'=>['left'=>'prev, next today', 'center'=>'title', 'right'=>'listDay,listWeek,listMonth'],
-                              'firstDay' => 1,
-                              //'initialView' => 'listWeek'
-                              //'editable' => true,
-                              //'navLinks' => true
-                          ]);
+      $event_list = json_encode($event_list);
+      $hs = json_encode($hs);
 
-      return view('dashboard', compact('patients', 'treats', 'appo', 'calendar_details'));
+      $role = Role::where('name', 'master')->first();
+      $master = $role->users()->get();
+
+      $calendar=array(
+          'branches' => $tiBranch,
+          'events' => $hs,
+          'master' => $master
+      );
+
+      return view('dashboard', compact('patients', 'treats', 'appo', 'calendar', 'branches'));
     }
 
     public function mybranch()

@@ -41,18 +41,7 @@
                 </div>
             </div> --}}
             <div class="col-xl-12">
-                <div class="card shadow">
-                    <div class="card-header bg-transparent">
-                        <div class="row align-items-center">
-                            <div class="col">
-                                <h2 class="mb-0">Appointment</h2>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                      {!! $calendar_details->calendar() !!}
-                    </div>
-                </div>
+                @include('calendar.full')
             </div>
 
             <div id="carouselExampleIndicators" class="carousel slide bg-gradient-primary" data-ride="carousel" style="height:100%">
@@ -95,11 +84,4 @@
     <script src="{{ asset('argon') }}/vendor/chart.js/dist/Chart.min.js"></script>
     <script src="{{ asset('argon') }}/vendor/chart.js/dist/Chart.extension.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.2.7/fullcalendar.min.js"></script>
-    {!! $calendar_details->script() !!}
-@endpush
-
-
-@push('css')
-<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.2.7/fullcalendar.min.css"/>
 @endpush
