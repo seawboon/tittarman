@@ -2,7 +2,7 @@
 
 @section('content')
     @include('layouts.headers.guest')
-
+    
     <div class="container mt--8 pb-5">
         <div class="row justify-content-center">
             <div class="col-lg-5 col-md-7">
@@ -20,7 +20,7 @@
                             </a>
                         </div>
                     </div>-->
-                    <div class="card-body px-lg-5 py-lg-5">
+                    <div class="card-body px-lg-4 py-lg-4 mt-5" style="background-color:#ededed;">
                         <!--<div class="text-center text-muted mb-4">
                             <small>
                                 <a href="{{ route('register') }}">{{ __('Create new account') }}</a> {{ __('OR Sign in with these credentials:') }}
@@ -67,7 +67,7 @@
                                 </label>
                             </div>
                             <div class="text-center">
-                                <button type="submit" class="btn btn-primary my-4">{{ __('Sign in') }}</button>
+                                <button type="submit" class="btn btn-primary mt-4">{{ __('Sign in') }}</button>
                             </div>
                         </form>
                     </div>
