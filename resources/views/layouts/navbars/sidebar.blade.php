@@ -136,11 +136,11 @@
                     </a>
                 </li>
                 @if(Session::get('myBranch'))
-                <li class="nav-item">
+                {{--<li class="nav-item">
                     <a class="nav-link" href="{{ route('appointments.index', ['show'=>'today']) }}">
                         <i class="ni ni-calendar-grid-58 text-pink"></i> {{ __('ttm.appo.title') }}
                     </a>
-                </li>
+                </li>--}}
                 @endif
                 <!--<li class="nav-item">
                     <a class="nav-link" href="{{ route('appointments.index') }}">

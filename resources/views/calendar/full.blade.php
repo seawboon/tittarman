@@ -287,7 +287,7 @@ $(document).ready(function() {
                 left: 'prev,next today',
                 center: 'title',
                 //right: 'resourceTimeGridDay,resourceTimeGridTwoDay,resourceTimeGridWeek,dayGridMonth'
-                right: 'resourceTimeGridDay,resourceTimeGridWeek,listDay,resourceTimelineDay'
+                right: 'resourceTimeGridDay,resourceTimeGridWeek,listDay'
               },
               views: {
                 resourceTimeGridTwoDay: {
