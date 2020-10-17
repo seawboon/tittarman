@@ -99,10 +99,22 @@
 
                     @foreach($injuries as $injury)
 
-                    <div class="col-6 col-md-3">
-                      <input type="checkbox" name="injuries[][injury_id]" class="custom-control-input" id="injury-{{$injury->name}}" value="{{$injury->id}}"  {{ (is_array($oldinjuries) && in_array($injury->id, $oldinjuries)) ? ' checked' : '' }}>
-                      <label class="custom-control-label" for="injury-{{$injury->name}}">{{$injury->name}}</label>
-                    </div>
+                    @if($injury->id == 9)
+                      <div class="col-6 col-md-3">
+                        <input type="checkbox" name="injuries[][injury_id]" class="custom-control-input" id="injury-{{$injury->name}}" value="{{$injury->id}}"  {{ (is_array($oldinjuries) && in_array($injury->id, $oldinjuries)) ? ' checked' : '' }}>
+                        <label class="custom-control-label" for="injury-{{$injury->name}}">{{$injury->name}}</label>
+                      </div>
+                      <div class="col-6 col-md-3 pl-0 pt-1">
+                        <input type="text" id="other" name="matter[other]" class="form-control" placeholder="Other" value="{{ old('matter.other') }}" style="height:30px;margin-left: -13px;">
+                      </div>
+                    @else
+                      <div class="col-6 col-md-3">
+                        <input type="checkbox" name="injuries[][injury_id]" class="custom-control-input" id="injury-{{$injury->name}}" value="{{$injury->id}}"  {{ (is_array($oldinjuries) && in_array($injury->id, $oldinjuries)) ? ' checked' : '' }}>
+                        <label class="custom-control-label" for="injury-{{$injury->name}}">{{$injury->name}}</label>
+                      </div>
+                    @endif
+
+
 
                     @endforeach
 
