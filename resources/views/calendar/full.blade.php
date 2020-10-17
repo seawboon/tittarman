@@ -30,15 +30,17 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Modal Header</h4>
+        {{--<h4 class="modal-title">Modal Header</h4>--}}
       </div>
       <div class="modal-body">
         <form action="{{ route('appointments.store') }}" method="post" autocomplete="off">
           @csrf
+          {{ Form::hidden('patient_id', $extra['patient']['id'] ?? '') }}
+          {{ Form::hidden('matter_id', $extra['matter']['id'] ?? '') }}
           <div class="row">
             <div class="col-4">
               <div class="form-group">
-                <label for="branch_id" class="d-block">Branch</label>
+                <label for="branch_id" class="d-block">Branch<span class="text-danger">*</span></label>
                 {!! Form::select('branch_id', [null=>'Please Select'] + \App\Branches::pluck('name','id')->all(), null, array('class' => 'form-control', 'id' => 'branch_id')) !!}
                 @error('branch_id')
                 <small class="text-danger">{{ $message}}</small>
@@ -47,7 +49,7 @@
             </div>
 
             <div class="col-4">
-              <label for="gemder" class="d-block">Appointment Date & Time</label>
+              <label for="gemder" class="d-block">Appointment Date & Time<span class="text-danger">*</span></label>
               <div class="form-group">
                 <div class="input-group">
                   <div class="input-group-prepend">
@@ -100,7 +102,7 @@
 
             <div class="col-4">
               <div class="form-group">
-                <label for="name">Name <small>as per NRIC / Passport</small></label>
+                <label for="name">Name <small>as per NRIC / Passport</small><span class="text-danger">*</span></label>
                 <input type="text" class="form-control" id="name" name="name" placeholder="Enter Full Name" value="">
                 @error('name')
                 <small class="text-danger">{{ $message}}</small>
@@ -111,7 +113,7 @@
             <div class="col-4">
               <div class="form-group">
                 <label for="email">Email</label>
-                <input type="email" class="form-control" id="email" name="email" placeholder="Enter Email" value="">
+                <input type="email" class="form-control" id="email" name="email" placeholder="Enter Email" value="{{ isset($extra['patient']['email']) ? $extra['patient']['email']:''}}">
                 @error('email')
                 <small class="text-danger">{{ $message}}</small>
                 @enderror
@@ -120,7 +122,7 @@
 
             <div class="col-4">
               <div class="form-group">
-                <label for="contact">Contact</label>
+                <label for="contact">Contact<span class="text-danger">*</span></label>
                 <div class="row">
                   <div class="col-5 pr-0">
                     <select class="form-control" id="provider" name="provider">
@@ -228,17 +230,6 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>
 <script>
 $(document).ready(function() {
-  flatpickr('.datetimepicker', {
-    enableTime: true,
-    altInput: true,
-    altFormat: "F j, Y H:i",
-    dateFormat: "Y-m-d H:i",
-    minDate: new Date().fp_incr(0),
-    minTime: "10:00",
-    maxTime: "20:00",
-    minuteIncrement: 60,
-    defaultHour: {{date('H')}}
-  });
 
     //var url = "{{URL('userData')}}";
     var branches;
@@ -318,9 +309,36 @@ $(document).ready(function() {
                   arg.date,
                   arg.resource ? arg.resource.id : '(no resource)'
                 );
-                $('.modal-title').html(arg.dateStr);
+                //$('.modal-title').html(arg.dateStr);
                 $('[name="branch_id"]').val(arg.resource.id);
-                $('#appointment_date').val('2020-10-21 12:00');
+                $('#appointment_date').val(arg.dateStr);
+                @isset($extra['patient']['salutation'])
+                  $('[name="salutation"').val('{{$extra['patient']['salutation']}}');
+                @endisset
+                @isset($extra['patient']['fullname'])
+                  $('[name="name"').val('{{$extra['patient']['fullname']}}');
+                @endisset
+                @isset($extra['patient']['contact'])
+                  $('[name="contact"').val('{{$extra['patient']['contact']}}');
+                @endisset
+                @isset($extra['patient']['provider'])
+                  $('[name="provider"').val('{{$extra['patient']['provider']}}');
+                @endisset
+
+                $('#appointment_date').val(arg.dateStr);
+
+                flatpickr('.datetimepicker', {
+                  enableTime: true,
+                  altInput: true,
+                  altFormat: "F j, Y H:i",
+                  dateFormat: "Y-m-d H:i",
+                  minDate: new Date().fp_incr(0),
+                  minTime: "10:00",
+                  maxTime: "20:00",
+                  minuteIncrement: 60
+                  //defaultHour: {{date('H')}}
+                });
+
                 $('#myModal').modal('show');
               }
             });

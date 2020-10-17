@@ -69,7 +69,7 @@
                                   @endif
                                   <li class="nav-item">
                                     <a class="btn btn-sm btn-info float-right" href="{{ route('checkin.create', ['patient' => $patient]) }}">New Case Check-In</a>
-                                    <a class="btn btn-sm btn-info float-right mr-2" href="{{ route('appointments.create', ['patient' => $patient]) }}">New Case Appointment</a>
+                                    {{--<a class="btn btn-sm btn-info float-right mr-2" href="{{ route('appointments.create', ['patient' => $patient]) }}">New Case Appointment</a>--}}
                                   </li>
                                 </ul>
 
@@ -92,7 +92,7 @@
                                     <i class="fas fa-ellipsis-v"></i>
                                   </a>
                                   <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-                                      <a class="dropdown-item" href="{{ route('appointments.create', ['patient' => $patient]) }}">{{ __('ttm.appo.add')}}</a>
+                                      <a class="dropdown-item" href="{{ route('appointments.create', ['patient' => $patient]) }}">New Case Appointment</a>
                                       <a class="dropdown-item" href="{{ route('payment.create', ['patient' => $patient]) }}">Make Payment</a>
                                       <div class="dropdown-divider"></div>
                                       <div class=" dropdown-header noti-title">

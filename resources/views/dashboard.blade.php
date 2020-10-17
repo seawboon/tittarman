@@ -40,9 +40,9 @@
                     </div>
                 </div>
             </div> --}}
-            {{--<div class="col-xl-12">
+            <div class="col-xl-12">
                 @include('calendar.full')
-            </div>--}}
+            </div>
 
             <div id="carouselExampleIndicators" class="carousel slide bg-gradient-primary" data-ride="carousel" style="height:100%">
               <ol class="carousel-indicators">

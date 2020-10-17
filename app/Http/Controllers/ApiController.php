@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Branches;
 use App\Appointment;
+use App\Matter;
 use Spatie\Permission\Models\Role;
 
 class ApiController extends Controller
@@ -44,9 +45,16 @@ class ApiController extends Controller
         } else {
           $kk->title = 'NEW ';
         }
+
         //$kk->title = $event->salutation.'. '.$event->name.' ('.$event->state.')';
         //$kk->title .= $event->salutation.'. '.$event->name.' - '.$event->provider.$event->contact;
         $kk->title .= $event->name.' - '.$event->provider.$event->contact;
+        if($event->matter_id) {
+          $Matter = Matter::find($event->matter_id);
+          $kk->title .= ' ('.count($Matter->treats).')';
+        } else {
+          $kk->title .= ' (0)';
+        }
         $kk->url = route('appointments.edit', $event->id);
         if(isset($event->user)) {
           //$kk->title .= ' - '.$event->user->name;
