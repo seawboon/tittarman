@@ -129,10 +129,10 @@
             </div>
 
 
-            @role('Master')
+            @can('master-edit')
             <button type="submit" name="submit" value="save" class="btn btn-primary">Edit Case</button>
             <button type="submit" name="submit" value="new-treat" class="btn btn-primary">Edit & Add New Treatment</button>
-            @endrole
+            @endcan
 
           </form>
 
