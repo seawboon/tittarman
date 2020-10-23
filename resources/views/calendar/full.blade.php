@@ -371,7 +371,7 @@ $(function() {
       $.ajax({
         url: "/api/calendarpost",
         method: 'post',
-        data: $('#appointment_form').serialize,
+        data: $('#appointment_form').serialize(),
         success: function(result) {
           $('#form-submit').html('Submit');
           if(result.status) {
@@ -388,7 +388,7 @@ $(function() {
             $('#res_message').show();
           }
 
-          document.getElementById("appointment_form").reset();
+          //document.getElementById("appointment_form").reset();
           setTimeout(function(){
             $('#res_message').hide();
             $('#msg_div').hide();
