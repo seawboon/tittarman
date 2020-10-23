@@ -85,7 +85,7 @@ class ApiController extends Controller
 
     public function calendarStore(Request $request) {
       //request()->validate([
-      $validator = Validator::make($request->all(), [
+      $data = request()->validate([
         'branch_id' => 'required',
         'user_id' => '',
         'matter_id' => '',
@@ -95,7 +95,8 @@ class ApiController extends Controller
         'email' => '',
         'provider' => 'required',
         'contact' => 'required|integer',
-        'appointment_date' => [
+        'appointment_date' => 'required',
+        /*'appointment_date' => [
             'required',
              Rule::unique('appointments')->where(function ($query) {
                $query->where('branch_id', request()->branch_id)
@@ -103,17 +104,16 @@ class ApiController extends Controller
                ->where('state', '!=', 'cancelled')
                ->where('appointment_date', 'like', request()->appointment_date . '%' );
              }),
-        ],
+        ],*/
         'remarks' => '',
         'source' => '',
       ]);
 
 
+      $result = Appointment::updateOrCreate($data);
 
       $arr = array('msg' => 'Something went wrong. Please try again!', 'status' => false);
-      if($validator->passes()){
-        $data = $request->all();
-        $result = Appointment::insert($data);
+      if($result){
       	$arr = array('msg' => 'Contact Added Successfully!', 'status' => true);
       }
       return Response()->json($arr);
