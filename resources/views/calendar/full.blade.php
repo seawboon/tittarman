@@ -33,10 +33,15 @@
         {{--<h4 class="modal-title">Modal Header</h4>--}}
       </div>
       <div class="modal-body">
-        <form action="{{ route('appointments.store') }}" method="post" autocomplete="off">
+        <form id="appointment_form" action="javascript:void(0)" method="post" autocomplete="off">
           @csrf
           {{ Form::hidden('patient_id', $extra['patient']['id'] ?? '') }}
           {{ Form::hidden('matter_id', $extra['matter']['id'] ?? '') }}
+
+          <div class="alert" id="msg_div" style="display:none">
+            <span id="res_message"></span>
+          </div>
+
           <div class="row">
             <div class="col-4">
               <div class="form-group">
@@ -173,7 +178,7 @@
             </div>
 
             <div class="col-12 text-center">
-            <button type="submit" name="submit" value="save" class="btn btn-primary">Submit</button>
+            <button id="form-submit" type="submit" name="submit" value="save" class="btn btn-primary">Submit</button>
             </div>
           </div>
         </form>
@@ -347,6 +352,54 @@ $(document).ready(function() {
         }
     });
 
+
+});
+
+
+$(function() {
+
+  $('#form-submit').on('click', function(e) {
+      e.preventDefault();
+      ccrr = $('#appointment_form').serialize;
+      console.log(ccrr);
+      $.ajaxSetup({
+        headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+      });
+
+      $('#form-submit').html('Sending...');
+
+      $.ajax({
+        url: "/api/calendarpost",
+        method: 'post',
+        data: $('#appointment_form').serialize,
+        success: function(result) {
+          $('#form-submit').html('Submit');
+          if(result.status) {
+            $('#res_message').html(result.msg);
+            $('#msg_div').removeClass('alert-danger');
+            $('#msg_div').addClass('alert-success');
+            $('#msg_div').show();
+            $('#res_message').show();
+          } else {
+            $('#res_message').html(result.msg);
+            $('#msg_div').removeClass('alert-success');
+            $('#msg_div').addClass('alert-danger');
+            $('#msg_div').show();
+            $('#res_message').show();
+          }
+
+          document.getElementById("appointment_form").reset();
+          setTimeout(function(){
+            $('#res_message').hide();
+            $('#msg_div').hide();
+          }, 1500);
+
+        }
+      });
+
+  });
 
 });
 </script>

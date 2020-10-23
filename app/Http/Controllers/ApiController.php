@@ -79,4 +79,40 @@ class ApiController extends Controller
 
       return compact('calendar');
     }
+
+    public function calendarStore(Request $request) {
+      request()->validate([
+        'branch_id' => 'required',
+        'user_id' => '',
+        'matter_id' => '',
+        'patient_id' => '',
+        'salutation' => '',
+        'name' => 'required',
+        'email' => '',
+        'provider' => 'required',
+        'contact' => 'required|integer',
+        'appointment_date' => [
+            'required',
+             Rule::unique('appointments')->where(function ($query) {
+               $query->where('branch_id', request()->branch_id)
+               ->where('user_id', request()->user_id)
+               ->where('state', '!=', 'cancelled')
+               ->where('appointment_date', 'like', request()->appointment_date . '%' );
+             }),
+        ],
+        'remarks' => '',
+        'source' => '',
+      ]);
+
+      $data = $request->all();
+      $result = Appointment::insert($data);
+
+      $arr = array('msg' => 'Something went wrong. Please try again!', 'status' => false);
+      if($result){
+      	$arr = array('msg' => 'Contact Added Successfully!', 'status' => true);
+      }
+      return Response()->json($arr);
+
+    }
+    
 }
