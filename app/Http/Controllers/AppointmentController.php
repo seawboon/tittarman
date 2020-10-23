@@ -170,7 +170,7 @@ class AppointmentController extends Controller
     public function store(Request $request)
     {
       //dd(request()->appointment_date);
-      $test = Appointment::where('user_id',request()->user_id)->where('appointment_date', 'like', request()->appointment_date . '%' )->get();
+      //$test = Appointment::where('user_id',request()->user_id)->where('appointment_date', 'like', request()->appointment_date . '%' )->get();
       //dd($test);
       $data = request()->validate([
         'branch_id' => 'required',

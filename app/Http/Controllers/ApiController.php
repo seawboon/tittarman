@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use Validator;
 use Carbon\Carbon;
 use App\Branches;
 use App\Appointment;
 use App\Matter;
 use Spatie\Permission\Models\Role;
+use App\Rules;
 
 class ApiController extends Controller
 {
@@ -114,5 +117,5 @@ class ApiController extends Controller
       return Response()->json($arr);
 
     }
-    
+
 }
