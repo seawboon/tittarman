@@ -301,19 +301,19 @@ $(document).ready(function() {
               events: event_list,
 
               select: function(arg) {
-                console.log(
+                /*console.log(
                   'select',
                   arg.startStr,
                   arg.endStr,
                   arg.resource ? arg.resource.id : '(no resource)'
-                );
+                );*/
               },
               dateClick: function(arg) {
-                console.log(
+                /*console.log(
                   'dateClick',
                   arg.date,
                   arg.resource ? arg.resource.id : '(no resource)'
-                );
+                );*/
                 //$('.modal-title').html(arg.dateStr);
                 $('[name="branch_id"]').val(arg.resource.id);
                 $('#appointment_date').val(arg.dateStr);
@@ -360,8 +360,6 @@ $(function() {
 
   $('#form-submit').on('click', function(e) {
       e.preventDefault();
-      ccrr = $('#appointment_form').serialize;
-      console.log(ccrr);
       $.ajaxSetup({
         headers: {
           'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

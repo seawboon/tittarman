@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Carbon\Carbon;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Blade;
 
@@ -40,6 +41,8 @@ class AppServiceProvider extends ServiceProvider
       Blade::directive('money', function ($amount) {
           return "<?php echo 'RM ' . number_format($amount, 2); ?>";
       });
+
+      Schema::defaultStringLength(191);
 
     }
 }
