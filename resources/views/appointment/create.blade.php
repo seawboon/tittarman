@@ -6,7 +6,7 @@
         <div class="row">
 
       <div class="col-xl-11 order-xl-1">
-        <div class="card-body">
+        {{--<div class="card-body">
 
             <form action="{{ route('appointments.store') }}" method="post" autocomplete="off">
               <input autocomplete="false" name="hidden" type="text" style="display:none;">
@@ -158,7 +158,7 @@
               <button type="submit" name="submit" value="new" class="btn btn-primary">Submit & New Appointment</button>
 
             </form>
-         </div>
+         </div>--}}
 
          @include('calendar.full')
 

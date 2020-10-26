@@ -5,7 +5,7 @@
               <h2 class="mb-0">Appointment</h2>
             </div>
             <div class="col-6 text-right">
-              <a class="btn btn-sm btn-info mb-3" href="{{ route('appointments.create') }}">New Appointment</a>
+              {{--<a class="btn btn-sm btn-info mb-3" href="{{ route('appointments.create') }}">New Appointment</a>--}}
             </div>
             <div class="col">
                 <h4 class="master-label">
@@ -46,7 +46,7 @@
             <div class="col-4">
               <div class="form-group">
                 <label for="branch_id" class="d-block">Branch<span class="text-danger">*</span></label>
-                {!! Form::select('branch_id', [null=>'Please Select'] + \App\Branches::pluck('name','id')->all(), null, array('class' => 'form-control', 'id' => 'branch_id')) !!}
+                {!! Form::select('branch_id', [null=>'Please Select'] + \App\Branches::pluck('name','id')->all(), null, array('class' => 'form-control', 'id' => 'branch_id', 'required' => 'required')) !!}
                 @error('branch_id')
                 <small class="text-danger">{{ $message}}</small>
                 @enderror
@@ -108,7 +108,7 @@
             <div class="col-4">
               <div class="form-group">
                 <label for="name">Name <small>as per NRIC / Passport</small><span class="text-danger">*</span></label>
-                <input type="text" class="form-control" id="name" name="name" placeholder="Enter Full Name" value="">
+                <input type="text" class="form-control" id="name" name="name" placeholder="Enter Full Name" value="" required>
                 @error('name')
                 <small class="text-danger">{{ $message}}</small>
                 @enderror
@@ -130,7 +130,7 @@
                 <label for="contact">Contact<span class="text-danger">*</span></label>
                 <div class="row">
                   <div class="col-5 pr-0">
-                    <select class="form-control" id="provider" name="provider">
+                    <select class="form-control" id="provider" name="provider" required>
                       <option value="">Select</option>
                       <option value="010">010</option>
                       <option value="011">011</option>
@@ -147,7 +147,7 @@
                     @enderror
                   </div>
                   <div class="col-7">
-                    <input type="text" class="form-control" id="contact" name="contact" placeholder="Enter Contact" minlength="7" maxlength="8" value="">
+                    <input type="text" class="form-control" id="contact" name="contact" placeholder="Enter Contact" minlength="7" maxlength="8" required>
                     @error('contact')
                     <small class="text-danger">{{ $message}}</small>
                     @enderror
@@ -239,6 +239,8 @@ $(document).ready(function() {
     //var url = "{{URL('userData')}}";
     var branches;
     var event_list;
+    var calendarEl = document.getElementById('calendar');
+    var calendar = null;
     $.ajax({
         url: "/api/calendar",
         type: "GET",
@@ -260,9 +262,9 @@ $(document).ready(function() {
               $('.master-label').append(itemAppend);
             });
 
-            var calendarEl = document.getElementById('calendar');
 
-            var calendar = new FullCalendar.Calendar(calendarEl, {
+            var currentType = null;
+            calendar = new FullCalendar.Calendar(calendarEl, {
               schedulerLicenseKey: 'GPL-My-Project-Is-Open-Source',
               initialView: 'resourceTimeGridDay',
               initialDate: '{{Carbon\Carbon::now()}}',
@@ -307,6 +309,33 @@ $(document).ready(function() {
                   arg.endStr,
                   arg.resource ? arg.resource.id : '(no resource)'
                 );*/
+              },
+              eventDrop: function(event, delta, revertFunc) {
+                var infoResources = event.event.getResources();
+                var resourceId = infoResources[0]._resource.id;
+                //alert(event.event.startStr);
+                //alert(event.event.id);
+                //alert(resourceId);
+                $.ajaxSetup({
+                  headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                  }
+                });
+
+                $.ajax({
+                  url: "/api/calendarput/"+event.event.id,
+                  method: 'put',
+                  data:{
+                      appointment_date: event.event.startStr,
+                      branch_id: resourceId,
+                  },
+                  cache: false,
+                  //dataType: 'json',
+                  success: function(result) {
+                    console.log(result);
+                  }
+                });
+
               },
               dateClick: function(arg) {
                 /*console.log(
@@ -353,10 +382,7 @@ $(document).ready(function() {
     });
 
 
-});
 
-
-$(function() {
 
   $('#form-submit').on('click', function(e) {
       e.preventDefault();
@@ -365,6 +391,8 @@ $(function() {
           'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
       });
+
+      if($('#name').val() && $('#provider').val() && $('#contact').val() && $.isNumeric($('#contact').val()) && $('#branch_id').val() && $('#appointment_date').val()) {
 
       $('#form-submit').html('Sending...');
 
@@ -380,7 +408,19 @@ $(function() {
             $('#msg_div').addClass('alert-success');
             $('#msg_div').show();
             $('#res_message').show();
+
+            calendar.addEvent({
+              id: result.event_id,
+              resourceId: result.resourceId,
+              classNames: result.classNames,
+              start: result.start,
+              title: result.title,
+              url: result.url,
+              color: result.color
+            });
+
           } else {
+            alert('please complete form');
             $('#res_message').html(result.msg);
             $('#msg_div').removeClass('alert-success');
             $('#msg_div').addClass('alert-danger');
@@ -396,6 +436,9 @@ $(function() {
 
         }
       });
+    } else {
+      alert('plrase complete form');
+    }
 
   });
 

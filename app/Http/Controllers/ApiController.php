@@ -55,9 +55,9 @@ class ApiController extends Controller
         if($event->matter_id) {
           $Matter = Matter::find($event->matter_id);
           $kk->title .= ' ('.count($Matter->treats).')';
-        } else {
+        }/* else {
           $kk->title .= ' (0)';
-        }
+        }*/
         $kk->url = route('appointments.edit', $event->id);
         if(isset($event->user)) {
           //$kk->title .= ' - '.$event->user->name;
@@ -114,9 +114,53 @@ class ApiController extends Controller
 
       $arr = array('msg' => 'Something went wrong. Please try again!', 'status' => false);
       if($result){
-      	$arr = array('msg' => 'Contact Added Successfully!', 'status' => true);
+        if($result->branch_id == 1) {
+          $classNames = ['MV-s'];
+        } else {
+          $classNames = ['ARK-s'];
+        }
+
+        $color = '#3788d8';
+        if(isset($result->user)) {
+          $color = $result->user->color;
+        }
+
+        $newTitle = 'NEW ';
+        if($result->patient_id) {
+          $newTitle = $result->patient_id.'. ';
+        }
+
+        $newTitle .= $result->name.' - '.$result->provider.$result->contact;
+
+        if($result->matter_id) {
+          $Matter = Matter::find($result->matter_id);
+          $newTitle .= ' ('.count($Matter->treats).')';
+        }
+
+      	$arr = array(
+          'msg' => 'Contact Added Successfully!',
+          'status' => true,
+          'event_id' => $result->id,
+          'resourceId' => $result->branch_id,
+          'url' => route('appointments.edit', $result->id),
+          'start' => $result->appointment_date,
+          'title' => $newTitle,
+          'classNames' => $classNames,
+          'color' => $color
+        );
       }
       return Response()->json($arr);
+
+    }
+
+    public function calendarDrop(Appointment $appointment, Request $request)
+    {
+      //$data = $request->appointment_date;
+      $appo = $appointment;
+      $appo->branch_id = $request->branch_id;
+      $appo->appointment_date = Carbon::parse($request->appointment_date)->format('Y-m-d H');
+      $appo->save();
+      return compact('appo');
 
     }
 

@@ -19,3 +19,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::get('calendar', 'ApiController@calendar');
 Route::post('calendarpost', 'ApiController@calendarStore');
+Route::put('calendarput/{appointment}', 'ApiController@calendarDrop');
