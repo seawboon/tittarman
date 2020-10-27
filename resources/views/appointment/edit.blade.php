@@ -210,7 +210,7 @@ $(document).ready(function() {
     minDate: new Date().fp_incr(0),
     minTime: "10:00",
     maxTime: "20:00",
-    minuteIncrement: 60,
+    minuteIncrement: 30,
     defaultHour: {{date('H')}}
   });
 

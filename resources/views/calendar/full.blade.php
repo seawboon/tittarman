@@ -227,12 +227,122 @@
   border :10px solid;
 }
 </style>
+
+<style>
+
+  /*
+  i wish this required CSS was better documented :(
+  https://github.com/FezVrasta/popper.js/issues/674
+  derived from this CSS on this page: https://popper.js.org/tooltip-examples.html
+  */
+
+  .popper,
+  .tooltip {
+    position: absolute;
+    z-index: 9999;
+    background: #FFC107;
+    color: black;
+    width: 150px;
+    border-radius: 3px;
+    /*box-shadow: 0 0 2px rgba(0,0,0,0.5);
+    padding: 10px;*/
+    text-align: center;
+    opacity: 1 !important;
+  }
+  .style5 .tooltip {
+    background: #1E252B;
+    color: #FFFFFF;
+    max-width: 200px;
+    width: auto;
+    font-size: .8rem;
+    padding: .5em 1em;
+  }
+  .popper .popper__arrow,
+  .tooltip .tooltip-arrow {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    position: absolute;
+    margin: 5px;
+  }
+
+  .tooltip .tooltip-arrow,
+  .popper .popper__arrow {
+    border-color: #FFC107;
+  }
+  .style5 .tooltip .tooltip-arrow {
+    border-color: #1E252B;
+  }
+  .popper[x-placement^="top"],
+  .tooltip[x-placement^="top"] {
+    margin-bottom: 5px;
+  }
+  .popper[x-placement^="top"] .popper__arrow,
+  .tooltip[x-placement^="top"] .tooltip-arrow {
+    border-width: 5px 5px 0 5px;
+    border-left-color: transparent;
+    border-right-color: transparent;
+    border-bottom-color: transparent;
+    bottom: -5px;
+    left: calc(50% - 5px);
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+  .popper[x-placement^="bottom"],
+  .tooltip[x-placement^="bottom"] {
+    margin-top: 5px;
+  }
+  .tooltip[x-placement^="bottom"] .tooltip-arrow,
+  .popper[x-placement^="bottom"] .popper__arrow {
+    border-width: 0 5px 5px 5px;
+    border-left-color: transparent;
+    border-right-color: transparent;
+    border-top-color: transparent;
+    top: -5px;
+    left: calc(50% - 5px);
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+  .tooltip[x-placement^="right"],
+  .popper[x-placement^="right"] {
+    margin-left: 5px;
+  }
+  .popper[x-placement^="right"] .popper__arrow,
+  .tooltip[x-placement^="right"] .tooltip-arrow {
+    border-width: 5px 5px 5px 0;
+    border-left-color: transparent;
+    border-top-color: transparent;
+    border-bottom-color: transparent;
+    left: -5px;
+    top: calc(50% - 5px);
+    margin-left: 0;
+    margin-right: 0;
+  }
+  .popper[x-placement^="left"],
+  .tooltip[x-placement^="left"] {
+    margin-right: 5px;
+  }
+  .popper[x-placement^="left"] .popper__arrow,
+  .tooltip[x-placement^="left"] .tooltip-arrow {
+    border-width: 5px 0 5px 5px;
+    border-top-color: transparent;
+    border-right-color: transparent;
+    border-bottom-color: transparent;
+    right: -5px;
+    top: calc(50% - 5px);
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+</style>
 @endpush
 
 @push('js')
 <script src="{{ asset('js/fullcalendar/main.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>
+<script src='https://unpkg.com/popper.js/dist/umd/popper.min.js'></script>
+<script src='https://unpkg.com/tooltip.js/dist/umd/tooltip.min.js'></script>
 <script>
 $(document).ready(function() {
 
@@ -270,6 +380,8 @@ $(document).ready(function() {
               initialDate: '{{Carbon\Carbon::now()}}',
               slotMinTime: '10:00',
               slotMaxTime: '21:00',
+              slotLabelInterval: '00:30:00',
+              slotDuration: '00:30:00',
               slotEventOverlap: false,
               editable: true,
               selectable: true,
@@ -288,6 +400,15 @@ $(document).ready(function() {
                 right: 'resourceTimeGridDay,resourceTimeGridWeek,listDay'
               },
               views: {
+                resourceTimeGridDay: {
+                  buttonText: 'Day',
+                },
+                resourceTimeGridWeek: {
+                  buttonText: 'Week',
+                },
+                listDay: {
+                  buttonText: 'List',
+                },
                 resourceTimeGridTwoDay: {
                   type: 'resourceTimeGrid',
                   duration: { days: 3 },
@@ -300,16 +421,29 @@ $(document).ready(function() {
               resourceOrder: '-id',
               resources: branches,
 
+              eventDidMount: function(info) {
+                console.log(info.event.extendedProps.description);
+                var tooltip = new Tooltip(info.el, {
+                  title: info.event.extendedProps.description,
+                  placement: 'top',
+                  trigger: 'hover',
+                  container: 'body'
+                });
+              },
+
               events: event_list,
 
-              select: function(arg) {
-                /*console.log(
+
+
+              /*select: function(arg) {
+                console.log(
                   'select',
                   arg.startStr,
                   arg.endStr,
                   arg.resource ? arg.resource.id : '(no resource)'
-                );*/
-              },
+                );
+              },*/
+
               eventDrop: function(event, delta, revertFunc) {
                 var infoResources = event.event.getResources();
                 var resourceId = infoResources[0]._resource.id;
@@ -332,11 +466,12 @@ $(document).ready(function() {
                   cache: false,
                   //dataType: 'json',
                   success: function(result) {
-                    console.log(result);
+                    //console.log(result);
                   }
                 });
 
               },
+
               dateClick: function(arg) {
                 /*console.log(
                   'dateClick',
@@ -369,7 +504,7 @@ $(document).ready(function() {
                   minDate: new Date().fp_incr(0),
                   minTime: "10:00",
                   maxTime: "20:00",
-                  minuteIncrement: 60
+                  minuteIncrement: 30,
                   //defaultHour: {{date('H')}}
                 });
 

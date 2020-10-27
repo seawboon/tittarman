@@ -59,6 +59,7 @@ class ApiController extends Controller
           $kk->title .= ' (0)';
         }*/
         $kk->url = route('appointments.edit', $event->id);
+        $kk->description = $kk->title;
         if(isset($event->user)) {
           //$kk->title .= ' - '.$event->user->name;
           $kk->color = $event->user->color;
@@ -158,7 +159,7 @@ class ApiController extends Controller
       //$data = $request->appointment_date;
       $appo = $appointment;
       $appo->branch_id = $request->branch_id;
-      $appo->appointment_date = Carbon::parse($request->appointment_date)->format('Y-m-d H');
+      $appo->appointment_date = Carbon::parse($request->appointment_date)->format('Y-m-d H:i');
       $appo->save();
       return compact('appo');
 
