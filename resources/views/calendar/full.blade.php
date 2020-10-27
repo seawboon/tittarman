@@ -226,6 +226,35 @@
 .fc .fc-list-event-dot {
   border :10px solid;
 }
+
+.fc-v-event .fc-event-main-frame {
+    height: 100%;
+    display: flex;
+    /*flex-direction: column;*/
+    /* boon add */
+    flex-direction: row;
+    overflow: hidden;
+  }
+
+  .fc-v-event .fc-event-title { /* will have fc-sticky on it */
+      top: 0;
+      bottom: 0;
+      /*max-height: 100%;  clip overflow */
+
+      overflow: hidden;
+      /*boon add */
+      max-height: 17px; /* clip overflow */
+      font-size: var(--fc-small-font-size, .85em);
+    }
+    .fc-media-screen .fc-timegrid-event {
+        position: absolute; /* absolute WITHIN the harness */
+        top: 0;
+        bottom: 1px; /* stay away from bottom slot line */
+        left: 0;
+        right: 0;
+        /*boon add */
+        height: 25px;
+      }
 </style>
 
 <style>
