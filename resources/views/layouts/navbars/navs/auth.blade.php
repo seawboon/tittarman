@@ -17,7 +17,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text"><i class="fas fa-search"></i></span>
                     </div>
-                    <input class="form-control" name="search" id="search" placeholder="Search Name / NRIC / Email" type="text" value="{{ $searchTerm ?? '' }}">
+                    <input class="form-control" name="search" id="search" placeholder="Search ID (p*) / Name / NRIC / Email /Contact" type="text" value="{{ $searchTerm ?? '' }}">
                 </div>
             </div>
         </form>
