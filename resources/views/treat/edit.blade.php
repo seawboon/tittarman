@@ -17,10 +17,12 @@
               @php
                 $permit['text'] = '';
                 $permit['class'] = '';
+                /*
                 if(auth()->user()->cannot('master-edit')) {
                   $permit['text'] = 'readonly';
                   $permit['class'] = 'invisible h-0';
                 }
+                */
               @endphp
 
 

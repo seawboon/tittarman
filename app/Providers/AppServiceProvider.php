@@ -32,7 +32,14 @@ class AppServiceProvider extends ServiceProvider
     {
       Builder::macro('whereLike', function($attributes, string $searchTerm) {
          foreach(array_wrap($attributes) as $attribute) {
+           if($attribute == 'contact') {
+             $this->orWhereRaw("CONCAT(provider, contact) LIKE ?", ['%'.$searchTerm.'%']);
+           } elseif ($attribute == 'id') {
+             $this->orWhereRaw("CONCAT('p', id) LIKE ?", [$searchTerm]);
+           }
+           else {
             $this->orWhere($attribute, 'LIKE', "%{$searchTerm}%");
+          }
          }
 
          return $this;

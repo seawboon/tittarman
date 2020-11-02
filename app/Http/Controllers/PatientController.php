@@ -44,7 +44,7 @@ class PatientController extends Controller
         $searchTerm = '';
       }
       //$patients = Patient::whereLike(['fullname', 'email', 'nric'], $searchTerm)->get();
-      $patients = Patient::whereLike(['fullname', 'email', 'nric'], $searchTerm)->paginate(10);
+      $patients = Patient::whereLike(['fullname', 'email', 'nric', 'id', 'contact'], $searchTerm)->paginate(10);
       return view('patient.index', compact('patients', 'searchTerm'));
   }
 
