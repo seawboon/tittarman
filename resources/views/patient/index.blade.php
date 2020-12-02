@@ -31,7 +31,7 @@
                                 <a href="{{ route('patient.edit', $patient->id) }}"><small>{{ $patient->salutation ?? '' }}</small> {{ $patient->fullname }}</a>
                                 <br />{{ $patient->nric }}
                             </td>
-                            <td>
+                            <td class="align-top">
                                 {{ $patient->provider.$patient->contact }}
                             </td>
                             <td class="branch align-top">
