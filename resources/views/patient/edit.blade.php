@@ -266,10 +266,13 @@
                                       <th scope="col" colspan="2" class="sort" data-sort="branch">
                                         <div class="row">
                                           <div class="col-4">
-                                            treatment
+                                            treatment date
                                           </div>
-                                          <div class="col-8">
-                                            Photos
+                                          <div class="col-4">
+                                            Branch
+                                          </div>
+                                          <div class="col-4">
+                                            treat by
                                           </div>
                                         </div>
                                       </th>
@@ -305,7 +308,7 @@
                                               <div class="col-4">
                                                 <a class="d-block mb-2 w-75" href="{{ route('treat.edit', ['patient' => $patient, 'matter' => $treat->matter_id, 'treat' => $treat]) }}">{{ Carbon\Carbon::parse($treat->treat_date)->format('d M Y') }}</a>
                                               </div>
-                                              <div class="col-8">
+                                              {{-- <div class="col-8">
                                                 @foreach($treat->images as $image)
                                                 @php
                                                   $badgeColor = 'badge-default';
@@ -317,6 +320,12 @@
                                                   {{$loop->iteration}}
                                                 </span>
                                                 @endforeach
+                                              </div>--}}
+                                              <div class="col-4">
+                                                {{ $treat->branch->short }}
+                                              </div>
+                                              <div class="col-4">
+                                                {{ $treat->user->name }}
                                               </div>
                                             </div>
 
