@@ -55,4 +55,10 @@ class Patient extends Model
       return $this->hasMany(Voucher::class, 'owner_id');
     }
 
+    public function accounts()
+    {
+      return $this->hasMany(Account::class, 'patient_id');
+    }
+
+
 }

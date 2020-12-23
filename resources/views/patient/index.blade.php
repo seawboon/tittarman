@@ -23,7 +23,10 @@
                             <th scope="row" class="align-top">
                                 <div class="media align-items-center">
                                     <div class="media-body">
-                                        <span class="name mb-0 text-sm">{{$patient->id}}</span>
+                                        <span class="name mb-0 text-sm">{{$patient->id}}</span><br />
+                                        @foreach($patient->accounts as $account)
+                                          {{ $account->branch->short}}-{{ $account->account_no}}<br />
+                                        @endforeach
                                     </div>
                                 </div>
                             </th>

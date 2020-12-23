@@ -31,4 +31,9 @@ class Branches extends Model
     return $this->hasMany(Payment::class, 'branch_id');
   }
 
+  public function accounts()
+  {
+    return $this->hasMany(Account::class, 'branch_id');
+  }
+
 }
