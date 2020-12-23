@@ -25,7 +25,9 @@
                                     <div class="media-body">
                                         <span class="name mb-0 text-sm">{{$patient->id}}</span><br />
                                         @foreach($patient->accounts as $account)
+                                          @if(!empty($account->account_no))
                                           {{ $account->branch->short}}-{{ $account->account_no}}<br />
+                                          @endif
                                         @endforeach
                                     </div>
                                 </div>
