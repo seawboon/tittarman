@@ -12,7 +12,7 @@
                   <div class="col-6">
                     <div class="form-group">
                       <label for="title">Branch <small class="text-danger">required</small></label>
-                      {!! Form::select('branch_id', $branches, $patient->branch_id, array('class' => 'form-control')) !!}
+                      {!! Form::select('branch_id', $branches['long'], $patient->branch_id, array('class' => 'form-control')) !!}
                       @error('salutation')
                       <small class="text-danger">{{ $message}}</small>
                       @enderror
@@ -35,6 +35,44 @@
                       <small class="text-danger d-block">{{ $message}}</small>
                       @enderror
                     </div>
+                  </div>
+
+                  <div class="col-12">
+
+                    <fieldset>
+                      <legend>Branches Patient No.:</legend>
+                      <div class="row">
+                        @foreach ($branches['short'] as $key => $short)
+
+                        @php
+                          $accValue = '';
+                          $newkey = $key;
+                          $filteredResults = $patient->accounts->filter(function ($value, $key) use ($newkey) {
+                            if ($value['branch_id'] == $newkey) {
+                                return true;
+                            }
+                          });
+
+                          if($filteredResults->isNotEmpty()) {
+                            $accValue = $filteredResults->first()->account_no;
+                          }
+                        @endphp
+
+                        <div class="col-4">
+                          <div class="form-group">
+                            <div class="input-group mb-2">
+                              <div class="input-group-prepend">
+                                <div class="input-group-text">{{$short}}-</div>
+                              </div>
+                              <input type="hidden" name="accounts[{{$key}}][branch_id]" value="{{$key}}">
+                              <input type="text" class="form-control" name="accounts[{{$key}}][account_no]" id="account{{$key}}" value="{{ old('accounts.'.$key.'.account_no', $accValue) }}" placeholder="Branch Patient number">
+                            </div>
+                          </div>
+                        </div>
+                        @endforeach
+                      </div>
+                    </fieldset>
+
                   </div>
 
                   <div class="col-3">
@@ -366,6 +404,27 @@
 
 
 @endsection
+
+@push('css')
+<style>
+.input-group-text {
+  background-color: #e9ecef;
+  color: #525f7f;
+}
+
+fieldset {
+  border: solid 1px #cad1d7;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+legend {
+  width: auto;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+</style>
+@endpush
 
 @push('js')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js" charset="utf-8"></script>

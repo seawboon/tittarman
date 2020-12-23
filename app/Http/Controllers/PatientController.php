@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Patient;
+use App\Account;
 use App\Branches;
 use App\Country;
 use App\State;
@@ -69,7 +70,11 @@ class PatientController extends Controller
         $appo->toArray();
       }
       //dd($appo);
-      $branches = Branches::pluck('name','id')->all();
+      $branches = array(
+        'long' => Branches::pluck('name','id')->all(),
+        'short' => Branches::pluck('short','id')->all()
+      );
+
       $countries = Country::pluck('name', 'name')->all();
       $states = State::where('country_id', 111)->pluck('name', 'name')->all();
       return view('patient.create', compact('branches', 'countries', 'states', 'appo'));
@@ -79,7 +84,10 @@ class PatientController extends Controller
   {
     //dd($patient);
       $patient = Patient::findOrFail($pid);
-      $branches = Branches::pluck('name','id')->all();
+      $branches = array(
+        'long' => Branches::pluck('name','id')->all(),
+        'short' => Branches::pluck('short','id')->all()
+      );
       $countries = Country::pluck('name', 'name')->all();
       $states = State::where('country_id', 111)->pluck('name', 'name')->all();
 
@@ -111,6 +119,9 @@ class PatientController extends Controller
         'country' => '',
         'sensitive_skin' => 'required',
         'freegift' => '',
+        'accounts' => '',
+        'accounts.*.account_no' => '',
+        'accounts.*.branch_id' => '',
       ]);
 
       if($request['freegift'] == null) {
@@ -123,7 +134,11 @@ class PatientController extends Controller
       $dateTime = Carbon::parse(request('dob'));
       $request['dob'] = $dateTime->format('Y-m-d');
       //dd($request);
-      $patient->update($request->except('submit'));
+      $patient->update($request->except('submit','accounts'));
+
+      Account::where('patient_id', $pid)->delete();
+
+      $patient->accounts()->createMany($request['accounts']);
 
       switch($request->submit) {
         case 'save':
@@ -157,21 +172,25 @@ class PatientController extends Controller
         'state' => '',
         'country' => '',
         'sensitive_skin' => 'required',
+        'accounts' => '',
+        'accounts.*.account_no' => '',
+        'accounts.*.branch_id' => '',
       ]);
 
       $dateTime = Carbon::parse(request('dob'));
 
       $data['dob'] = $dateTime->format('Y-m-d');
 
+      $filtered = array_except($data, ['accounts']);
       //$data['user_id'] = auth()->user()->id;
       /*$user = Patient::where('email', $data['email'])
       ->orWhere('fullname', $data['fullname'])
       ->orWhere('nric', $data['nric'])->first();*/
-
       $user = Patient::where('nric', $data['nric'])->first();
 
       if($user == null){
-        $patient = Patient::create($data);
+        $patient = Patient::create($filtered);
+        $patient->accounts()->createMany($data['accounts']);
         if(!is_array($request->appo)) {
           $newAPPo = Appointment::find($request->appo);
           $newAPPo->patient_id = $patient->id;

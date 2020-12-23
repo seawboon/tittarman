@@ -23,7 +23,10 @@
                             <th scope="row" class="align-top">
                                 <div class="media align-items-center">
                                     <div class="media-body">
-                                        <span class="name mb-0 text-sm">{{$patient->id}}</span>
+                                        <span class="name mb-0 text-sm">{{$patient->id}}</span><br />
+                                        @foreach($patient->accounts as $account)
+                                          {{ $account->branch->short}}-{{ $account->account_no}}<br />
+                                        @endforeach
                                     </div>
                                 </div>
                             </th>
@@ -31,7 +34,7 @@
                                 <a href="{{ route('patient.edit', $patient->id) }}"><small>{{ $patient->salutation ?? '' }}</small> {{ $patient->fullname }}</a>
                                 <br />{{ $patient->nric }}
                             </td>
-                            <td>
+                            <td class="align-top">
                                 {{ $patient->provider.$patient->contact }}
                             </td>
                             <td class="branch align-top">
