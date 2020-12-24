@@ -12,7 +12,7 @@
                             <th scope="col" class="sort" data-sort="name">Patient ID</th>
                             <th scope="col" class="sort" data-sort="budget">Name</th>
                             <th scope="col" class="sort" data-sort="budget">Contact</th>
-                            <th scope="col" class="sort" data-sort="branch">Branch</th>
+                            <th scope="col" class="sort" data-sort="branch">Lastest Treat</th>
                             <th scope="col">{{ __('ttm.case.title') }}</th>
                             <th scope="col"></th>
                         </tr>
@@ -40,7 +40,9 @@
                                 {{ $patient->provider.$patient->contact }}
                             </td>
                             <td class="branch align-top">
-                                {{ $patient->branch->short }}
+                                @if($patient->LastTreat['branch']['short'])
+                                {{ Carbon\Carbon::parse($patient->LastTreat['treat_date'])->format('d M Y') }} @ {{ $patient->LastTreat['branch']['short']}}
+                                @endif
                             </td>
                             <!--<td>
                                 <div class="d-flex align-items-center">

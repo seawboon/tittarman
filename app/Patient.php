@@ -24,6 +24,11 @@ class Patient extends Model
       return $this->hasMany(Treat::class);
     }
 
+    public function LastTreat()
+    {
+      return $this->hasOne(Treat::class)->with('branch')->orderBy('treat_date', 'desc');
+    }
+
     public function checkins()
     {
       return $this->hasMany(CheckIn::class);
