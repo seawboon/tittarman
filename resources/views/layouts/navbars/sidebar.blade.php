@@ -14,6 +14,15 @@
             <small class="text-center">{{ Session::get('myBranch')->name }}</small>
           </div>
           <small class="d-block text-center">
+
+            @php
+              $SwBranche = App\Branches::all()->whereNotIn('id', [session('myBranch')->id]);
+            @endphp
+
+            @foreach($SwBranche as $hh)
+              {{ $hh->short }}
+            @endforeach
+
             @if(Session::get('myBranch')->id == 2)
                 <a class="nav-link" href="{{ route('checkin.setSession', ['branch' => 1])}}">
                     <i class="ni ni-square-pin text-pink"></i> Switch to Mid Valley Megamall

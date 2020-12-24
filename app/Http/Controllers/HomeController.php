@@ -97,7 +97,8 @@ class HomeController extends Controller
 
     public function mybranch()
     {
-        return view('checkin.choose');
+        $branches = Branches::all();
+        return view('checkin.choose', compact('branches'));
     }
 
 

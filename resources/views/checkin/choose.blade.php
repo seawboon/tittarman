@@ -8,8 +8,10 @@
             <div class="pl-4">
 
               <h2>I'm in Branch</h2>
-              <a class="btn btn-sm btn-info ml-2" href="{{ route('checkin.setSession', ['branch' => 1])}}">Mid Valley Megamall</a>
-              <a class="btn btn-sm btn-info ml-2" href="{{ route('checkin.setSession', ['branch' => 2])}}">Plaza Arkadia Desa Parkcity</a>
+
+              @foreach($branches as $branch)
+                <a class="btn btn-sm btn-info ml-2" href="{{ route('checkin.setSession', ['branch' => $branch->id])}}">{{$branch->name}}</a>
+              @endforeach
             </div>
 
 </div>
