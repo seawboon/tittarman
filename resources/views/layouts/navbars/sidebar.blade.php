@@ -10,19 +10,20 @@
             TITTARMAN
         </a>
         @if(Session::get('myBranch'))
+          {{--
           <div class="text-center">
             <small class="text-center">{{ Session::get('myBranch')->name }}</small>
           </div>
-          <small class="d-block text-center">
+          --}}
 
+          <small class="d-block text-center">
             @php
               $SwBranche = App\Branches::all()->whereNotIn('id', [session('myBranch')->id]);
+              $chBranches = App\Branches::pluck('name','id')->all();
             @endphp
-
-            @foreach($SwBranche as $hh)
-              {{ $hh->short }}
-            @endforeach
-
+            <i class="ni ni-square-pin text-pink"></i> Switch to
+            {!! Form::select('choose-branch', $chBranches, session('myBranch')->id, array('class' => 'form-control', 'id' => 'choose-branch')) !!}
+            {{--
             @if(Session::get('myBranch')->id == 2)
                 <a class="nav-link" href="{{ route('checkin.setSession', ['branch' => 1])}}">
                     <i class="ni ni-square-pin text-pink"></i> Switch to Mid Valley Megamall
@@ -32,8 +33,10 @@
                     <i class="ni ni-square-pin text-pink"></i> Switch to Plaza Arkadia
                 </a>
             @endif
+            --}}
           </small>
         @endif
+
         <!-- User -->
         <ul class="nav align-items-center d-md-none">
             <li class="nav-item dropdown">
@@ -270,3 +273,20 @@
         </div>
     </div>
 </nav>
+
+
+@push('js')
+
+<script>
+$(document).on('change','#choose-branch',function(){
+  if (this.value!='') {
+    //var openURL = "http://"+this.value;
+    var openURL = "{{URL::to('/setSession')}}"+"/"+this.value;
+    //alert( openURL );
+    //window.open(openURL, '_blank');
+    window.open(openURL, '_self');
+  }
+});
+</script>
+
+@endpush
