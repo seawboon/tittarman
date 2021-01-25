@@ -20,3 +20,13 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::get('calendar', 'ApiController@calendar');
 Route::post('calendarpost', 'ApiController@calendarStore');
 Route::put('calendarput/{appointment}', 'ApiController@calendarDrop');
+
+
+//passport api
+Route::put('login', 'PassportController@login');
+//Route::post('register', 'PassportController@register');
+
+Route::middleware('auth:api')->group(function () {
+    Route::get('user', 'PassportController@details');
+    Route::apiResource('/patients', 'Api\PatientController');
+});
