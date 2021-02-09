@@ -17,7 +17,11 @@ Route::view('/draw', 'signature');
 Route::view('/php', 'phpinfo');
 Route::post('/signature/post', 'SignaturePadController@store')->name('signaturepad.upload');
 
-
+Route::get('/receipt', function() {
+	//return view('payment.receipt');
+	$pdf = PDF::loadView('payment.receipt');
+	return $pdf->stream('receipt.pdf');
+});
 
 Auth::routes();
 
