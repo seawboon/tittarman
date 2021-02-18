@@ -30,3 +30,9 @@ Route::middleware('auth:api')->group(function () {
     Route::get('user', 'PassportController@details');
     Route::apiResource('/patients', 'Api\PatientController');
 });
+
+Route::middleware('auth.apikey')->group(function () {
+    Route::get('api/patient/1', 'KeyController@details');
+});
+
+Route::get('api/patient/{pateint}', 'KeyController@details');
