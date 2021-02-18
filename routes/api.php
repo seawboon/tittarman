@@ -31,8 +31,11 @@ Route::middleware('auth:api')->group(function () {
     Route::apiResource('/patients', 'Api\PatientController');
 });
 
-Route::middleware('auth.apikey')->group(function () {
+/*Route::middleware('auth.apikey')->group(function () {
     Route::get('api/patient/1', 'KeyController@details');
-});
+});*/
 
-Route::get('api/patient/{pateint}', 'KeyController@details');
+Route::middleware('auth.apikey')->group(function () {
+  Route::get('keypatient/{patient}', 'KeyController@details');
+  Route::any('keypatient/search', 'KeyController@search');
+});
