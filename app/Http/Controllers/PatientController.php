@@ -11,6 +11,7 @@ use App\Country;
 use App\State;
 use App\Appointment;
 use App\Macros\whereLike;
+use Ramsey\Uuid\Uuid;
 
 use Session;
 
@@ -82,7 +83,6 @@ class PatientController extends Controller
 
   public function edit($pid)
   {
-    //dd($patient);
       $patient = Patient::findOrFail($pid);
       $branches = array(
         'long' => Branches::pluck('name','id')->all(),
@@ -180,6 +180,8 @@ class PatientController extends Controller
       $dateTime = Carbon::parse(request('dob'));
 
       $data['dob'] = $dateTime->format('Y-m-d');
+
+      $data['uuid'] = Uuid::uuid4()->toString();
 
       $filtered = array_except($data, ['accounts']);
       //$data['user_id'] = auth()->user()->id;

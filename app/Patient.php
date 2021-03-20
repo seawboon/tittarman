@@ -7,7 +7,12 @@ use Illuminate\Support\Str;
 
 class Patient extends Model
 {
+
     protected $guarded = [];
+
+    protected $hidden = [
+        'uuid',
+    ];
 
     public function branch()
     {
