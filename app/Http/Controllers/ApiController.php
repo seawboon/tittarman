@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use App\Branches;
 use App\Appointment;
 use App\Matter;
+use App\Package;
 use Spatie\Permission\Models\Role;
 use App\Rules;
 
@@ -163,6 +164,20 @@ class ApiController extends Controller
       $appo->save();
       return compact('appo');
 
+    }
+
+    public function packages()
+    {
+
+      /*return response()->json([
+          'status' => false,
+          'message' => 'Invalid QR Code'
+      ], 200);*/
+
+      $packages = Package::PublishedDate()->get();
+      $packages->load('products.product')->toArray();
+      //return compact('packages');
+      return Response()->json($packages, 200);
     }
 
 }

@@ -183,11 +183,6 @@
                       </a>
                       @endrole
 
-                      <a href="{{ route('products.index') }}" class="dropdown-item">
-                            <i class="ni ni-app"></i>
-                            <span>{{ __('Products') }}</span>
-                      </a>
-
                       <a href="{{ route('methods.index') }}" class="dropdown-item">
                             <i class="ni ni-app"></i>
                             <span>{{ __('Payment Methods') }}</span>
@@ -204,6 +199,24 @@
                           <span>{{ __('Injury Part') }}</span>
                       </a>
                       @endhasanyrole
+                    </div>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link pr-0" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="ni ni-app text-pink"></i> Shop
+                    </a>
+                    @role('Admin')
+                    <div class="dropdown-menu dropdown-menu-arrow dropdown-menu-right">
+                      <a href="{{ route('packages.index') }}" class="dropdown-item">
+                            <i class="ni ni-app"></i>
+                            <span>{{ __('Packages') }}</span>
+                      </a>
+                    @endrole
+                      <a href="{{ route('products.index') }}" class="dropdown-item">
+                            <i class="ni ni-app"></i>
+                            <span>{{ __('Products') }}</span>
+                      </a>
                     </div>
                 </li>
 

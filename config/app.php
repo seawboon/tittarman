@@ -69,6 +69,8 @@ return [
 
     'timezone' => 'Asia/Kuala_Lumpur',
 
+    'datetime_format' => 'd M Y g:i a',
+
     /*
     |--------------------------------------------------------------------------
     | Application Locale Configuration

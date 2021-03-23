@@ -22,6 +22,10 @@ Route::post('calendarpost', 'ApiController@calendarStore');
 Route::put('calendarput/{appointment}', 'ApiController@calendarDrop');
 
 
+//$packages
+Route::get('packages', 'ApiController@packages');
+
+
 //passport api
 Route::put('login', 'PassportController@login');
 //Route::post('register', 'PassportController@register');

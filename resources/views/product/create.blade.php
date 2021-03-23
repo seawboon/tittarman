@@ -11,11 +11,21 @@
               @csrf
 
               <div class="row">
-                <div class="col-12">
+                <div class="col-8">
                   <div class="form-group">
                     <label for="name">Product Name</label>
                     <input type="text" class="form-control" id="name" name="name" placeholder="Enter Product Name" value="{{ old('name') }}">
                     @error('name')
+                    <small class="text-danger">{{ $message}}</small>
+                    @enderror
+                  </div>
+                </div>
+
+                <div class="col-4">
+                  <div class="form-group">
+                    <label for="type" class="d-block">Available in SHOP</label>
+                    {!! Form::select('shop', ['no' => 'No', 'yes' => 'Yes'], null, array('class' => 'form-control', 'id' => 'shop')) !!}
+                    @error('shop')
                     <small class="text-danger">{{ $message}}</small>
                     @enderror
                   </div>
