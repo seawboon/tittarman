@@ -8,7 +8,7 @@
         <div class="card-body">
 
 
-            <form action="{{ route('packages.store') }}" method="post">
+            <form action="{{ route('packages.store') }}" method="post" enctype="multipart/form-data">
               @csrf
 
               <div class="row">
@@ -61,6 +61,16 @@
                     @error('publish_date_end')
                     <small class="text-danger">{{ $message}}</small>
                     @enderror
+                  </div>
+                </div>
+
+                <div class="col-12">
+                  <div class="form-group control-group increment after">
+                    <label>Package Banner</label>
+                    <div class="custom-file after">
+                        <input type="file" class="custom-file-input" name="filename" lang="en">
+                        <label class="custom-file-label" for="customFileLang">Select file</label>
+                    </div>
                   </div>
                 </div>
 
@@ -245,6 +255,11 @@ function calcSum() {
   $('#sell').val(sumsum);
 }
 
+$("body").on('change', '.custom-file input', function (e) {
+  if (e.target.files.length) {
+    $(this).next('.custom-file-label').html(e.target.files[0].name);
+  }
+});
 
 });
 </script>

@@ -19,10 +19,19 @@ class Package extends Model
         'title', 'description', 'total', 'sell', 'percentage', 'status', 'publish_date_start', 'publish_date_end'
     ];
 
+    protected $appends = ['web_image_url'];
+
     protected $hidden = [
       'uuid'
     ];
 
+    function getWebImageUrlAttribute() {
+      if(is_null($this->image_url)) {
+        return asset('image/loginlogo.png');
+      } else {
+        return asset('storage/'.$this->image_url);
+      }
+    }
 
     public function products()
     {
@@ -33,6 +42,11 @@ class Package extends Model
         return $query
                 ->whereDate('publish_date_start', '<=', now())
                 ->whereDate('publish_date_end', '>=', now());
+    }
+
+    public function scopePublished($query) {
+        return $query
+                ->where('status', '=', 'yes');
     }
 
     protected static function boot()

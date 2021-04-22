@@ -174,10 +174,23 @@ class ApiController extends Controller
           'message' => 'Invalid QR Code'
       ], 200);*/
 
-      $packages = Package::PublishedDate()->get();
+      $packages = Package::PublishedDate()->Published()->get();
       $packages->load('products.product')->toArray();
       //return compact('packages');
       return Response()->json($packages, 200);
+    }
+
+    public function packageShow(Package $package)
+    {
+      /*return response()->json([
+          'status' => false,
+          'message' => 'Invalid QR Code'
+      ], 200);*/
+
+      //$packages = Package::PublishedDate()->get();
+      $package->load('products.product')->toArray();
+      //return compact('packages');
+      return Response()->json($package, 200);
     }
 
 }

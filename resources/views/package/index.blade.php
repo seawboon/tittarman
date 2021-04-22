@@ -15,8 +15,11 @@
                         <tr>
                             <th scope="col" class="sort" data-sort="name">No.</th>
                             <th scope="col" class="sort" data-sort="budget">Title</th>
+                            <th scope="col" class="sort" data-sort="budget">Products</th>
+                            <th scope="col" class="sort" data-sort="budget">Price</th>
                             <th scope="col" class="sort" data-sort="budget">Publish Start On</th>
                             <th scope="col" class="sort" data-sort="budget">Publish End On</th>
+                            <th scope="col" class="sort" data-sort="budget">PUBLISH</th>
                             <th scope="col"></th>
                         </tr>
                     </thead>
@@ -34,13 +37,40 @@
                                 {{ $package->title }}
                             </td>
                             <td>
+                                @foreach($package->products as $product)
+                                  - {{ $product->product->name }} * {{ $product->unit }}
+                                  @if(!$loop->last)
+                                    <br />
+                                  @endif
+                                @endforeach
+                            </td>
+                            <td>
+                                {{ $package->sell }}
+                            </td>
+                            <td>
                                 {{ Carbon\Carbon::parse($package->publish_date_start)->format(config('app.datetime_format')) }}
                             </td>
                             <td>
                                 {{ Carbon\Carbon::parse($package->publish_date_end)->format(config('app.datetime_format')) }}
                             </td>
 
+                            <td>
+                                {{ $package->status }}
+                            </td>
 
+                            <td class="text-left">
+                                <div class="dropdown float-right">
+                                    <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                      <i class="fas fa-ellipsis-v"></i>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                                        <a class="dropdown-item" href="{{ route('packages.edit', $package) }}">View / Edit</a>
+                                        <!--<a class="dropdown-item" href="#">View</a>
+                                        <a class="dropdown-item" href="#">Something else here</a>-->
+                                    </div>
+
+                                </div>
+                            </td>
 
                         </tr>
                         @endforeach

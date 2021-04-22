@@ -24,6 +24,7 @@ Route::put('calendarput/{appointment}', 'ApiController@calendarDrop');
 
 //$packages
 Route::get('packages', 'ApiController@packages');
+Route::get('packages/{package}', 'ApiController@packageShow');
 
 
 //passport api
