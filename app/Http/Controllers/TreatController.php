@@ -11,6 +11,7 @@ use App\Matter;
 use App\injury;
 use App\MatterInjury;
 use App\Treat;
+use App\TreatUser;
 use App\User;
 use Spatie\Permission\Models\Role;
 use App\Product;
@@ -69,9 +70,13 @@ class TreatController extends Controller
         $data = request()->validate([
           'treat.treat_date' => 'required',
           'treat.treatment' => 'required',
-          'treat.user_id' => 'required',
+          //'treat.user_id' => 'required',
+          'masters' => 'required',
+          'masters.*.user_id' => 'required',
           'treat.branch_id' => 'required',
           'treat.remarks' => '',
+          'treat.memo' => '',
+          'treat.guasha' => '',
           'treat.fee' => 'required',
           'treat.total' => 'required',
           'treat.days' => '',
@@ -89,7 +94,7 @@ class TreatController extends Controller
 
         $data['treat']['patient_id'] = $patient->id;
         $data['treat']['product_amount'] = 0;
-
+        $data['treat']['user_id'] = 0;
         //dd($data['treat']['treat_date']);
 
         $treat = $matter->treats()->firstOrCreate($data['treat']);
@@ -103,6 +108,8 @@ class TreatController extends Controller
         ];
 
         $treat->payment()->firstOrCreate($payment);
+        $treat->masters()->createMany($data['masters']);
+
         //$treat->products()->createMany($data['product']);
         //$matter->injuries()->createMany($data['injuries']); ≈
 
@@ -201,10 +208,12 @@ class TreatController extends Controller
         $branches = Branches::pluck('name','id')->all();
         $ii = MatterInjury::with('injury')->where('matter_id', $matter->id)->get();
         $days = $this->days;
+        $masters = $treat->load('masters');
+
 
         //$treat->load('products');
 
-        return view('treat.edit', compact('patient', 'matter', 'treat', 'age', 'users', 'ii', 'branches', 'days'));
+        return view('treat.edit', compact('patient', 'matter', 'treat', 'age', 'users', 'ii', 'branches', 'days', 'masters'));
     }
 
     public function update(Patient $patient, Matter $matter, Treat $treat)
@@ -217,6 +226,8 @@ class TreatController extends Controller
           'treat.fee' => 'required',
           'treat.total' => 'required',
           'treat.days' => '',
+          'masters' => 'required',
+          'masters.*.user_id' => 'required',
           //'product.*' => '',
           'filenamebefore' => '',
           'filenamebefore.*' => 'image',
@@ -224,11 +235,19 @@ class TreatController extends Controller
           'filenameafter' => '',
           'filenameafter.*' => 'image',
           'filenameafter.*.state' => '',
+          'treat.memo' => '',
+          'treat.guasha' => '',
         ]);
 
+        if(!isset($data['treat']['guasha'])) {
+          $data['treat']['guasha'] = 'no';
+        }
+
         //TreatProduct::where('treat_id', $treat->id)->delete();
+        TreatUser::where('treat_id', $treat->id)->delete();
 
         $treat->update($data['treat']);
+        $treat->masters()->createMany($data['masters']);
 
         $payment = Payment::where('treat_id', $treat->id)->first();
         $payment->treatment_fee = $data['treat']['fee'];

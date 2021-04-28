@@ -31,7 +31,7 @@
      @endif
 
      <div class="h5 font-weight-300">
-       <i class="ni location_pin mr-2"></i>{{ $patient->email ?? '' }}<br />{{ $patient->contact ?? '' }}
+       <i class="ni location_pin mr-2"></i>{{ $patient->email ?? '' }}<br />{{ $patient->provider ?? '' }}{{ $patient->contact ?? '' }}
      </div>
      @if($patient->occupation)
      <div class="h5 mt-4">

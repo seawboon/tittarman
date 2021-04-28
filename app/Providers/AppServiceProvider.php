@@ -36,7 +36,12 @@ class AppServiceProvider extends ServiceProvider
              $this->orWhereRaw("CONCAT(provider, contact) LIKE ?", ['%'.$searchTerm.'%']);
            } elseif ($attribute == 'id') {
              $this->orWhereRaw("CONCAT('p', id) LIKE ?", [$searchTerm]);
+           } elseif ($attribute == 'account') {
+             $this->orWhereHas('accounts', function( $query ) use ( $searchTerm ){
+                      $query->where('account_no', $searchTerm);
+                  });
            }
+
            else {
             $this->orWhere($attribute, 'LIKE', "%{$searchTerm}%");
           }

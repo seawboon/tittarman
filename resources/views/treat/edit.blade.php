@@ -38,11 +38,39 @@
                   </div>
                 </div>
 
-                <div class="col-6">
+                {{--<div class="col-6">
                   <div class="form-group">
                     <label for="user_id" class="d-block">Treat By</label>
                     {!! Form::select('user_id', $users, $treat->user_id, array('class' => 'form-control')) !!}
                     @error('treat.user_id')
+                    <small class="text-danger">{{ $message}}</small>
+                    @enderror
+                  </div>
+                </div>--}}
+
+                <div class="col-6">
+                  <div class="form-group">
+                    <label for="title">Treat By</label>
+                    <?php $mmasters = [];?>
+                    @if(!$masters->masters->isEmpty())
+                      @foreach($masters->masters as $yy)
+                        <?php
+                          $mmasters[] = $yy['user_id'];
+                        ?>
+                      @endforeach
+                    @else
+                      <?php
+                        $mmasters[] = $treat->user_id;
+                      ?>
+                    @endif
+
+                    <select class="js-example-basic-multiple w-100" name="masters[][user_id]" multiple="multiple">
+                      @foreach($users as $key => $userName)
+                        <option value="{{$key}}" {{ (is_array($mmasters) && in_array($key, $mmasters)) ? ' selected' : '' }}>{{$userName}}</option>
+                      @endforeach
+                    </select>
+
+                    @error('masters')
                     <small class="text-danger">{{ $message}}</small>
                     @enderror
                   </div>
@@ -116,7 +144,21 @@
                   </div>
                 </div>
 
+                <div class="col-12">
+                  <div class="form-group">
+                    <div class="custom-control custom-checkbox">
 
+                      <div class="col-6 col-md-3">
+                        <input type="checkbox" name="treat[guasha]" class="custom-control-input" id="guasha" value="yes"  {{ $treat->guasha == 'yes' ? ' checked' : '' }}>
+                        <label class="custom-control-label" for="guasha">GuaSha</label>
+                      </div>
+
+                      @error('treat.guasha')
+                      <small class="text-danger">{{ $message}}</small>
+                      @enderror
+                    </div>
+                  </div>
+                </div>
 
                 <div class="col-12">
                   <div class="form-group">
@@ -127,7 +169,6 @@
                     @enderror
                   </div>
                 </div>
-
 
                 <div class="col-12">
                   <div class="form-group control-group increment after">
@@ -211,6 +252,17 @@
                 </div>
               </div>
 
+              <div class="row">
+                <div class="col-12">
+                  <div class="form-group">
+                    <label for="address">Memo</label>
+                    <textarea class="form-control" id="memo" name="treat[memo]" rows="3" placeholder="Enter Memo">{{ old('treat.memo', $treat->memo) }}</textarea>
+                    @error('treat.memo')
+                    <small class="text-danger">{{ $message}}</small>
+                    @enderror
+                  </div>
+                </div>
+              </div>
 
               <h3>Appointment</h3>
               <div class="row">
@@ -265,7 +317,9 @@ hr.invisible {
 
 </style>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 <div class="modal-dialog modal-lg">
@@ -296,6 +350,7 @@ $(function(){
 
 <script>
 $(document).ready(function() {
+    $('.js-example-basic-multiple').select2();
   //$("input").attr("autocomplete", "off");
     flatpickr('.datetimepicker', {
     enableTime: true,

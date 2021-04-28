@@ -46,4 +46,9 @@ class Treat extends Model
     return $this->hasOne(Payment::class, 'treat_id');
   }
 
+  public function masters()
+  {
+    return $this->hasMany(TreatUser::class, 'treat_id');
+  }
+
 }

@@ -177,7 +177,15 @@
                                       {{ $treat->branch->short }}
                                     </td>
                                     <td class="budget">
-                                      By: {{ $treat->user->name }}<br />
+                                      By:
+                                      @if($treat->user)
+                                      <span class="badge text-white ml-1" style="background-color:{{$treat->user->color}}">{{$treat->user->name}} </span>
+                                      @else
+                                        @foreach($treat->masters as $master)
+                                          <span class="badge text-white ml-1" style="background-color:{{$master->master->color}}">{{$master->master->name}} </span>
+                                        @endforeach
+                                      @endif
+                                      <br />
                                         {{ $treat->treatment }}
                                         <i class="d-block">{{ $treat->remarks ?? '' }}</i>
                                     </td>

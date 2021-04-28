@@ -7,10 +7,11 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
 use Laravel\Passport\HasApiTokens;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 {
-    use Notifiable, HasRoles, HasApiTokens;
+    use Notifiable, HasRoles, HasApiTokens, SoftDeletes;
     /**
      * The attributes that are mass assignable.
      *
@@ -45,4 +46,9 @@ class User extends Authenticatable
     public function checkins() {
       return $this->hasMany(CheckIn::class);
     }
+
+    public function treats() {
+      return $this->hasMany(TreatUsers::class);
+    }
+
 }

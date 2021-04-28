@@ -68,10 +68,9 @@
                                             <a class="dropdown-item" href="{{ route('users.edit',$user->id) }}">Edit</a>
                                             @endif
                                             @can('role-delete')
-                                            <a href="#" class="dropdown-item" onclick="event.preventDefault();
-                                            document.getElementById('user-del').submit();">
-                                                Delete
-                                                {!! Form::open(['method' => 'DELETE', 'name' => 'user-del', 'route' => ['users.destroy', $user->id],'style'=>'display:none']) !!}
+                                            <a href="#" class="dropdown-item" onclick="document.getElementById('user-del').submit();">
+                                                {{-- Delete --}}
+                                                {!! Form::open(['method' => 'DELETE', 'name' => 'user-del', 'route' => ['users.destroy', $user->id],'style'=>'display:inline']) !!}
                                                     {!! Form::submit('Delete', ['class' => 'btn btn-danger']) !!}
                                                 {!! Form::close() !!}
                                             </a>

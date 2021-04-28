@@ -46,7 +46,7 @@ class PatientController extends Controller
         $searchTerm = '';
       }
       //$patients = Patient::whereLike(['fullname', 'email', 'nric'], $searchTerm)->get();
-      $patients = Patient::whereLike(['fullname', 'email', 'nric', 'id', 'contact'], $searchTerm)->paginate(10);
+      $patients = Patient::with('accounts')->whereLike(['fullname', 'email', 'nric', 'id', 'contact', 'account'], $searchTerm)->paginate(10);
       return view('patient.index', compact('patients', 'searchTerm'));
   }
 
@@ -92,7 +92,8 @@ class PatientController extends Controller
       $states = State::where('country_id', 111)->pluck('name', 'name')->all();
 
       $dateTime = Carbon::parse($patient->dob);
-      $patient->dob = $dateTime->format('d M Y');
+      //$patient->dob = $dateTime->format('d M Y');
+      $patient->dob = $dateTime->format('d-m-Y');
 
       return view('patient.edit', compact('patient', 'branches', 'countries', 'states'));
   }

@@ -96,22 +96,6 @@
                   </div>
 
                   <div class="col-6">
-                    <label for="gemder" class="d-block">Date of Birth <small class="text-danger">required</small></label>
-                    <div class="form-group">
-                        <div class="input-group input-group-alternative">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text"><i class="ni ni-calendar-grid-58"></i></span>
-                            </div>
-                            <input class="form-control datepicker" placeholder="Select date" type="text" id="dob" name="dob" value="{{ old('dob') }}">
-
-                        </div>
-                        @error('dob')
-                        <small class="text-danger d-block">{{ $message}}</small>
-                        @enderror
-                    </div>
-                  </div>
-
-                  <div class="col-6">
                     <div class="form-group">
                       <label for="nric">NRIC / Passport <small class="text-danger">required</small></label>
                       <input type="text" class="form-control" id="nric" name="nric" placeholder="Enter NRIC/Passport" value="{{ old('nric') }}">
@@ -122,12 +106,18 @@
                   </div>
 
                   <div class="col-6">
+                    <label for="gemder" class="d-block">Date of Birth <small class="text-danger">required</small></label>
                     <div class="form-group">
-                      <label for="email">Email <small class="text-danger">required</small></label>
-                      <input type="email" class="form-control" id="email" name="email" placeholder="Enter Email" value="{{ old('email', $appo['email']) }}">
-                      @error('email')
-                      <small class="text-danger">{{ $message}}</small>
-                      @enderror
+                        <div class="input-group input-group-alternative">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="ni ni-calendar-grid-58"></i></span>
+                            </div>
+                            <input class="form-control datepicker" placeholder="DD-MM-YYYY" type="text" id="dob" name="dob" value="{{ old('dob') }}">
+
+                        </div>
+                        @error('dob')
+                        <small class="text-danger d-block">{{ $message}}</small>
+                        @enderror
                     </div>
                   </div>
 
@@ -167,6 +157,16 @@
                       <label for="occupation">Occupation</label>
                       <input type="text" class="form-control" id="occupation" name="occupation" placeholder="Enter Occupation" value="{{ old('occupation') }}">
                       @error('occupation')
+                      <small class="text-danger">{{ $message}}</small>
+                      @enderror
+                    </div>
+                  </div>
+
+                  <div class="col-6">
+                    <div class="form-group">
+                      <label for="email">Email <small class="text-danger">required</small></label>
+                      <input type="email" class="form-control" id="email" name="email" placeholder="Enter Email" value="{{ old('email', $appo['email']) }}">
+                      @error('email')
                       <small class="text-danger">{{ $message}}</small>
                       @enderror
                     </div>
@@ -313,7 +313,7 @@ legend {
 <script>
 $(document).ready(function() {
   $('.datepicker').datepicker({
-    format: 'dd M yyyy',
+    format: 'dd-mm-yyyy',
   });
 });
 </script>

@@ -125,7 +125,7 @@ class MatterController extends Controller
       $injuryparts = InjuryPart::where('status','yes')->get();
       $dateTime = Carbon::parse($matter->injury_since);
       $matter->injury_since = $dateTime->format('d M Y');
-      $matter->load('treats');
+      $matter->load('treats.masters.master');
       $matter_injuries = $matter->load('injuries');
       $parts = $matter->load('parts');
 

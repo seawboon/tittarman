@@ -33,13 +33,36 @@
                 </div>
 
                 <div class="col-6">
-                  <div class="form-group">
+                   {{--<div class="form-group">
                     <label for="user_id" class="d-block">Treat By</label>
                     {!! Form::select('treat[user_id]', [null=>'Please Select'] + $users, auth()->user()->id, array('class' => 'form-control', 'id' => 'user_id')) !!}
                     @error('treat.user_id')
                     <small class="text-danger">{{ $message}}</small>
                     @enderror
+                  </div>--}}
+
+                  <div class="form-group">
+                    <label for="title">Treat By</label>
+                    <?php $oldmasters = [];?>
+                    @if(old('masters'))
+                      @foreach(old('masters') as $yy)
+                        <?php
+                          $oldmasters[] = $yy['user_id'];
+                        ?>
+                      @endforeach
+                    @endif
+
+                    <select class="js-example-basic-multiple w-100" name="masters[][user_id]" id="user_id" multiple="multiple">
+                      @foreach($users as $key => $userName)
+                        <option value="{{$key}}" {{ (is_array($oldmasters) && in_array($key, $oldmasters)) ? ' selected' : '' }}>{{$userName}}</option>
+                      @endforeach
+                    </select>
+
+                    @error('masters')
+                    <small class="text-danger">{{ $message}}</small>
+                    @enderror
                   </div>
+
                 </div>
 
                 <div class="col-12">
@@ -94,14 +117,28 @@
                 <div class="col-12 pt-3">
                   <div class="form-group">
                     <label for="address">Treatment <small class="text-danger">required</small></label>
-                    <textarea class="form-control" id="treatment" name="treat[treatment]" rows="3" placeholder="Enter Treatment">{{ old('treat.treatment') }}</textarea>
+                    <textarea class="form-control" id="treatment" name="treat[treatment]" rows="3" placeholder="Enter Treatment: Adj Click">{{ old('treat.treatment') }}</textarea>
                     @error('treat.treatment')
                     <small class="text-danger">{{ $message}}</small>
                     @enderror
                   </div>
                 </div>
 
+                <div class="col-12">
+                  <div class="form-group">
+                    <div class="custom-control custom-checkbox">
 
+                      <div class="col-6 col-md-3">
+                        <input type="checkbox" name="treat[guasha]" class="custom-control-input" id="guasha" value="yes"  {{ old('treat.guasha') == 'yes' ? ' checked' : '' }}>
+                        <label class="custom-control-label" for="guasha">GuaSha</label>
+                      </div>
+
+                      @error('treat.guasha')
+                      <small class="text-danger">{{ $message}}</small>
+                      @enderror
+                    </div>
+                  </div>
+                </div>
 
                 <div class="col-12">
                   <div class="form-group">
@@ -184,6 +221,18 @@
                 </div>
               </div>
 
+              <div class="row">
+                <div class="col-12">
+                  <div class="form-group">
+                    <label for="address">Memo</label>
+                    <textarea class="form-control" id="memo" name="treat[memo]" rows="3" placeholder="Enter Remarks">{{ old('treat.memo') }}</textarea>
+                    @error('treat.memo')
+                    <small class="text-danger">{{ $message}}</small>
+                    @enderror
+                  </div>
+                </div>
+              </div>
+
               <h3>Appointment</h3>
               <div class="row">
                 <div class="col-6">
@@ -219,34 +268,41 @@
 
 @endsection
 
+@push('css')
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+  <style>
+  .datepicker table tr td.today,  .datepicker table tr td.today:hover {
+    background-color: #ccc;
+  }
+
+  .datetimepicker {
+    background-color: #fff !important;
+  }
+
+  .table-responsive {
+    overflow-y: hidden;
+  }
+
+
+  .producut-hide, .producut-hide td{
+    visibility: hidden;
+    display: block;
+    height: 0;
+  }
+
+  </style>
+@endpush
+
 @push('js')
-<style>
-.datepicker table tr td.today,  .datepicker table tr td.today:hover {
-  background-color: #ccc;
-}
-
-.datetimepicker {
-  background-color: #fff !important;
-}
-
-.table-responsive {
-  overflow-y: hidden;
-}
 
 
-.producut-hide, .producut-hide td{
-  visibility: hidden;
-  display: block;
-  height: 0;
-}
-
-</style>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 
 <script>
 $(document).ready(function() {
+    $('.js-example-basic-multiple').select2();
   //$("input").attr("autocomplete", "off");
     flatpickr('.datetimepicker', {
     enableTime: true,
