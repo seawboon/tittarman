@@ -143,11 +143,17 @@
                     @foreach($options['drugs'] as $drug)
                     @php
                       $cDrugs = $treat->drugs->firstWhere('drug_id', $drug->id);
+
+                      if(is_null($cDrugs)) {
+                        $quantity = 0;
+                      } else {
+                        $quantity = $cDrugs->quantity;
+                      }
                     @endphp
                     <div class="col-3 col-lg-2">
                       {{ Form::hidden('drug['.$drug->id.'][drug_id]', $drug->id) }}
                       <div class="form-group">
-                        {!! Form::select('drug['.$drug->id.'][quantity]', $options['OneTen'], $cDrugs->quantity, array('class' => 'form-control', 'style' => 'height:34px; padding:0 .75rem;border: 2px solid '.$drug->color, 'id' => 'quantity')) !!}
+                        {!! Form::select('drug['.$drug->id.'][quantity]', $options['OneTen'], $quantity, array('class' => 'form-control', 'style' => 'height:34px; padding:0 .75rem;border: 2px solid '.$drug->color, 'id' => 'quantity')) !!}
                         @error('drug.*.quantity')
                         <small class="text-danger">{{ $message}}</small>
                         @enderror
@@ -158,14 +164,15 @@
                     </div>
                     <div class="col-8 col-lg-9">
                       <?php $mmparts = [];?>
-                      @if(!$cDrugs->parts->isEmpty())
-                        @foreach($cDrugs->parts as $yy)
-                          <?php
-                            $mmparts[] = $yy['part_id'];
-                          ?>
-                        @endforeach
+                      @if(!is_null($cDrugs))
+                        @if(!$cDrugs->parts->isEmpty())
+                          @foreach($cDrugs->parts as $yy)
+                            <?php
+                              $mmparts[] = $yy['part_id'];
+                            ?>
+                          @endforeach
+                        @endif
                       @endif
-
                       <select class="js-example-basic-multiple w-100" name="drug[{{$drug->id}}][parts][][part_id]" id="drugpart{{$drug->id}}" multiple="multiple">
                         @foreach($options['injuryparts'] as $key => $userName)
                             <option value="{{$key}}" {{ (is_array($mmparts) && in_array($key, $mmparts)) ? ' selected' : '' }}>{{$userName}}</option>
@@ -179,7 +186,7 @@
                 <div class="col-12">
                   <div class="form-group">
                     {{-- <label for="address">Treatment</label> --}}
-                    <textarea class="form-control" id="treatment" name="treat[treatment]" rows="3" placeholder="Enter Treatment" >{{ $treat->treatment }}</textarea>
+                    <textarea class="form-control" id="treatment" name="treat[treatment]" rows="3" placeholder="Enter Treatment: Adj Click" >{{ $treat->treatment }}</textarea>
                     @error('treat.treatment')
                     <small class="text-danger">{{ $message}}</small>
                     @enderror
