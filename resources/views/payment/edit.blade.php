@@ -309,6 +309,15 @@
                   </div>
                 </div>
               </div>
+
+              <h3>Memo From Therapist</h3>
+              <div class="row">
+                <div class="col-6">
+                  <div class="form-group">
+                    {{ $payment->treat->memo}}
+                  </div>
+                </div>
+              </div>
               @endif
 
               <button type="submit" name="submit" value="save" class="btn btn-primary">Submit</button>

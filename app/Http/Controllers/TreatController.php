@@ -16,9 +16,12 @@ use App\User;
 use Spatie\Permission\Models\Role;
 use App\Product;
 use App\TreatProduct;
+use App\TreatDrug;
 use App\Images;
 use App\Checkin;
 use App\Payment;
+use App\Drug;
+use App\InjuryPart;
 use Image;
 use File;
 
@@ -33,6 +36,20 @@ class TreatController extends Controller
       '7' => '1 Week',
       '14' => '2 Weeks',
       '30' => '1 Month',
+    ];
+
+    private $OneTen = [
+      '0' => '0',
+      '1' => '1',
+      '2' => '2',
+      '3' => '3',
+      '4' => '4',
+      '5' => '5',
+      '6' => '6',
+      '7' => '7',
+      '8' => '8',
+      '9' => '9',
+      '10' => '10',
     ];
 
     public function index(Patient $patient, Matter $matter)
@@ -55,12 +72,20 @@ class TreatController extends Controller
         $age = Carbon::parse($patient->dob)->age;
         $role = Role::where('name', 'master')->first();
         $users = $role->users()->pluck('name','id')->all();
-        $branches = Branches::pluck('name','id')->all();
-        $days = $this->days;
+        //$branches = Branches::pluck('name','id')->all();
+
+        $options=array(
+          'branches' => Branches::pluck('name','id')->all(),
+          'OneTen' => $this->OneTen,
+          'users' => $users,
+          'days' => $this->days,
+          'drugs' => Drug::Published()->get(),
+          'injuryparts' => InjuryPart::where('status','yes')->pluck('name','id')
+        );
 
         $ii = MatterInjury::with('injury')->where('matter_id', $matter->id)->get();
 
-        return view('treat.create', compact('patient', 'matter', 'age', 'users', 'ii', 'branches', 'days'));
+        return view('treat.create', compact('patient', 'matter', 'age', 'ii', 'options'));
     }
 
     public function store(Patient $patient, Matter $matter)
@@ -87,10 +112,11 @@ class TreatController extends Controller
           'filenameafter' => '',
           'filenameafter.*' => 'image',
           'filenameafter.*.state' => '',
+          'drug' => '',
+          'drug.*' => '',
         ]);
-
         //$data['treat']['product_amount'] = $data['treat']['total'] - $data['treat']['fee'];
-        //dd($data['treat']);
+        //dd($data['drug']);
 
         $data['treat']['patient_id'] = $patient->id;
         $data['treat']['product_amount'] = 0;
@@ -110,6 +136,16 @@ class TreatController extends Controller
         $treat->payment()->firstOrCreate($payment);
         $treat->masters()->createMany($data['masters']);
 
+        foreach ($data['drug'] as $key => $drug) {
+          $newDrug = TreatDrug::create([
+              'treat_id' => $treat->id,
+              'drug_id' => $drug['drug_id'],
+              'quantity' => $drug['quantity'],
+          ]);
+
+          $newDrug->parts()->createMany($drug['parts']);
+        }
+        //$treat->drugs()->createMany($data['drug']->except('parts'));
         //$treat->products()->createMany($data['product']);
         //$matter->injuries()->createMany($data['injuries']); ≈
 
@@ -205,15 +241,21 @@ class TreatController extends Controller
         $age = Carbon::parse($patient->dob)->age;
         $role = Role::where('name', 'master')->first();
         $users = $role->users()->pluck('name','id')->all();
-        $branches = Branches::pluck('name','id')->all();
+        //$branches = Branches::pluck('name','id')->all();
         $ii = MatterInjury::with('injury')->where('matter_id', $matter->id)->get();
         $days = $this->days;
-        $masters = $treat->load('masters');
+        $treat->load('masters','drugs.parts');
 
-
+        $options=array(
+            'branches' => Branches::pluck('name','id')->all(),
+            'users' => $users,
+            'OneTen' => $this->OneTen,
+            'drugs' => Drug::Published()->get(),
+            'injuryparts' => InjuryPart::where('status','yes')->pluck('name','id')
+        );
         //$treat->load('products');
 
-        return view('treat.edit', compact('patient', 'matter', 'treat', 'age', 'users', 'ii', 'branches', 'days', 'masters'));
+        return view('treat.edit', compact('patient', 'matter', 'treat', 'age', 'ii', 'days', 'options'));
     }
 
     public function update(Patient $patient, Matter $matter, Treat $treat)
@@ -237,6 +279,8 @@ class TreatController extends Controller
           'filenameafter.*.state' => '',
           'treat.memo' => '',
           'treat.guasha' => '',
+          'drug' => '',
+          'drug.*' => '',
         ]);
 
         if(!isset($data['treat']['guasha'])) {
@@ -245,9 +289,20 @@ class TreatController extends Controller
 
         //TreatProduct::where('treat_id', $treat->id)->delete();
         TreatUser::where('treat_id', $treat->id)->delete();
+        TreatDrug::where('treat_id', $treat->id)->delete();
 
         $treat->update($data['treat']);
         $treat->masters()->createMany($data['masters']);
+        //$treat->drugs()->createMany($data['drug']);
+        foreach ($data['drug'] as $key => $drug) {
+          $newDrug = TreatDrug::create([
+              'treat_id' => $treat->id,
+              'drug_id' => $drug['drug_id'],
+              'quantity' => $drug['quantity'],
+          ]);
+
+          $newDrug->parts()->createMany($drug['parts']);
+        }
 
         $payment = Payment::where('treat_id', $treat->id)->first();
         $payment->treatment_fee = $data['treat']['fee'];

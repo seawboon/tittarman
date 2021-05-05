@@ -31,7 +31,7 @@
                 <div class="col-6">
                   <div class="form-group">
                     <label for="branch_id" class="d-block">Branch</label>
-                    {!! Form::select('treat[branch_id]', [null=>'Please Select'] + $branches, $treat->branch_id, array('class' => 'form-control', 'id' => 'branch_id')) !!}
+                    {!! Form::select('treat[branch_id]', [null=>'Please Select'] + $options['branches'], $treat->branch_id, array('class' => 'form-control', 'id' => 'branch_id')) !!}
                     @error('treat.branch_id')
                     <small class="text-danger">{{ $message}}</small>
                     @enderror
@@ -52,8 +52,8 @@
                   <div class="form-group">
                     <label for="title">Treat By</label>
                     <?php $mmasters = [];?>
-                    @if(!$masters->masters->isEmpty())
-                      @foreach($masters->masters as $yy)
+                    @if(!$treat->masters->isEmpty())
+                      @foreach($treat->masters as $yy)
                         <?php
                           $mmasters[] = $yy['user_id'];
                         ?>
@@ -65,7 +65,7 @@
                     @endif
 
                     <select class="js-example-basic-multiple w-100" name="masters[][user_id]" multiple="multiple">
-                      @foreach($users as $key => $userName)
+                      @foreach($options['users'] as $key => $userName)
                         <option value="{{$key}}" {{ (is_array($mmasters) && in_array($key, $mmasters)) ? ' selected' : '' }}>{{$userName}}</option>
                       @endforeach
                     </select>
@@ -134,9 +134,51 @@
                   @enderror
                 </div>
 
+                <div class="col-12 pt-3"><h3>Treatment</h3></div>
+                @php
+                  $tDrugs = $treat->drugs->toArray();
+                @endphp
+                <div class="col-12 pt-3">
+                  <div class="row">
+                    @foreach($options['drugs'] as $drug)
+                    @php
+                      $cDrugs = $treat->drugs->firstWhere('drug_id', $drug->id);
+                    @endphp
+                    <div class="col-3 col-lg-2">
+                      {{ Form::hidden('drug['.$drug->id.'][drug_id]', $drug->id) }}
+                      <div class="form-group">
+                        {!! Form::select('drug['.$drug->id.'][quantity]', $options['OneTen'], $cDrugs->quantity, array('class' => 'form-control', 'style' => 'height:34px; padding:0 .75rem;border: 2px solid '.$drug->color, 'id' => 'quantity')) !!}
+                        @error('drug.*.quantity')
+                        <small class="text-danger">{{ $message}}</small>
+                        @enderror
+                      </div>
+                    </div>
+                    <div class="col-1 col-lg-1">
+                      {{$drug->name}}
+                    </div>
+                    <div class="col-8 col-lg-9">
+                      <?php $mmparts = [];?>
+                      @if(!$cDrugs->parts->isEmpty())
+                        @foreach($cDrugs->parts as $yy)
+                          <?php
+                            $mmparts[] = $yy['part_id'];
+                          ?>
+                        @endforeach
+                      @endif
+
+                      <select class="js-example-basic-multiple w-100" name="drug[{{$drug->id}}][parts][][part_id]" id="drugpart{{$drug->id}}" multiple="multiple">
+                        @foreach($options['injuryparts'] as $key => $userName)
+                            <option value="{{$key}}" {{ (is_array($mmparts) && in_array($key, $mmparts)) ? ' selected' : '' }}>{{$userName}}</option>
+                        @endforeach
+                      </select>
+                    </div>
+                    @endforeach
+                  </div>
+                </div>
+
                 <div class="col-12">
                   <div class="form-group">
-                    <label for="address">Treatment</label>
+                    {{-- <label for="address">Treatment</label> --}}
                     <textarea class="form-control" id="treatment" name="treat[treatment]" rows="3" placeholder="Enter Treatment" >{{ $treat->treatment }}</textarea>
                     @error('treat.treatment')
                     <small class="text-danger">{{ $message}}</small>

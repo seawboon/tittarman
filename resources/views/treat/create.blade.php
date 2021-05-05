@@ -25,7 +25,7 @@
                         $defBranch=session('myBranch')->id;
                       }
                     @endphp
-                    {!! Form::select('treat[branch_id]', [null=>'Please Select'] + $branches, $defBranch, array('class' => 'form-control', 'id' => 'branch_id')) !!}
+                    {!! Form::select('treat[branch_id]', [null=>'Please Select'] + $options['branches'], $defBranch, array('class' => 'form-control', 'id' => 'branch_id')) !!}
                     @error('treat.branch_id')
                     <small class="text-danger">{{ $message}}</small>
                     @enderror
@@ -53,8 +53,13 @@
                     @endif
 
                     <select class="js-example-basic-multiple w-100" name="masters[][user_id]" id="user_id" multiple="multiple">
-                      @foreach($users as $key => $userName)
-                        <option value="{{$key}}" {{ (is_array($oldmasters) && in_array($key, $oldmasters)) ? ' selected' : '' }}>{{$userName}}</option>
+                      @foreach($options['users'] as $key => $userName)
+                        @if(old('masters'))
+                          <option value="{{$key}}" {{ (is_array($oldmasters) && in_array($key, $oldmasters)) ? ' selected' : '' }}>{{$userName}}</option>
+                        @else
+                          <option value="{{$key}}" {{ auth()->user()->id == $key ? ' selected' : '' }}>{{$userName}}</option>
+                        @endif
+
                       @endforeach
                     </select>
 
@@ -114,9 +119,49 @@
                   @enderror
                 </div>
 
+
+                <div class="col-12 pt-3"><h3>Treatment</h3></div>
+
+                <div class="col-12 pt-3">
+                  <div class="row">
+                    @foreach($options['drugs'] as $drug)
+                    <div class="col-2">
+                      {{ Form::hidden('drug['.$drug->id.'][drug_id]', $drug->id) }}
+                      <div class="form-group">
+                        {!! Form::select('drug['.$drug->id.'][quantity]', $options['OneTen'], null, array('class' => 'form-control', 'style' => 'height:34px; padding:0 .75rem;border: 2px solid '.$drug->color, 'id' => 'quantity')) !!}
+                        @error('drug.*.quantity')
+                        <small class="text-danger">{{ $message}}</small>
+                        @enderror
+                      </div>
+                    </div>
+                    <div class="col-2">
+                      {{$drug->name}}
+                    </div>
+                    <div class="col-8">
+                      @php
+                        $olddrugparts = [];
+                      @endphp
+                      @if(old('drug.'.$drug->id.'.parts'))
+                        @foreach(old('drug.'.$drug->id.'.parts') as $yy)
+                          <?php
+                            $olddrugparts[] = $yy['part_id'];
+                          ?>
+                        @endforeach
+                      @endif
+
+                      <select class="js-example-basic-multiple w-100" name="drug[{{$drug->id}}][parts][][part_id]" id="drugpart{{$drug->id}}" multiple="multiple">
+                        @foreach($options['injuryparts'] as $key => $userName)
+                            <option value="{{$key}}" {{ (is_array($olddrugparts) && in_array($key, $olddrugparts)) ? ' selected' : '' }}>{{$userName}}</option>
+                        @endforeach
+                      </select>
+                    </div>
+                    @endforeach
+                  </div>
+                </div>
+
                 <div class="col-12 pt-3">
                   <div class="form-group">
-                    <label for="address">Treatment <small class="text-danger">required</small></label>
+                    {{-- <label for="address">Treatment <small class="text-danger">required</small></label> --}}
                     <textarea class="form-control" id="treatment" name="treat[treatment]" rows="3" placeholder="Enter Treatment: Adj Click">{{ old('treat.treatment') }}</textarea>
                     @error('treat.treatment')
                     <small class="text-danger">{{ $message}}</small>
@@ -238,7 +283,7 @@
                 <div class="col-6">
                   <div class="form-group">
                     <label for="days" class="d-block">Next Treatment</label>
-                    {!! Form::select('treat[days]', [null=>'Please Select'] + $days, null, array('class' => 'form-control', 'id' => 'days')) !!}
+                    {!! Form::select('treat[days]', [null=>'Please Select'] + $options['days'], null, array('class' => 'form-control', 'id' => 'days')) !!}
                     @error('treat.days')
                     <small class="text-danger">{{ $message}}</small>
                     @enderror
@@ -312,8 +357,10 @@ $(document).ready(function() {
     maxDate: new Date().fp_incr(1),
     minTime: "10:00",
     maxTime: "20:00",
-    defaultHour: {{date('H')}},
-    defaultMinute: {{date('i')}}
+    //defaultHour: "{{date('H')}}",
+    //defaultMinute: "{{date('i')}}",
+    //defaultDate: "2016-10-20"
+    defaultDate: "{{date('Y-m-d H:i')}}"
   });
 
   $('.treat-fee').on('change blur',function(){

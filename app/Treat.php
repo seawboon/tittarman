@@ -51,4 +51,9 @@ class Treat extends Model
     return $this->hasMany(TreatUser::class, 'treat_id');
   }
 
+  public function drugs()
+  {
+    return $this->hasMany(TreatDrug::class, 'treat_id');
+  }
+
 }
