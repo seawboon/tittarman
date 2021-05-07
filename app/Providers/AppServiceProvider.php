@@ -34,8 +34,8 @@ class AppServiceProvider extends ServiceProvider
          foreach(array_wrap($attributes) as $attribute) {
            if($attribute == 'contact') {
              $this->orWhereRaw("CONCAT(provider, contact) LIKE ?", ['%'.$searchTerm.'%']);
-           } elseif ($attribute == 'id') {
-             $this->orWhereRaw("CONCAT('p', id) LIKE ?", [$searchTerm]);
+           /*} elseif ($attribute == 'id') {
+             $this->orWhereRaw("CONCAT('p', id) LIKE ?", [$searchTerm]);*/
            } elseif ($attribute == 'account') {
              $this->orWhereHas('accounts', function( $query ) use ( $searchTerm ){
                       $query->where('account_no', $searchTerm);
@@ -49,6 +49,15 @@ class AppServiceProvider extends ServiceProvider
 
          return $this;
       });
+
+      Builder::macro('whereLikeName', function($attributes, string $searchTerm) {
+         foreach(array_wrap($attributes) as $attribute) {
+            $this->Where($attribute, 'LIKE', "%{$searchTerm}%");
+         }
+
+         return $this;
+      });
+
 
       Blade::directive('money', function ($amount) {
           return "<?php echo 'RM ' . number_format($amount, 2); ?>";

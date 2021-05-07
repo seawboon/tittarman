@@ -41,13 +41,49 @@ class PatientController extends Controller
   public function search(Request $request)
   {
       //$data = request();
-      $searchTerm = $request->search;
-      if(empty($searchTerm)) {
-        $searchTerm = '';
+      //$searchTerm = $request->search;
+      //if(empty($searchTerm)) {
+      //  $searchTerm = '';
+      //}
+      //$patients = Patient::with('accounts')->whereLike(['fullname', 'email', 'nric', 'id', 'contact', 'account'], $searchTerm)->paginate(10);
+      //dd($request->all());
+      $searchTerm = '';
+      $searchAtt = 'id';
+      if($request->filled('searchID') ) {
+        $searchTerm = $request->searchID;
+        $searchAtt = 'id';
       }
-      //$patients = Patient::whereLike(['fullname', 'email', 'nric'], $searchTerm)->get();
-      $patients = Patient::with('accounts')->whereLike(['fullname', 'email', 'nric', 'id', 'contact', 'account'], $searchTerm)->paginate(10);
-      return view('patient.index', compact('patients', 'searchTerm'));
+
+      if($request->filled('searchAccount') ) {
+        $searchTerm = $request->searchAccount;
+        $searchAtt = 'account';
+      }
+
+      if($request->filled('searchName') ) {
+        $searchTerm = $request->searchName;
+        $searchAtt = 'fullname';
+      }
+
+      if($request->filled('searchNRIC') && $request->searchNRIC != null) {
+        $searchTerm = $request->searchNRIC;
+        $searchAtt = 'nric';
+      }
+
+      if($request->filled('searchEmail') && $request->searchEmail != null) {
+        $searchTerm = $request->searchEmail;
+        $searchAtt = 'email';
+      }
+
+      if($request->filled('searchContact') && $request->searchContact != null) {
+        $searchTerm = $request->searchContact;
+        $searchAtt = 'contact';
+      }
+
+      $patients = Patient::with('accounts')->whereLike([$searchAtt], $searchTerm)->paginate(10);
+
+      $searchTerms = $request->all();
+
+      return view('patient.index', compact('patients', 'searchTerms'));
   }
 
   public function create(Request $request)
