@@ -12,6 +12,7 @@ use App\State;
 use App\Appointment;
 use App\Macros\whereLike;
 use Ramsey\Uuid\Uuid;
+use Illuminate\Support\Arr;
 
 use Session;
 
@@ -99,6 +100,7 @@ class PatientController extends Controller
 
       //dd($patients);
       $searchTerms = $request->all();
+      $searchTerms = Arr::except($searchTerms, ['_token','submit']);
 
       return view('patient.index', compact('patients', 'searchTerms'));
   }

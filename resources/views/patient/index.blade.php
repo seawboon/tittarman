@@ -118,10 +118,10 @@
                     </tbody>
                 </table>
 
-                @if(empty($searchTerm))
+                @if(empty($searchTerms))
                   {{ $patients->links() }}
                 @else
-                  {{ $patients->appends(['search' => $searchTerm])->links() }}
+                  {{ $patients->appends($searchTerms)->links() }}
                 @endif
 
             </div>
