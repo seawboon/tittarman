@@ -40,7 +40,10 @@ class PatientController extends Controller
 
   public function search(Request $request)
   {
-      //$data = request();
+
+    //dd($patients);
+
+    //$data = request();
       //$searchTerm = $request->search;
       //if(empty($searchTerm)) {
       //  $searchTerm = '';
@@ -57,6 +60,7 @@ class PatientController extends Controller
       if($request->filled('searchAccount') ) {
         $searchTerm = $request->searchAccount;
         $searchAtt = 'account';
+        $account = Account::whereLike(['account_no'], $searchTerm)->get();
       }
 
       if($request->filled('searchName') ) {
@@ -79,8 +83,21 @@ class PatientController extends Controller
         $searchAtt = 'contact';
       }
 
-      $patients = Patient::with('accounts')->whereLike([$searchAtt], $searchTerm)->paginate(10);
 
+      if($request->filled('searchAccount') ) {
+        $pVar = [];
+        foreach ($account as  $pp) {
+          $pVar[] = $pp->patient_id;
+        }
+        $patients = Patient::with('accounts')->whereIn('id', $pVar)->paginate(10);
+      } else {
+        $patients = Patient::with('accounts')->whereLike([$searchAtt], $searchTerm)->paginate(10);
+      }
+
+      //
+
+
+      //dd($patients);
       $searchTerms = $request->all();
 
       return view('patient.index', compact('patients', 'searchTerms'));
