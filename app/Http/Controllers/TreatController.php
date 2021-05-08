@@ -143,7 +143,10 @@ class TreatController extends Controller
               'quantity' => $drug['quantity'],
           ]);
 
-          $newDrug->parts()->createMany($drug['parts']);
+          if($newDrug->quantity > 0 && isset($drug['parts'])) {
+            $newDrug->parts()->createMany($drug['parts']);
+          }
+          
         }
         //$treat->drugs()->createMany($data['drug']->except('parts'));
         //$treat->products()->createMany($data['product']);
@@ -295,13 +298,17 @@ class TreatController extends Controller
         $treat->masters()->createMany($data['masters']);
         //$treat->drugs()->createMany($data['drug']);
         foreach ($data['drug'] as $key => $drug) {
+
           $newDrug = TreatDrug::create([
               'treat_id' => $treat->id,
               'drug_id' => $drug['drug_id'],
               'quantity' => $drug['quantity'],
           ]);
 
-          $newDrug->parts()->createMany($drug['parts']);
+          if($newDrug->quantity > 0 && isset($drug['parts'])) {
+            $newDrug->parts()->createMany($drug['parts']);
+          }
+
         }
 
         $payment = Payment::where('treat_id', $treat->id)->first();
