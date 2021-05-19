@@ -291,7 +291,7 @@
 
            <hr />
             <div>
-              <h3>Cases List @can('master-edit')<a class="btn btn-sm btn-info float-right" href="{{ route('matter.create', ['patient' => $patient]) }}">New Case</a>@endcan</h3>
+              <h3>Cases List @can('reception-create')<a class="btn btn-sm btn-info float-right" href="{{ route('matter.create', ['patient' => $patient]) }}">New Case</a>@endcan</h3>
               <div class="table-responsive mt-3">
 
                         <div>
