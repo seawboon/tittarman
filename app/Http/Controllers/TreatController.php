@@ -70,7 +70,7 @@ class TreatController extends Controller
     public function create(Patient $patient, Matter $matter)
     {
         $age = Carbon::parse($patient->dob)->age;
-        $role = Role::where('name', 'master')->first();
+        $role = Role::wherein('name', ['master','senior', 'Apprentice'])->first();
         $users = $role->users()->pluck('name','id')->all();
         //$branches = Branches::pluck('name','id')->all();
 
@@ -146,7 +146,7 @@ class TreatController extends Controller
           if($newDrug->quantity > 0 && isset($drug['parts'])) {
             $newDrug->parts()->createMany($drug['parts']);
           }
-          
+
         }
         //$treat->drugs()->createMany($data['drug']->except('parts'));
         //$treat->products()->createMany($data['product']);
@@ -242,7 +242,7 @@ class TreatController extends Controller
     public function edit(Patient $patient, Matter $matter, Treat $treat)
     {
         $age = Carbon::parse($patient->dob)->age;
-        $role = Role::where('name', 'master')->first();
+        $role = Role::wherein('name', ['master','senior', 'Apprentice'])->first();
         $users = $role->users()->pluck('name','id')->all();
         //$branches = Branches::pluck('name','id')->all();
         $ii = MatterInjury::with('injury')->where('matter_id', $matter->id)->get();

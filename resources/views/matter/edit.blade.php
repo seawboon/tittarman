@@ -71,8 +71,8 @@
 
               <div class="col-12">
                 <div class="form-group">
-                  <label for="address">Remarks</label>
-                  <textarea class="form-control" id="remarks" name="matter[remarks]" rows="3" placeholder="Enter Remarks">{{ $matter->remarks }}</textarea>
+                  <label for="address">Injury Story</label>
+                  <textarea class="form-control" id="remarks" name="matter[remarks]" rows="3" placeholder="Enter History">{{ $matter->remarks }}</textarea>
                   @error('matter.remarks')
                   <small class="text-danger">{{ $message}}</small>
                   @enderror
@@ -126,7 +126,7 @@
               <div class="col-12">
                 <div class="form-group">
                   <label for="address">Comments</label>
-                  <textarea class="form-control" id="comments" name="matter[comments]" rows="3" placeholder="Enter Comments">{{ $matter->comments }}</textarea>
+                  <textarea class="form-control" id="comments" name="matter[comments]" rows="3" placeholder="Enter Alert Issue">{{ $matter->comments }}</textarea>
                   @error('matter.comments')
                   <small class="text-danger">{{ $message}}</small>
                   @enderror
