@@ -70,9 +70,13 @@ class TreatController extends Controller
     public function create(Patient $patient, Matter $matter)
     {
         $age = Carbon::parse($patient->dob)->age;
-        $role = Role::wherein('name', ['master','senior', 'Apprentice'])->first();
-        $users = $role->users()->pluck('name','id')->all();
+        //$role = Role::wherein('name', ['master','senior', 'apprentice'])->first();
+        //$users = $role->users()->pluck('name','id')->all();
         //$branches = Branches::pluck('name','id')->all();
+        $authorizedRoles = ['master','senior', 'apprentice'];
+        $users = User::whereHas('roles', static function ($query) use ($authorizedRoles) {
+                      return $query->whereIn('name', $authorizedRoles);
+                  })->pluck('name','id')->all();
 
         $options=array(
           'branches' => Branches::pluck('name','id')->all(),
@@ -242,8 +246,14 @@ class TreatController extends Controller
     public function edit(Patient $patient, Matter $matter, Treat $treat)
     {
         $age = Carbon::parse($patient->dob)->age;
-        $role = Role::wherein('name', ['master','senior', 'Apprentice'])->first();
-        $users = $role->users()->pluck('name','id')->all();
+        //$role = Role::wherein('name', ['master','senior', 'apprentice'])->first();
+
+        $authorizedRoles = ['master','senior', 'apprentice'];
+        $users = User::whereHas('roles', static function ($query) use ($authorizedRoles) {
+                      return $query->whereIn('name', $authorizedRoles);
+                  })->pluck('name','id')->all();
+
+        //$users = $role->users()->pluck('name','id')->all();
         //$branches = Branches::pluck('name','id')->all();
         $ii = MatterInjury::with('injury')->where('matter_id', $matter->id)->get();
         $days = $this->days;
