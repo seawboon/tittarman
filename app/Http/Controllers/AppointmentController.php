@@ -112,10 +112,15 @@ class AppointmentController extends Controller
     public function create(Request $request)
     {
         //dd($request->input());
-        $myBranch = Session::get('myBranch');
-        $myBranch = session('myBranch');
+        if(Session::get('myBranch')) {
+          $myBranch = Session::get('myBranch');
+          $myBranch = session('myBranch');
 
-        $defBranch = $myBranch->id;
+          $defBranch = $myBranch->id;
+        } else {
+          return redirect()->route('checkin.mybranch');
+        }
+
 
         if($request->input('branch')) {
           $defBranch = $request->input('branch');
