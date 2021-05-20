@@ -44,7 +44,7 @@ class PaymentController extends Controller
       //$age = Carbon::parse($payment->patient->dob)->age;
       //$patient->load('vouchers');
       $products = Product::where('status', 'yes')->get();
-      $vouchers = Voucher::where('state', 'enable')->where('payment_id', null)->get();
+      $vouchers = Voucher::where('state', 'enable')->where('payment_id', null)->take(50)->get();
       $methods = PaymentMethod::where('status', 'yes')->pluck('name','id')->all();
 
       return view('payment.create', compact('patient','products', 'vouchers','methods'));
@@ -67,7 +67,7 @@ class PaymentController extends Controller
       $data['treat'] = $request->treat['fee'];
 
       $vvE = 'yes';
-
+      dd($data['voucher']);
       if(isset($data['voucher'])) {
         foreach ($data['voucher'] as $key => $voucher) {
           $lols = Voucher::where('code', $voucher['code'])->where('patient_id', null)->first();
@@ -159,7 +159,7 @@ class PaymentController extends Controller
         });
         $voucherEd->prepend($voucherE);
       }
-      
+
 
       $methods = PaymentMethod::where('status', 'yes')->pluck('name','id')->all();
 
