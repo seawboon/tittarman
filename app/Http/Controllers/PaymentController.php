@@ -44,7 +44,9 @@ class PaymentController extends Controller
       //$age = Carbon::parse($payment->patient->dob)->age;
       //$patient->load('vouchers');
       $products = Product::where('status', 'yes')->get();
-      $vouchers = Voucher::where('state', 'enable')->where('payment_id', null)->take(50)->get();
+      $vouchersFirst = Voucher::where('state', 'enable')->where('payment_id', null)->latest()->take(20)->get();
+      $voucherslast = Voucher::where('state', 'enable')->where('payment_id', null)->oldest()->take(20)->get();
+      $vouchers = $vouchersFirst->merge($voucherslast);
       $methods = PaymentMethod::where('status', 'yes')->pluck('name','id')->all();
 
       return view('payment.create', compact('patient','products', 'vouchers','methods'));
