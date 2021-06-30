@@ -16,7 +16,7 @@ class Package extends Model
     protected $table = 'packages';
 
     protected $fillable = [
-        'title', 'description', 'total', 'sell', 'percentage', 'status', 'publish_date_start', 'publish_date_end'
+        'title', 'sku', 'description', 'remark', 'status', 'publish_date_start', 'publish_date_end'
     ];
 
     protected $appends = ['web_image_url'];
@@ -36,6 +36,16 @@ class Package extends Model
     public function products()
     {
         return $this->hasMany(PackageProduct::class);
+    }
+
+    public function variants()
+    {
+        return $this->hasMany(PackageVariant::class);
+    }
+
+    public function vouchers()
+    {
+        return $this->hasMany(VariantVoucher::class);
     }
 
     public function scopePublishedDate($query) {

@@ -8,6 +8,9 @@ use Carbon\Carbon;
 use App\Package;
 use App\Product;
 use App\PackageProduct;
+use App\PackageVariant;
+use App\VoucherType;
+use App\VariantVoucher;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Str;
 use Image;
@@ -17,7 +20,7 @@ class PackageController extends Controller
 {
     public function index()
     {
-        $packages = Package::PublishedDate()->with('products.product')->paginate(10);
+        $packages = Package::PublishedDate()->with('variants')->paginate(10);
         return view('package.index', compact('packages'));
     }
 
@@ -31,14 +34,13 @@ class PackageController extends Controller
     {
         $data = request()->validate([
           'title' => 'required',
-          'total' => 'required',
-          'sell' => 'required',
-          'percentage' => 'required',
+          'sku' => 'required|unique:packages,sku',
           'status' => 'required',
           'publish_date_start' => 'required',
           'publish_date_end' => 'required',
           'description' => '',
-          'productRes.*' => '',
+          'remark' => '',
+          /*'productRes.*' => '',*/
           'filename' => '',
           'filename.*' => 'image',
         ]);
@@ -72,10 +74,12 @@ class PackageController extends Controller
           $package->save();
         }
 
+        /*
         $collection = collect($data['productRes']);
         $filtered = $collection->where('unit', '!=', 0);
 
         $package->products()->createMany($filtered->toarray());
+        */
 
         switch(request('submit')) {
           case 'save':
@@ -101,30 +105,27 @@ class PackageController extends Controller
     {
         //dd($package);
         $products = Product::Shoponly()->get();
-        $package->load('products');
-        $packageProducts=$package->products;
+        //$packageProducts=$package->products;
 
-        return view('package.edit', compact('products','package', 'packageProducts'));
+        return view('package.edit', compact('products','package'));
     }
 
     public function update(Package $package)
     {
         $data = request()->validate([
           'title' => 'required',
-          'total' => 'required',
-          'sell' => 'required',
-          'percentage' => 'required',
+          'sku' => 'required',
           'status' => 'required',
           'publish_date_start' => 'required',
           'publish_date_end' => 'required',
           'description' => '',
-          'productRes.*' => '',
+          'remark' => '',
+          //'productRes.*' => '',
           'filename' => '',
           'filename.*' => 'image',
         ]);
 
         $package->update($data);
-
 
 
         if(isset($data['filename']))
@@ -152,17 +153,127 @@ class PackageController extends Controller
           $package->image_url = $newName;
           $package->save();
         }
-        
+
+        /*
         PackageProduct::where('package_id', $package->id)->delete();
 
         $collection = collect($data['productRes']);
         $filtered = $collection->where('unit', '!=', 0);
 
         $package->products()->createMany($filtered->toarray());
+        */
 
         switch(request('submit')) {
           case 'save':
             return redirect()->route('packages.index');
+          break;
+
+          case 'new':
+            return redirect()->route('packages.create');
+          break;
+        }
+
+    }
+
+
+    public function showPackageVariants(Package $package)
+    {
+        //dd($package->variants);
+        $package->load('variants.vouchers.type');
+        return view('package.variant.index', compact('package'));
+    }
+
+    public function indexVariant()
+    {
+        $variants = PackageVariant::get();
+        dd($variants);
+        return view('package.index', compact('packages'));
+    }
+
+    public function createVariant(Package $package)
+    {
+        $types = VoucherType::Published()->get();
+        return view('package.variant.create', compact('package', 'types'));
+    }
+
+    public function saveVariant(Package $package)
+    {
+        $data = request()->validate([
+          'name' => 'required',
+          'sku' => 'required|unique:package_variants,sku',
+          'status' => 'required',
+          'remark' => '',
+          'stock' => '',
+          'price' => 'required',
+          'sell' => 'required',
+          'voucherRes.*' => '',
+        ]);
+
+
+        $variant = $package->variants()->create($data);
+
+
+
+        $collection = collect($data['voucherRes']);
+        $filtered = $collection->where('quantity', '!=', 0);
+
+        $variant->vouchers()->createMany($filtered->toarray());
+
+        switch(request('submit')) {
+          case 'save':
+            return redirect()->route('index.variants');
+          break;
+
+          case 'new':
+            return redirect()->route('index.variants');
+          break;
+        }
+
+    }
+
+    public function editVariant(Package $package, PackageVariant $variant)
+    {
+        $package->load(['variants' => function ($query) use ($variant) {
+            $query->where('id', $variant->id);
+        }])->first();
+
+        $vTypes = VoucherType::Published()->get();
+
+        if($package->variants->isNotEmpty()) {
+          return view('package.variant.edit', compact('variant', 'vTypes'));
+        } else {
+          return abort(404);
+        }
+
+
+    }
+
+    public function updateVariant(Package $package,PackageVariant $variant)
+    {
+        $data = request()->validate([
+          'name' => 'required',
+          'sku' => 'required',
+          'status' => 'required',
+          'remark' => '',
+          'stock' => '',
+          'price' => 'required',
+          'sell' => 'required',
+          'voucherRes.*' => '',
+        ]);
+
+        $variant->update($data);
+
+        VariantVoucher::where('variant_id', $variant->id)->delete();
+
+        $collection = collect($data['voucherRes']);
+        $filtered = $collection->where('quantity', '!=', 0);
+
+        $variant->vouchers()->createMany($filtered->toarray());
+
+
+        switch(request('submit')) {
+          case 'save':
+            return redirect()->route('show.package.variants', $variant->package_id);
           break;
 
           case 'new':

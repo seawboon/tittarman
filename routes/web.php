@@ -36,6 +36,14 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::resource('methods','MethodController');
 	Route::resource('sources','SourceController');
 
+	Route::get('/variants', 'PackageController@indexVariant')->name('index.variants');
+	Route::get('/packages/{package}/variant/add', 'PackageController@createVariant')->name('add.variant');
+	Route::post('/packages/{package}/variant/add', 'PackageController@saveVariant')->name('save.variant');
+	Route::get('/packages/{package}/variant/{variant}/edit', 'PackageController@editVariant')->name('edit.variant');
+	Route::post('/packages/{package}/variant/{variant}/edit', 'PackageController@updateVariant')->name('update.variant');
+
+	Route::get('/packages/{package}/variants', 'PackageController@showPackageVariants')->name('show.package.variants');
+
 	Route::get('/mybranch', 'HomeController@mybranch')->name('checkin.mybranch');
 	Route::get('/setSession/{branch}', 'HomeController@setSession')->name('checkin.setSession');
 	Route::get('/getSession', 'HomeController@getSession')->name('checkin.getSession');
@@ -57,6 +65,7 @@ Route::group(['middleware' => 'auth'], function () {
 
 	Route::resource('products', 'ProductController', ['except' => ['show']]);
 	Route::resource('injuryparts', 'InjuryPartController', ['except' => ['show']]);
+	Route::resource('vouchertypes', 'VoucherTypeController', ['except' => ['show']]);
 	Route::resource('appointments', 'AppointmentController', ['except' => ['show']]);
 	Route::get('/appointments/range', 'AppointmentController@range')->name('appointments.range');
 
@@ -94,6 +103,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('/payment/create/{patient}', 'PaymentController@create')->name('payment.create');
 	Route::post('/payment/create/{patient}/store', 'PaymentController@store')->name('payment.store');
 	Route::get('/payment/{payment}/edit', 'PaymentController@edit')->name('payment.edit');
+	Route::get('/payment/{payment}/editOld', 'PaymentController@editOld')->name('payment.editold');
 	Route::post('/payment/{payment}/update', 'PaymentController@update')->name('payment.update');
 
 	Route::get('import-excel', 'ImportExcel\ImportExcelController@index');

@@ -1,11 +1,11 @@
-@extends('layouts.app', ['titlePage' => 'Edit Package'])
+@extends('layouts.app', ['titlePage' => 'New Product'])
 
 @section('content')
     <div class="header bg-gradient-secondary py-7 py-lg-8">
       <div class="container-fluid">
         <div class="row">
 
-      <div class="col-xl-10">
+      <div class="col-xl-8 order-xl-1">
         <div class="card-body">
 
             {{--<form action="{{ route('products.update', ($product) ) }}" method="PUT">--}}
@@ -16,7 +16,7 @@
 
 
                 <div class="row">
-                  <div class="col-6">
+                  <div class="col-12">
                     <div class="form-group">
                       <label for="name">Title</label>
                       <input type="text" class="form-control" id="title" name="title" placeholder="Enter Package Title" value="{{ old('title', $package->title) }}">
@@ -26,31 +26,13 @@
                     </div>
                   </div>
 
-                  <div class="col-6">
-                    <div class="form-group">
-                      <label for="name">SKU</label>
-                      <input type="text" class="form-control" id="sku" readonly name="sku" placeholder="Enter Package SKU" value="{{ old('sku', $package->sku) }}">
-                      @error('sku')
-                      <small class="text-danger">{{ $message}}</small>
-                      @enderror
-                    </div>
-                  </div>
+
 
                   <div class="col-12">
                     <div class="form-group">
                       <label for="address">Description</label>
                       <textarea class="form-control" id="description" name="description" rows="3" placeholder="Enter Description">{{ old('description', $package->description) }}</textarea>
                       @error('description')
-                      <small class="text-danger">{{ $message}}</small>
-                      @enderror
-                    </div>
-                  </div>
-
-                  <div class="col-12">
-                    <div class="form-group">
-                      <label for="address">Remark</label>
-                      <textarea class="form-control" id="remark" name="remark" rows="3" placeholder="Enter Remark">{{ old('remark', $package->remark) }}</textarea>
-                      @error('remark')
                       <small class="text-danger">{{ $message}}</small>
                       @enderror
                     </div>
@@ -96,7 +78,83 @@
                     </div>
                   </div>
 
+                  <div class="col-12">
+                    <fieldset class="border p-2 mb-4">
+                      <legend class="w-auto px-2">Products</legend>
+                      @foreach ($products as $key => $product)
+                      <div class="form-check form-check">
+                        <div class="row">
+                          <div class="col-4">
+                            {{--
+                              <input class="form-check-input" type="checkbox" id="product{{$key}}" name="productRes[{{ $key }}][product_id]" value="{{ $product['id'] }}" {{old('productRes.'.$key.'.product_id') ? 'checked' : ''}}>
+                            --}}
+                            <input name="productRes[{{ $key }}][product_id]" id="product{{$key}}" type="hidden" value="{{ $product['id'] }}">
+                            <label class="form-check-label" for="product{{$key}}">{{ $product['name'] }}</label>
+                          </div>
 
+                          @php
+                            $ppp = $packageProducts->where('product_id', $product->id)->first();
+                          @endphp
+
+                          @php
+                            $pUnit = 0;
+                            $ppTotal = 0;
+                            if(!is_null($ppp)) {
+                              $pUnit = $ppp->unit;
+                              $ppTotal = $ppp->total;
+                            }
+                          @endphp
+
+                          <div class="col-2">
+                            RM {{ $product['price'] }}
+                            <input name="productRes[{{ $key }}][price]" id="productPrice{{ $key }}" type="hidden" value="{{ $product['price'] }}">
+                          </div>
+                          <div class="col-2">
+                            <input class="form-control unitChg"  min="0" data-key="{{$key}}" id="productUnit{{$key}}" name="productRes[{{ $key }}][unit]" type="number" value="{{old('productRes.'.$key.'.unit', $pUnit)}}">
+                          </div>
+                          <div class="col-4">
+                            <input class="form-control cProductTotal"  min="0" id="productTotal{{$key}}" name="productTotal[{{$key}}]" type="number" value="{{old('productTotal.'.$key, $ppTotal)}}" readonly>
+                          </div>
+                        </div>
+                      </div>
+                      @endforeach
+                      <hr />
+                      <div class="row">
+                        <div class="col-8 text-right">
+                          Sum
+                        </div>
+
+                        <div class="col-4">
+                          <input class="form-control"  min="0" id="productsSum" name="total" type="number" value="{{old('total', $package->total)}}" readonly>
+                        </div>
+
+                      </div>
+
+                      @error('productRes.*.product_id')
+                      <small class="text-danger">{{ $message}}</small>
+                      @enderror
+                    </fieldset>
+                  </div>
+
+                  <div class="col-4">
+                    <div class="form-group">
+                      <label for="address">Selling Price</label>
+                      <input type="text" class="form-control" id="sell" name="sell" rows="3" placeholder="Enter Price" value="{{ old('sell', $package->sell) }}">
+                      @error('sell')
+                      <small class="text-danger">{{ $message}}</small>
+                      @enderror
+                    </div>
+                  </div>
+
+                  <div class="col-4">
+                    <div class="form-group">
+                      <label for="type" class="d-block">Discount(%)</label>
+                      <input type="text" class="form-control" id="percentage" name="percentage" rows="3" placeholder="Enter Discount" value="{{ old('percentage', $package->percentage) }}">
+                      @error('percentage')
+                      <small class="text-danger">{{ $message}}</small>
+                      @enderror
+                    </div>
+                  </div>
 
                   <div class="col-4">
                     <div class="form-group">
@@ -140,23 +198,14 @@
 
 
 
-
-      </div>
-
-      <div class="col mt-5">
-        @include('package.variant.card')
       </div>
 
 
       </div>
 
       </div>
-
 
     </div>
-
-
-
 
 
 @endsection

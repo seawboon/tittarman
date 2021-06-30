@@ -1,22 +1,22 @@
-@extends('layouts.app', ['titlePage' => 'New Package'])
+@extends('layouts.app', ['titlePage' => 'New Variant'])
 
 @section('content')
     <div class="header bg-gradient-secondary py-7 py-lg-8">
       <div class="container-fluid">
         <div class="row">
-      <div class="col-xl-8 order-xl-1">
+      <div class="col-xl-9 order-xl-1">
         <div class="card-body">
 
 
-            <form action="{{ route('packages.store') }}" method="post" enctype="multipart/form-data">
+            <form action="{{ route('update.variant',[$variant->package_id, $variant]) }}" method="post">
               @csrf
 
               <div class="row">
                 <div class="col-6">
                   <div class="form-group">
-                    <label for="name">Title <small class="text-danger">required</small></label>
-                    <input type="text" class="form-control" id="title" name="title" placeholder="Enter Package Title" value="{{ old('title') }}">
-                    @error('title')
+                    <label for="name">Name <small class="text-danger">required</small></label>
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Enter Variant Name" value="{{ old('name', $variant->name) }}">
+                    @error('name')
                     <small class="text-danger">{{ $message}}</small>
                     @enderror
                   </div>
@@ -25,19 +25,8 @@
                 <div class="col-6">
                   <div class="form-group">
                     <label for="name">SKU <small class="text-danger">required</small></label>
-                    <input type="text" class="form-control" id="sku" name="sku" placeholder="Enter Package sku" value="{{ old('sku') }}">
+                    <input type="text" class="form-control" id="sku" name="sku" placeholder="Enter Variant sku" readonly value="{{old('sku') ? old('sku') : $variant->sku}}">
                     @error('sku')
-                    <small class="text-danger">{{ $message}}</small>
-                    @enderror
-                  </div>
-                </div>
-
-
-                <div class="col-12">
-                  <div class="form-group">
-                    <label for="address">Description</label>
-                    <textarea class="form-control" id="description" name="description" rows="3" placeholder="Enter Description">{{ old('description') }}</textarea>
-                    @error('description')
                     <small class="text-danger">{{ $message}}</small>
                     @enderror
                   </div>
@@ -46,50 +35,79 @@
                 <div class="col-12">
                   <div class="form-group">
                     <label for="address">Remark</label>
-                    <textarea class="form-control" id="remark" name="remark" rows="3" placeholder="Enter Remark">{{ old('remark') }}</textarea>
+                    <textarea class="form-control" id="remark" name="remark" rows="3" placeholder="Enter Remark">{{ old('remark', $variant->remark) }}</textarea>
                     @error('description')
                     <small class="text-danger">{{ $message}}</small>
                     @enderror
                   </div>
                 </div>
 
-                <div class="col-6">
-                  <label for="publish_date_start" class="d-block">Publish Start On <small class="text-danger">required</small></label>
-                  <div class="form-group">
-                    <div class="input-group">
-                      <div class="input-group-prepend">
-                        <span class="input-group-text"><i class="ni ni-calendar-grid-58"></i></span>
-                      </div>
-                      <input class="flatpickr datetimepicker form-control" name="publish_date_start" type="text" placeholder="Date & Time" value="{{ old('publish_date_start') }}">
-                    </div>
-                    @error('publish_date_start')
-                    <small class="text-danger">{{ $message}}</small>
-                    @enderror
-                  </div>
-                </div>
-
-                <div class="col-6">
-                  <label for="publish_date_end" class="d-block">Publish End On <small class="text-danger">required</small></label>
-                  <div class="form-group">
-                    <div class="input-group">
-                      <div class="input-group-prepend">
-                        <span class="input-group-text"><i class="ni ni-calendar-grid-58"></i></span>
-                      </div>
-                      <input class="flatpickr datetimepicker form-control" name="publish_date_end" type="text" placeholder="Date & Time" value="{{ old('publish_date_end') }}">
-                    </div>
-                    @error('publish_date_end')
-                    <small class="text-danger">{{ $message}}</small>
-                    @enderror
-                  </div>
-                </div>
-
                 <div class="col-12">
-                  <div class="form-group control-group increment after">
-                    <label>Package Banner</label>
-                    <div class="custom-file after">
-                        <input type="file" class="custom-file-input" name="filename" lang="en">
-                        <label class="custom-file-label" for="customFileLang">Select file</label>
-                    </div>
+
+                  <fieldset>
+                    <legend>Voucher</legend>
+
+                    @foreach ($vTypes as $key => $vType)
+                      <div class="row">
+                        <div class="col-4">
+                          {{$vType->name}}
+                          <input name="voucherRes[{{ $key }}][package_id]" id="voucherpackage{{$key}}" type="hidden" value="{{ $variant->package->id }}">
+                          <input name="voucherRes[{{ $key }}][voucher_type_id]" id="vouchertype{{$key}}" type="hidden" value="{{ $vType->id }}">
+                        </div>
+                        @php
+                          $ppp = $variant->vouchers->where('voucher_type_id', $vType->id)->first();
+                          $pQuantity = 0;
+                          $pPrefix = $vType->prefix;
+                          if(!is_null($ppp)) {
+                            $pQuantity = $ppp->quantity;
+                            $pPrefix = $ppp->prefix;
+                          }
+                        @endphp
+
+                        <div class="col-4">
+                          <div class="form-group">
+                          <input class="form-control"  min="0" data-key="{{$key}}" id="voucherquantity{{$key}}" name="voucherRes[{{ $key }}][quantity]" type="number" value="{{old('voucherRes.'.$key.'.quantity', $pQuantity)}}">
+                          </div>
+                        </div>
+                        <div class="col-4">
+                          <div class="form-group">
+                          <input class="form-control"  min="0" data-key="{{$key}}" id="voucherUnit{{$key}}" name="voucherRes[{{ $key }}][prefix]" type="text" value="{{old('voucherRes.'.$key.'.prefix', strtoupper($pPrefix))}}">
+                          </div>
+                        </div>
+                      </div>
+                    @endforeach
+
+                  </fieldset>
+
+                </div>
+
+                <div class="col-6">
+                  <div class="form-group">
+                    <label for="price">Original Price <small class="text-danger">required</small></label>
+                    <input type="text" class="form-control" id="price" name="price" placeholder="Enter Price" value="{{ old('price', $variant->price) }}">
+                    @error('price')
+                    <small class="text-danger">{{ $message}}</small>
+                    @enderror
+                  </div>
+                </div>
+
+                <div class="col-6">
+                  <div class="form-group">
+                    <label for="sell">Selling Price <small class="text-danger">required</small></label>
+                    <input type="text" class="form-control" id="sell" name="sell" placeholder="Enter Selling Price" value="{{ old('sell', $variant->sell) }}">
+                    @error('sell')
+                    <small class="text-danger">{{ $message}}</small>
+                    @enderror
+                  </div>
+                </div>
+
+                <div class="col-6">
+                  <div class="form-group">
+                    <label for="name">Stock</label>
+                    <input type="number" class="form-control" id="stock" name="stock" placeholder="Enter Stock" value="{{ old('stock', $variant->stock) }}">
+                    @error('stock')
+                    <small class="text-danger">{{ $message}}</small>
+                    @enderror
                   </div>
                 </div>
 
@@ -98,11 +116,11 @@
                   <div class="form-group">
                     <label for="gemder" class="d-block">Status <small class="text-danger">required</small></label>
                     <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="status" id="Publish" value="yes" {{(old('status') == 'yes') ? 'checked' : ''}}>
+                      <input class="form-check-input" type="radio" name="status" id="Publish" value="yes" {{(old('status', $variant->status) == 'yes') ? 'checked' : ''}}>
                       <label class="form-check-label" for="Publish">Publish</label>
                     </div>
                     <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="status" id="Offline" value="no" {{(old('status') == 'no') ? 'checked' : ''}}>
+                      <input class="form-check-input" type="radio" name="status" id="Offline" value="no" {{(old('status', $variant->status) == 'no') ? 'checked' : ''}}>
                       <label class="form-check-label" for="Offline">Offline</label>
                     </div>
 
@@ -141,6 +159,27 @@
 
 
 @endsection
+
+@push('css')
+<style>
+.input-group-text {
+  background-color: #e9ecef;
+  color: #525f7f;
+}
+
+fieldset {
+  border: solid 1px #cad1d7;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+legend {
+  width: auto;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+</style>
+@endpush
 
 @push('js')
 <style>
