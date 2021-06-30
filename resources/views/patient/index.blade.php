@@ -120,9 +120,17 @@
 
                 @if(empty($searchTerms))
                   {{ $patients->links() }}
+                  {{ Form::open(array('url' => route('patient.index'), 'method' => 'get')) }}
+
+                  {{ Form::number('page', $patients->currentPage(),  array('style' => 'width:60px')) }}
+
+                  {{ Form::close() }}
                 @else
                   {{ $patients->appends($searchTerms)->links() }}
                 @endif
+
+
+
 
             </div>
 

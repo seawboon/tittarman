@@ -15,10 +15,9 @@
                         <tr>
                             <th scope="col" class="sort" data-sort="name">No.</th>
                             <th scope="col" class="sort" data-sort="budget">Title</th>
-                            <th scope="col" class="sort" data-sort="budget">Products</th>
-                            <th scope="col" class="sort" data-sort="budget">Price</th>
-                            <th scope="col" class="sort" data-sort="budget">Publish Start On</th>
-                            <th scope="col" class="sort" data-sort="budget">Publish End On</th>
+                            <th scope="col" class="sort" data-sort="budget">Variants</th>
+                            {{--<th scope="col" class="sort" data-sort="budget">Price</th>--}}
+                            <th scope="col" class="sort" data-sort="budget">Publish Date</th>
                             <th scope="col" class="sort" data-sort="budget">PUBLISH</th>
                             <th scope="col"></th>
                         </tr>
@@ -26,45 +25,61 @@
                     <tbody class="list">
                       @foreach($packages as $package)
                         <tr>
-                            <th scope="row">
-                                <div class="media align-items-center">
-                                    <div class="media-body">
+                            <td class="align-top">
                                         <span class="name mb-0 text-sm">{{$loop->iteration}}</span>
-                                    </div>
-                                </div>
-                            </th>
-                            <td>
+                            </td>
+                            <td class="align-top">
                                 {{ $package->title }}
                             </td>
                             <td>
-                                @foreach($package->products as $product)
-                                  - {{ $product->product->name }} * {{ $product->unit }}
-                                  @if(!$loop->last)
-                                    <br />
-                                  @endif
+                                <ul style="list-style:none" class="pl-0">
+                                @foreach($package->variants as $variant)
+                                  <li>
+                                    <div class="dropdown">
+                                        <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                          <i class="fas fa-ellipsis-v"></i>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-left dropdown-menu-arrow">
+                                            <a class="dropdown-item" href="{{ route('edit.variant', [$package, $variant]) }}">View / Edit</a>
+                                        </div>
+
+                                    </div>
+                                    {{$variant->name}}
+                                    {{-- <ul>
+                                      @foreach($variant->vouchers as $voucher)
+                                      <li>
+                                        {{$voucher->type->name}} x {{$voucher->quantity}}
+                                      </li>
+                                      @endforeach
+                                    </ul>--}}
+                                  </li>
                                 @endforeach
+                                </ul>
                             </td>
-                            <td>
+                            {{-- <td>
                                 {{ $package->sell }}
-                            </td>
-                            <td>
+                            </td>--}}
+                            <td class="align-top">
                                 {{ Carbon\Carbon::parse($package->publish_date_start)->format(config('app.datetime_format')) }}
-                            </td>
-                            <td>
+                                <br />-<br />
                                 {{ Carbon\Carbon::parse($package->publish_date_end)->format(config('app.datetime_format')) }}
                             </td>
 
-                            <td>
+                            <td class="align-top">
                                 {{ $package->status }}
                             </td>
 
-                            <td class="text-left">
+                            <td class="text-left align-top">
                                 <div class="dropdown float-right">
                                     <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                       <i class="fas fa-ellipsis-v"></i>
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
                                         <a class="dropdown-item" href="{{ route('packages.edit', $package) }}">View / Edit</a>
+                                        {{--<a class="dropdown-item" href="{{ route('show.package.variants', $package) }}">Show Variants</a>--}}
+                                        <a class="dropdown-item" href="{{ route('add.variant', $package) }}">Add Variant</a>
+
+
                                         <!--<a class="dropdown-item" href="#">View</a>
                                         <a class="dropdown-item" href="#">Something else here</a>-->
                                     </div>

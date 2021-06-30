@@ -20,6 +20,7 @@ use App\Checkin;
 use App\Payment;
 use App\PaymentMethod;
 use App\Voucher;
+use App\Package;
 use Image;
 use File;
 
@@ -69,7 +70,7 @@ class PaymentController extends Controller
       $data['treat'] = $request->treat['fee'];
 
       $vvE = 'yes';
-      dd($data['voucher']);
+
       if(isset($data['voucher'])) {
         foreach ($data['voucher'] as $key => $voucher) {
           $lols = Voucher::where('code', $voucher['code'])->where('patient_id', null)->first();
@@ -138,6 +139,8 @@ class PaymentController extends Controller
   public function edit(Payment $payment)
   {
       //dd($payment->treat);
+      $packages = Package::Published()->PublishedDate()->get();
+      $packages->load('products.product');
       $age = Carbon::parse($payment->patient->dob)->age;
       $products = Product::where('status', 'yes')->get();
       //$role = Role::where('name', 'master')->first();
@@ -146,7 +149,10 @@ class PaymentController extends Controller
       //$ii = MatterInjury::with('injury')->where('matter_id', $matter->id)->get();
       $days = $this->days;
       //$vouchers = Voucher::where('state', 'enable')->where('payment_id', null)->get();
-      $vouchers = Voucher::get();
+      //$vouchers = Voucher::get();
+      //$vouchersFirst = Voucher::where('state', 'enable')->where('payment_id', null)->latest()->take(20)->get();
+      //$voucherslast = Voucher::where('state', 'enable')->where('payment_id', null)->oldest()->take(20)->get();
+      //$vouchers = $vouchersFirst->merge($voucherslast);
 
       $voucherHasVoucher = Patient::has('AvailabelVoucher')->get();
 
@@ -167,7 +173,45 @@ class PaymentController extends Controller
 
       //$treat->load('products');
 
-      return view('payment.edit', compact('payment','products', 'days', 'vouchers', 'voucherEd', 'methods'));
+      return view('payment.edit', compact('payment','products', 'days', 'packages', 'voucherEd', 'methods'));
+  }
+
+  public function editOld(Payment $payment)
+  {
+      //dd($payment->treat);
+      $age = Carbon::parse($payment->patient->dob)->age;
+      $products = Product::where('status', 'yes')->get();
+      //$role = Role::where('name', 'master')->first();
+      //$users = $role->users()->pluck('name','id')->all();
+      //$branches = Branches::pluck('name','id')->all();
+      //$ii = MatterInjury::with('injury')->where('matter_id', $matter->id)->get();
+      $days = $this->days;
+      //$vouchers = Voucher::where('state', 'enable')->where('payment_id', null)->get();
+      //$vouchers = Voucher::get();
+      $vouchersFirst = Voucher::where('state', 'enable')->where('payment_id', null)->latest()->take(20)->get();
+      $voucherslast = Voucher::where('state', 'enable')->where('payment_id', null)->oldest()->take(20)->get();
+      $vouchers = $vouchersFirst->merge($voucherslast);
+
+      $voucherHasVoucher = Patient::has('AvailabelVoucher')->get();
+
+      $voucherEd = collect($voucherHasVoucher);
+      $voucherE = $voucherEd->firstWhere('id', $payment->patient->id);
+
+      //push current patient to top
+      if($voucherE!=null) {
+        $bbid = $payment->patient->id;
+        $voucherEd = $voucherEd->filter(function($item) use ($bbid) {
+            return $item->id != $bbid;
+        });
+        $voucherEd->prepend($voucherE);
+      }
+
+
+      $methods = PaymentMethod::where('status', 'yes')->pluck('name','id')->all();
+
+      //$treat->load('products');
+
+      return view('payment.edit-20210528', compact('payment','products', 'days', 'vouchers', 'voucherEd', 'methods'));
   }
 
   public function update(Payment $payment, Request $request)

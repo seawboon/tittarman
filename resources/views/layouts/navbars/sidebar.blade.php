@@ -167,6 +167,13 @@
                           <span>{{ __('Injury Part') }}</span>
                       </a>
                       @endhasanyrole
+
+                      @hasanyrole('Admin|Master')
+                      <a href="{{ route('vouchertypes.index') }}" class="dropdown-item">
+                          <i class="ni ni-app"></i>
+                          <span>{{ __('Voucher Type') }}</span>
+                      </a>
+                      @endhasanyrole
                     </div>
                 </li>
 
