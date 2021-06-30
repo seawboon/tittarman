@@ -221,11 +221,11 @@ class PackageController extends Controller
 
         switch(request('submit')) {
           case 'save':
-            return redirect()->route('index.variants');
+            return redirect()->route('packages.index');
           break;
 
           case 'new':
-            return redirect()->route('index.variants');
+            return redirect()->route('packages.index');
           break;
         }
 
