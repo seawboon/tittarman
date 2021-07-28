@@ -11,6 +11,7 @@ use App\PackageProduct;
 use App\PackageVariant;
 use App\VoucherType;
 use App\VariantVoucher;
+use App\PatientVoucher;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Str;
 use Image;
@@ -176,6 +177,25 @@ class PackageController extends Controller
     }
 
 
+    public function subVariants (Request $request)
+    {
+        //$variants = PackageVariant::where('package_id', $request->package_id)->Published()->get();
+        $variants = Package::where('id', $request->package_id)->with('variants')->get();
+        return response()->json([
+            'variants' => $variants
+        ]);
+    }
+
+    public function varaintDetail (Request $request)
+    {
+        //$variants = PackageVariant::where('package_id', $request->package_id)->Published()->get();
+        $variant = PackageVariant::where('id', $request->variant_id)->with('vouchers.type')->get();
+        return response()->json([
+            'variant' => $variant
+        ]);
+    }
+
+
     public function showPackageVariants(Package $package)
     {
         //dd($package->variants);
@@ -238,9 +258,10 @@ class PackageController extends Controller
         }])->first();
 
         $vTypes = VoucherType::Published()->get();
+        $vExpiry = config('ttm.expiry');
 
         if($package->variants->isNotEmpty()) {
-          return view('package.variant.edit', compact('variant', 'vTypes'));
+          return view('package.variant.edit', compact('variant', 'vTypes', 'vExpiry'));
         } else {
           return abort(404);
         }
@@ -256,6 +277,7 @@ class PackageController extends Controller
           'status' => 'required',
           'remark' => '',
           'stock' => '',
+          'expiry' => 'required',
           'price' => 'required',
           'sell' => 'required',
           'voucherRes.*' => '',
@@ -281,6 +303,19 @@ class PackageController extends Controller
           break;
         }
 
+    }
+
+    public function checkDuplicateCode(Request $request)
+    {
+      $code = PatientVoucher::where('code', $request->code)->first();
+      if($code) {
+        $status='yes';
+      } else {
+        $status='no';
+      }
+      return response()->json([
+          'status' => $status
+      ]);
     }
 
 }

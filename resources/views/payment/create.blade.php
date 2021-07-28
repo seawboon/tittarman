@@ -37,10 +37,11 @@
               <div id="PaymentTabs">
                   <ul class="resp-tabs-list ver_1">
                       <li>Products</li>
+                      <li>Voucher Package</li>
                       {{-- <li>Vouchers</li> --}}
                       <li>Treatment Fee</li>
-                      <li>Memo</li>
-                      <li>My Voucher</li>
+                      {{-- <li>Memo</li>
+                      <li>My Voucher</li> --}}
                   </ul>
                   <div class="resp-tabs-container ver_1">
                       <div for="Products">
@@ -101,110 +102,33 @@
                           </div>
                         </div>
                       </div>
-                      {{-- <div for="Vouchers">
-                        <div class="table-responsive products">
-                          <div>
-                            <table class="table align-items-center">
-                              <thead class="thead-light">
-                                  <tr>
-                                      <th scope="col" class="sort" data-sort="budget">Product Name</th>
-                                      <th scope="col" class="sort" data-sort="status">Price (RM)</th>
-                                      <th scope="col" class="sort" data-sort="branch">Unit</th>
-                                      <th scope="col">Total</th>
-                                      <tbody class="list">
-                                        @foreach($products->where('type','voucher') as $key => $product)
-                                        <tr>
-                                          <td>
-                                            <input type="hidden" name="product[{{ $key }}][product_id]" value="{{$product->id}}" />
-                                            <input type="hidden" name="product[{{ $key }}][treat_id]" value="" />
-                                            <input type="hidden" name="product[{{ $key }}][matter_id]" value="" />
-                                            <input type="hidden" name="product[{{ $key }}][patient_id]" value="" />
-                                            @if($product->id == 4)
-                                              <textarea class="form-control" name="product[{{ $key }}][remarks]" rows="1" placeholder="Enter Others">{{ old('product.'.$key.'.remarks') }}</textarea>
-                                            @else
-                                              <input type="hidden" name="product[{{ $key }}][remarks]" value="" />
-                                              {{ $product->name }}
-                                            @endif
-                                          </td>
-                                          <td class="w-25">
-                                            <div class="form-group">
-                                              <input type="text" class="form-control productprice" name="product[{{ $key }}][price]" value="{{ old('product.'.$key.'.price', $product->price) }}" />
-                                            </div>
-                                          </td>
-                                          <td class="w-15">
-                                            <div class="form-group">
-                                            @php $pType = 'item';
-                                              if($product->type == 'voucher') {
-                                                  $pType = 'voucher';
-                                              }
-
-                                            @endphp
-
-                                            {!! Form::select('product['.$key.'][unit]', range(0, 10) , null, array('class' => 'form-control productunit'.$key.' '.$pType.'')) !!}
-                                            </div>
-
-                                          </td>
-                                          <td class="w-25">
-                                            <div class="form-group">
-                                              <input type="text" class="form-control producttotal{{ $key }}" name="product[{{ $key }}][total]" value="0" readonly />
-                                            </div>
-                                          </td>
-                                        </tr>
-
-                                        @if($product->type == 'voucher')
-
-                                        <tr class="typeVoucher d-none">
-                                            <td colspan="4" style="white-space:initial">
-                                              <div class="row typeVoucherRow">
-                                                <div class="col-12">
-                                                  <select class="js-example-basic-multiple w-100" name="voucher[][code]" multiple="multiple">
-                                                    @foreach($vouchers as $voucher)
-                                                      <option value="{{$voucher->code}}">{{$voucher->code}}</option>
-                                                    @endforeach
-                                                  </select>
-                                                </div>
-
-                                                <div class="voucherHidden"></div>
-                                              </div>
-                                            </td>
-
-                                          </tr>
-
-                                          <tr class="typeVoucher d-none">
-                                            <td style="white-space:initial">
-                                              <div class="row typeVoucherRow">
-                                                <div class="col-12">
-                                                  Remarks
-                                                </div>
-                                              </div>
-                                            </td>
-                                            <td colspan="3" style="white-space:initial">
-                                              <div class="row typeVoucherRow">
-                                                <textarea class="form-control" id="notes" name="product[{{ $key }}][remarks]" rows="2" placeholder="Enter Remarks">{{ old('product.'.$key.'.remark', $product->remarks) }}</textarea>
-                                              </div>
-                                            </td>
-
-                                          </tr>
-
-                                          <script>
-                                          var VproductID = {{$product->id}};
-                                          </script>
-                                        @endif
-                                        @endforeach
+                      <div for="Vouchers">
+                        <div class="form-group">
+                          <label for="days" class="d-block">Package</label>
+                          <select class="form-control w-100" name="package[id]" id="buyPackage">
+                            <option value="">Choose Package</option>
+                            @foreach($packages as $key => $package)
+                              <option value="{{$package->id}}" @if(old('package.id') && old('package.id')==$package->id) selected @endif>{{ $package->title }}</option>
+                            @endforeach
+                          </select>
 
 
-
-
-
-
-                                      </tbody>
-                                  </tr>
-                              </thead>
-                            </table>
-                          </div>
                         </div>
+
+                        <div class="form-group">
+                          <input type="hidden" name="variantValue" class="variantValue" value="0" />
+                          <label for="days" class="d-block">Package Variants</label>
+                          <select class="form-control w-100" name="package[variant][id]" id="buyVariant">
+                            <option value="">Choose Package</option>
+                          </select>
+                        </div>
+
+                        <div id="voucher-details"></div>
+                        <button class="btn-sm btn-warning mt-2" id="chk-code">Check Cobe Availability <div class="loader"></div></button>
+                        <span id="hidden-chkbox"></span>
+
                       </div>
-                      --}}
+
                       <div for="Treatment Fee">
                         <div class="row">
                           <div class="col-12">
@@ -228,13 +152,10 @@
                           </div>
                         </div>
                       </div>
-                      <div for="Memo">
-                          <p>Suspendisse blandit velit Integer laoreet placerat suscipit. Sed sodales scelerisque commodo. Nam porta cursus lectus. Proin nunc erat, gravida a facilisis quis, ornare id lectus. Proin consectetur nibh quis Integer laoreet placerat suscipit. Sed sodales scelerisque commodo. Nam porta cursus lectus. Proin nunc erat, gravida a facilisis quis, ornare id lectus. Proin consectetur nibh quis urna gravid urna gravid eget erat suscipit in malesuada odio venenatis.</p>
-                      </div>
-                      <div for="Next Appointment">
+                      {{--<div for="Next Appointment">
                           <p>d ut ornare non, volutpat vel tortor. InLorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum nibh urna, euismod ut ornare non, volutpat vel tortor. Integer laoreet placerat suscipit. Sed sodales scelerisque commodo. Nam porta cursus lectus. Proin nunc erat, gravida a facilisis quis, ornare id lectus. Proin consectetur nibh quis urna gravida mollis.t in malesuada odio venenatis.</p>
                       </div>
-                      <div for="My voucher">
+                       <div for="My voucher">
                         <div class="row">
                           <div class="col-4">
                             <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#voucherModal">
@@ -276,7 +197,7 @@
 
 
                         </div>
-                      </div>
+                      </div> --}}
                   </div>
               </div>
 
@@ -354,6 +275,46 @@ hr.invisible {
     height: auto !important;
 }
 
+[class*="pkg-"]{
+  display: none;
+}
+
+#chk-code {
+  display: none;
+}
+
+.duplicate {
+    border: 1px solid red;
+    color: red;
+}
+
+.available {
+    border: 1px solid #c3e6cb;
+}
+
+#hchkbox {
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+
+.loader {
+  display: none;
+  border-width: .2em;
+  border: solid #fbc202; /* Light grey */
+  border-top: solid transparent; /* Blue */
+  border-radius: 50%;
+  width: 1rem;
+  height: 1rem;
+  animation: spin 0.75s linear infinite;
+  vertical-align: text-bottom;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 </style>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
@@ -408,120 +369,10 @@ $(document).ready(function() {
     getvalues();
   });
 
-  $('.voucher').change(function(){
-    var vQuantity = $(this).val()*2;
-    if(vQuantity > 0) {
-      var $select = $('.js-example-basic-multiple');
-      var values = $select.val();
-      var valuesLength = values.length;
-      if(valuesLength > vQuantity) {
-        var delItems = valuesLength - vQuantity;
-        values.splice(-delItems);
-        $select.val(values).change();
-      }
-
-      $('.typeVoucher').addClass('d-table-row')
-      vSelect(vQuantity);
-      vFields(vQuantity);
-    } else {
-      vFields(0);
-      $('.typeVoucher').addClass('d-none').removeClass('d-table-row');
-    }
-
-  });
-
-  function vSelect(vQuantity){
-    $('.js-example-basic-multiple').select2({
-      maximumSelectionLength: vQuantity
-    });
-  }
-
-  function vFields(vQuantity){
-    var vField ='';
-    for (var i = 0; i < vQuantity; i++) {
-      //vField += '<div class="col-4 mb-2">';
-      vField += '<input type="hidden" class="form-control" name="voucher['+i+'][product_id]" placeholder="voucher code" value="'+VproductID+'">';
-      //vField += '<input type="text" class="form-control voucherCode" name="voucher['+i+'][code]" placeholder="voucher code" required>';
-      //vField += '</div>';
-    }
-
-    $('.voucherHidden').html(vField);
-  }
-
-  $('.js-example-basic-multiple').on("select2:select select2:unselect", function (e) {
-
-      //this returns all the selected item
-      var items= $(this).val();
-      //console.log(items);
-
-      var Vmodal = $('#voucherModal .modal-body .row.newVouchers');
-
-      if(items.length > 0) {
-        var newtemp = '';
-        $.each( items, function( i, val ) {
-          newtemp += '<div class="col-3"><span class="code-2 mr-2 text-info">'+val+'</span><span class="copyCode border-0 bg-transparent" data-vcode="'+val+'"><i class="ni ni-single-copy-04"></i></span></div>';
-        });
-
-        Vmodal.html(newtemp);
-      } else {
-        Vmodal.html('');
-      }
-
-      //Gets the last selected item
-      //var lastSelectedItem = e.params.data.id;
-
-  });
-
-  /*<input type="hidden" class="form-control" name="voucher[1][product_id]" placeholder="voucher code" value="{{$product->id}}" >
-  <input type="text" class="form-control voucherCode" name="voucher[1][code]" placeholder="voucher code" required>*/
-
-  function getvalues(){
-    $('[class*=productprice]').each(function (key, value) {
-       var price = $(this).val();
-       var unit = $('.productunit'+key).val();
-       var total = price*unit;
-       var fee = $('.treat-fee').val();
-       var discount = $('.productdiscount').val();
-       $('.producttotal'+key).val(total);
-
-       var productsum = parseFloat(fee - discount);
-
-       $('.treatmentfinal').val(productsum);
-
-       $('[class*=producttotal]').each(function () {
-          productsum += parseFloat($(this).val());
-       });
-
-       $('.productsum').val(productsum);
-
-    });
-
-  };
-
-  $('.btn-before').click(function(){
-    var html = $('.clone.before').html();
-    $('.increment.before').after(html);
-  });
-
-  $('.btn-after').click(function(){
-    var html = $('.clone.after').html();
-    $('.increment.after').after(html);
-  });
-
-  $('body').on('click', '.btn-danger', function(){
-    $(this).parents(".control-group").remove();
-  });
-
-  $("body").on('change', '.custom-file input', function (e) {
-    if (e.target.files.length) {
-      $(this).next('.custom-file-label').html(e.target.files[0].name);
-    }
-  });
-
-
-
-
 
 });
+
+
+@include('payment.js')
 </script>
 @endpush

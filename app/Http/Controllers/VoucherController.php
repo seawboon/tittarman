@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Patient;
 use App\Voucher;
+use App\PatientVoucher;
 
 class VoucherController extends Controller
 {
@@ -17,16 +18,13 @@ class VoucherController extends Controller
         /*$patient->load(['matters' => function ($query) {
             $query->orderBy('created_at', 'desc');
         }, 'treats']);*/
-        $vouchers = $patient->vouchers()->paginate(10);
 
-        $transfers = $patient->transfers()->paginate(10);
+        $patient->load('packages.patientvouchers');
 
-        //dd($patient);
+        /*$vouchers = $patient->vouchers()->paginate(10);
+        $transfers = $patient->transfers()->paginate(10);*/
 
-        //$age = Carbon::parse($patient->dob)->age;
-        //dd($patient);
-        //$matters = Patient::paginate(10);
-        return view('voucher.index', compact('patient', 'vouchers', 'transfers'));
+      return view('voucher.index', compact('patient'/*, 'vouchers', 'transfers'*/));
     }
 
     public function transfer(Patient $patient, Voucher $voucher)

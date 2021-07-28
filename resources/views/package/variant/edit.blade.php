@@ -81,6 +81,7 @@
 
                 </div>
 
+
                 <div class="col-6">
                   <div class="form-group">
                     <label for="price">Original Price <small class="text-danger">required</small></label>
@@ -96,6 +97,16 @@
                     <label for="sell">Selling Price <small class="text-danger">required</small></label>
                     <input type="text" class="form-control" id="sell" name="sell" placeholder="Enter Selling Price" value="{{ old('sell', $variant->sell) }}">
                     @error('sell')
+                    <small class="text-danger">{{ $message}}</small>
+                    @enderror
+                  </div>
+                </div>
+
+                <div class="col-6">
+                  <div class="form-group">
+                    <label for="title">Expiry <small class="text-danger">required</small></label>
+                    {!! Form::select('expiry', $vExpiry, $variant->expiry, array('class' => 'form-control')) !!}
+                    @error('expiry')
                     <small class="text-danger">{{ $message}}</small>
                     @enderror
                   </div>

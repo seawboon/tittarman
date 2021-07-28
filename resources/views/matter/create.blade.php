@@ -19,7 +19,7 @@
 
               <div class="col-12">
                 <div class="form-group">
-                  <label for="title">Injury Part</label>
+                  <label for="title">Injury Part <small class="text-danger">required</small></label>
                   <?php $oldinjuryparts = [];?>
                   @if(old('injury_parts'))
 
@@ -82,7 +82,7 @@
 
               <div class="col-12">
                 <div class="form-group">
-                  <label>Type of Injury</label>
+                  <label>Type of Injury <small class="text-danger">required</small></label>
                   <div class="custom-control custom-checkbox">
                     <?php $oldinjuries = [];?>
                     @if(old('injuries'))

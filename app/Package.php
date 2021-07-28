@@ -48,6 +48,16 @@ class Package extends Model
         return $this->hasMany(VariantVoucher::class);
     }
 
+    public function patients()
+    {
+        return $this->hasMany(Patient::class);
+    }
+
+    public function patientPackage()
+    {
+        return $this->belongsTo(Patient::class);
+    }
+
     public function scopePublishedDate($query) {
         return $query
                 ->whereDate('publish_date_start', '<=', now())

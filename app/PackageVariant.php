@@ -17,7 +17,7 @@ class PackageVariant extends Model
     protected $table = 'package_variants';
 
     protected $fillable = [
-        'name', 'sku', 'remark', 'status', 'stock', 'price', 'sell'
+        'name', 'sku', 'remark', 'status', 'stock', 'expiry', 'price', 'sell'
     ];
 
     protected $hidden = [
@@ -30,9 +30,19 @@ class PackageVariant extends Model
         return $this->belongsTo(Package::class);
     }
 
+    public function patientVariants()
+    {
+        return $this->hasMany(PatientPackage::class, 'variant_id');
+    }
+
     public function vouchers()
     {
         return $this->hasMany(VariantVoucher::class, 'variant_id');
+    }
+
+    public function scopePublished($query) {
+        return $query
+                ->where('status', '=', 'yes');
     }
 
     protected static function boot()

@@ -37,9 +37,19 @@ class Payment extends Model
       return $this->hasMany(Voucher::class, 'payment_id');
     }
 
+    public function PatientPackage()
+    {
+      return $this->hasOne(PatientPackage::class, 'payment_id');
+    }
+
     public function method()
     {
       return $this->belongsTo(PaymentMethod::class, 'method_id');
+    }
+
+    public function UsedVoucher()
+    {
+      return $this->hasOne(PatientVoucher::class, 'use_in_payment');
     }
 
 }

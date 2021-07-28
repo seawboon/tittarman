@@ -26,7 +26,9 @@ Route::put('calendarput/{appointment}', 'ApiController@calendarDrop');
 Route::get('packages', 'ApiController@packages');
 Route::get('packages/{package}', 'ApiController@packageShow');
 
-
+Route::post('variants', 'PackageController@subVariants')->name('subVariants');
+Route::post('varaintDetail', 'PackageController@varaintDetail')->name('varaintDetail');
+Route::get('checkCode', 'PackageController@checkDuplicateCode')->name('checkCode');
 //passport api
 Route::put('login', 'PassportController@login');
 //Route::post('register', 'PassportController@register');
