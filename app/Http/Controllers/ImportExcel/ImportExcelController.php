@@ -6,7 +6,9 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Imports\ImportVouchers;
 use App\Imports\PatientsImport;
+use App\Imports\PatientsExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Carbon\Carbon;
 
 class ImportExcelController extends Controller
 {
@@ -38,6 +40,12 @@ class ImportExcelController extends Controller
       Excel::import(new PatientsImport, request()->file('import_file'));
       return back()->with('success', 'Patients imported successfully.');
 
+    }
+
+    public function exportPatient(Request $request)
+    {
+      $xlsname = 'patients_'.Carbon::now()->format('Ymd');
+      return Excel::download(new PatientsExport, $xlsname.'.xlsx');
     }
 
 }

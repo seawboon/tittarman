@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Carbon;
 
 class Patient extends Model
 {
@@ -13,6 +14,8 @@ class Patient extends Model
     protected $hidden = [
         'uuid',
     ];
+
+    protected $appends = ['phone', 'age', 'mv', 'ark', '1u'];
 
     public function branch()
     {
@@ -49,9 +52,14 @@ class Patient extends Model
       return $this->hasMany(Payment::class, 'patient_id');
     }
 
+    public function packages()
+    {
+      return $this->hasMany(PatientPackage::class, 'patient_id');
+    }
+
     public function vouchers()
     {
-      return $this->hasMany(Voucher::class, 'patient_id');
+      return $this->hasMany(PatientVoucher::class, 'patient_id');
     }
 
     public function AvailabelVoucher()
@@ -70,5 +78,36 @@ class Patient extends Model
       return $this->hasMany(Account::class, 'patient_id');
     }
 
+    public function getPhoneAttribute()
+    {
+        return $this->provider.$this->contact;
+    }
+
+    public function getAgeAttribute()
+    {
+        //return $this->provider.$this->contact;
+        return Carbon\Carbon::parse($this->dob)->age;
+    }
+
+    public function getMvAttribute()
+    {
+        //return $this->provider.$this->contact;
+        $account = Account::select('account_no')->where('patient_id', $this->id)->where('branch_id', 1)->first();
+        return $account['account_no'];
+    }
+
+    public function getArkAttribute()
+    {
+        //return $this->provider.$this->contact;
+        $account = Account::select('account_no')->where('patient_id', $this->id)->where('branch_id', 2)->first();
+        return $account['account_no'];
+    }
+
+    public function get1uAttribute()
+    {
+        //return $this->provider.$this->contact;
+        $account = Account::select('account_no')->where('patient_id', $this->id)->where('branch_id', 3)->first();
+        return $account['account_no'];
+    }
 
 }

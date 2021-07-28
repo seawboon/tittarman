@@ -104,41 +104,28 @@
                       </div>
 
                       <div for="Vouchers">
-                        @if(!$payment->PatientPackage)
-                          <div class="form-group">
-                            <label for="days" class="d-block">Package</label>
-                            <select class="form-control w-100" name="package[id]" id="buyPackage">
-                              <option value="">Choose Package</option>
-                              @foreach($packages as $key => $package)
-                                <option value="{{$package->id}}" @if(old('package.id') && old('package.id')==$package->id) selected @endif>{{ $package->title }}</option>
-                              @endforeach
-                            </select>
-                          </div>
-
-                          <div class="form-group">
-                            <input type="hidden" name="variantValue" class="variantValue" value="0" />
-                            <label for="days" class="d-block">Package Variants</label>
-                            <select class="form-control w-100" name="package[variant][id]" id="buyVariant">
-                              <option value="">Choose Package Variant</option>
-                            </select>
-                          </div>
-
-                        @else
-                          <input type="hidden" name="variantValue" class="variantValue" value="{{$payment->PatientPackage->variant->sell}}" />
-                          <small class="d-block">Package :</small>
-                          <label for="days" class="d-block">{{$payment->PatientPackage->package->title}}</label>
-                          <small class="d-block">Variant :</small>
-                          <label for="days" class="d-block">{{$payment->PatientPackage->variant->name}} - RM {{$payment->PatientPackage->variant->sell}}</label>
-                          <small class="d-block">Vouchers :</small>
-                          <label for="days" class="d-block">
-                            @foreach($payment->PatientPackage->patientVouchers as $patientVoucher)
-                              <small class="d-block">{{$patientVoucher->code}}</small>
+                        <div class="form-group">
+                          <label for="days" class="d-block">Package</label>
+                          <select class="form-control w-100" name="package[id]" id="buyPackage">
+                            <option value="">Choose Package</option>
+                            @foreach($packages as $key => $package)
+                              <option value="{{$package->id}}" @if(old('package.id') && old('package.id')==$package->id) selected @endif>{{ $package->title }}</option>
                             @endforeach
-                          </label>
-                        @endif
+                          </select>
+
+
+                        </div>
+
+                        <div class="form-group">
+                          <input type="hidden" name="variantValue" class="variantValue" value="0" />
+                          <label for="days" class="d-block">Package Variants</label>
+                          <select class="form-control w-100" name="package[variant][id]" id="buyVariant">
+                            <option value="">Choose Package</option>
+                          </select>
+                        </div>
 
                         <div id="voucher-details"></div>
-                        <button class="btn-sm btn-warning mt-2" id="chk-code">Check Cobe Availability <div class="loader"></div></button>
+                        <button class="btn-sm btn-warning mt-2" id="chk-code">Check Cobe Availability</button>
                         <span id="hidden-chkbox"></span>
 
                         {{-- <div id="packageContent">
@@ -319,23 +306,6 @@ hr.invisible {
   width: 1px;
   height: 1px;
 }
-
-.loader {
-  display: none;
-  border-width: .2em;
-  border: solid #fbc202; /* Light grey */
-  border-top: solid transparent; /* Blue */
-  border-radius: 50%;
-  width: 1rem;
-  height: 1rem;
-  animation: spin 0.75s linear infinite;
-  vertical-align: text-bottom;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
 </style>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -420,6 +390,31 @@ $(document).ready(function() {
     getvalues();
   });
 
+  function getvalues(){
+    $('[class*=productprice]').each(function (key, value) {
+       var price = $(this).val();
+       var unit = $('.productunit'+key).val();
+       var total = price*unit;
+       var fee = $('.treat-fee').val();
+       var discount = $('.productdiscount').val();
+       var bpackage = $('.variantValue').val();
+       $('.producttotal'+key).val(total);
+
+       var productsum = parseFloat(fee - discount);
+
+       $('.treatmentfinal').val(productsum);
+
+       $('[class*=producttotal]').each(function () {
+          productsum += parseFloat($(this).val());
+       });
+
+       productsum += parseFloat(bpackage);
+
+       $('.productsum').val(productsum);
+
+    });
+
+  };
 
   $('.voucher').change(function(){
     var vQuantity = $(this).val()*2;
@@ -503,10 +498,170 @@ $(document).ready(function() {
   $(".voucherselect").prop("disabled", true);
   @endif
 
+  $('.btn-before').click(function(){
+    var html = $('.clone.before').html();
+    $('.increment.before').after(html);
+  });
+
+  $('.btn-after').click(function(){
+    var html = $('.clone.after').html();
+    $('.increment.after').after(html);
+  });
+
+  $('body').on('click', '.btn-danger', function(){
+    $(this).parents(".control-group").remove();
+  });
+
+  $("body").on('change', '.custom-file input', function (e) {
+    if (e.target.files.length) {
+      $(this).next('.custom-file-label').html(e.target.files[0].name);
+    }
+  });
 
 
+
+$('.pkgSEL').change(function(){
+  var pkgName = ".pkg-"+$(this).val();
+  $('[class*="pkg-"]').hide();
+  $(pkgName).show();
+});
+
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+});
+
+
+
+$.ajaxSetup({
+  headers: {
+  'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+  }
+});
+
+
+  function getVariants(package_id){
+    //var package_id = e.target.value;
+    $.ajax({
+      url:"{{ route('subVariants') }}",
+      type:"POST",
+      data: {
+      package_id: package_id
+      },
+      success:function (data) {
+        $('#buyVariant, #voucher-details').empty();
+        $('.variantValue').val(0);
+        getvalues();
+        hideCheckCode();
+        $('#buyVariant').append('<option value="">Choose Variant</option>');
+        var pkgVarId = 0;
+        @if(old('package.variant.id'))
+          pkgVarId = {{old('package.variant.id')}};
+        @endif
+        $.each(data.variants[0].variants,function(index,varaint){
+          if(pkgVarId == varaint.id) {
+            $('#buyVariant').append('<option value="'+varaint.id+'" selected>'+varaint.name+'</option>');
+          } else {
+            $('#buyVariant').append('<option value="'+varaint.id+'">'+varaint.name+'</option>');
+          }
+        });
+
+        if(pkgVarId != 0) {
+          getVariantDetails(pkgVarId);
+        }
+
+      }
+    })
+  };
+
+  function getVariantDetails(variant_id){
+    hideCheckCode();
+    $.ajax({
+      url:"{{ route('varaintDetail') }}",
+      type:"POST",
+      data: {
+      variant_id: variant_id
+      },
+      success:function (data) {
+        //$('#voucher-details').append('<option value="">Choose Variant</option>');
+        //console.log(data);
+        if(data.variant[0]) {
+
+          $('#voucher-details').empty();
+          $('#voucher-details').append('<h2><del>RM '+data.variant[0].price+'</del> RM '+data.variant[0].sell+'</h2>');
+          $('.variantValue').val(data.variant[0].sell);
+          getvalues();
+          @if(old('package.variant.id'))
+          var olds = {!! json_encode(session()->getOldInput('package.voucher')) !!};
+          @endif
+          var arrIndex = 0;
+          $.each(data.variant[0].vouchers,function(index,voucher){
+            //console.log(voucher);
+            $('#voucher-details').append('<div><h3>'+voucher.type.name+'</h3></div>');
+            $('#voucher-details').append('<div class="row field-'+voucher.prefix+'"></div>');
+            for (let i = 0; i < voucher.quantity; ++i) {
+              var defValue = voucher.prefix;
+              @if(old('package.variant.id'))
+                if(olds[arrIndex].code && olds[arrIndex].code != null) {
+                  defValue = olds[arrIndex].code;
+                }
+              @endif
+              $('.field-'+voucher.prefix).append('<div class="col-6"><input type="text" class="form-control" name="package[voucher]['+arrIndex+'][code]" value="'+defValue+'" /><input type="hidden" name="package[voucher]['+arrIndex+'][voucher_type_id]" value="'+voucher.type.id+'"></div>');
+              arrIndex++;
+            };
+
+          });
+
+          showCheckCode();
+
+        } else {
+          $('#voucher-details').empty();
+        }//endif
+      }
+    })
+  };
+
+  @if(old('package.id'))
+    getVariants({{old('package.id')}});
+  @endif
+
+  $('#buyPackage').on('change',function(e) {
+    var package_id = e.target.value;
+    getVariants(package_id);
+  });
+
+  $('#buyVariant').on('change',function(e) {
+    var variant_id = e.target.value;
+    getVariantDetails(variant_id);
+  });
+
+  $('#chk-code').click(function(){
+    var arr = [];
+    $("input[name$='[code]']").each(function() {
+      var value = $(this).val();
+      var name = $(this).attr("name");
+      var chkResult;
+      if (arr.indexOf(value) == -1) {
+        arr.push(value);
+        $(this).removeClass("duplicate");
+        chkResult = ajaxChkCode(value, name);
+        if(chkResult == 'yes') {
+          $(this).addClass("duplicate");
+        }
+      } else {
+        $(this).addClass("duplicate");
+      }
+        //console.log( this.value + ":" + this.value );
+    });
+
+    if ($('.duplicate').length) {
+      $("#hchkbox").val('');
+    } else {
+      $("#hchkbox").val('ok');
+    }
+
+    return false;
+  });
 
 });
-@include('payment.js')
 </script>
 @endpush

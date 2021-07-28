@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 use App\Branches;
 use App\Patient;
+use App\PatientVoucher;
 use App\Matter;
 use App\injury;
 use App\MatterInjury;
@@ -49,8 +50,10 @@ class PaymentController extends Controller
       $voucherslast = Voucher::where('state', 'enable')->where('payment_id', null)->oldest()->take(20)->get();
       $vouchers = $vouchersFirst->merge($voucherslast);
       $methods = PaymentMethod::where('status', 'yes')->pluck('name','id')->all();
+      $packages = Package::Published()->PublishedDate()->get();
+      $packages->load('products.product');
 
-      return view('payment.create', compact('patient','products', 'vouchers','methods'));
+      return view('payment.create', compact('patient','products', 'vouchers','methods', 'packages'));
   }
 
   public function store(Patient $patient, Request $request)
@@ -60,9 +63,12 @@ class PaymentController extends Controller
         'product.*' => 'required',
         'voucher.*' => '',
         'treat.discount' => 'required',
-        'treat.discount_code' => '',
+        /*'treat.discount_code' => '',*/
         'treat.total' => 'required',
         'treat.method_id' => 'required',
+        'package.id' => '',
+        'package.variant.id' => '',
+        'package.voucher.*' => '',
       ]);
 
       $data['treat']['product_amount'] = $request->treat['total'] + $request->treat['discount'] - $request->treat['fee'];
@@ -86,7 +92,7 @@ class PaymentController extends Controller
       if($vvE == 'yes') {
         $payment = new Payment;
         $payment->patient_id = $patient->id;
-        $payment->branch_id = session('myBranch')->id;
+        $payment->branch_id = isset(session('myBranch')->id) ? session('myBranch')->id : 0;
         $payment->treatment_fee = $request->treat['fee'];
         $payment->product_amount = $request->treat['total'] + $request->treat['discount'] - $request->treat['fee'];
         $payment->discount = $request->treat['discount'];
@@ -109,7 +115,7 @@ class PaymentController extends Controller
         PaymentProduct::where('payment_id', $payment->id)->delete();
         $payment->products()->createMany($data['product']);
 
-        $payment->discount_code = $request->treat['discount_code'];
+        /*$payment->discount_code = $request->treat['discount_code'];
         if(!empty($payment->discount_code)) {
           $disCode = Voucher::where('code', $payment->discount_code)->where('patient_id', $payment->patient_id)->where('state', 'enable')->first();
           if($disCode == null) {
@@ -121,6 +127,30 @@ class PaymentController extends Controller
             $disCode->state = 'claimed';
             $disCode->save();
           }
+        }*/
+
+
+        if(!is_null($data['package']['id']) && !is_null($data['package']['variant']['id'])) {
+          $package = $payment->PatientPackage()->create([
+              'patient_id' => $payment->patient_id,
+              'payment_id' => $payment->id,
+              'package_id' => $data['package']['id'],
+              'variant_id' => $data['package']['variant']['id'],
+          ]);
+
+          foreach ($data['package']['voucher'] as $key => $voucher) {
+            //dd($voucher['voucher_type_id']);
+            $package->patientVouchers()->create([
+              'patient_package_id' => $package->id,
+              'patient_id' => $payment->patient_id,
+              'voucher_type_id' => $voucher['voucher_type_id'],
+              'code' => $voucher['code'],
+              'expired_date' => Carbon::now()->addMonths($package->variant->expiry),
+              'state' => 'enable',
+            ]);
+          }
+
+          //dd($package->load('patientVouchers'));
         }
 
         //$payment->save();
@@ -223,6 +253,9 @@ class PaymentController extends Controller
         'treat.discount_code' => '',
         'treat.total' => 'required',
         'treat.method_id' => 'required',
+        'package.id' => '',
+        'package.variant.id' => '',
+        'package.voucher.*' => '',
       ]);
 
 
@@ -252,19 +285,19 @@ class PaymentController extends Controller
             $uptV->patient_id = $payment->patient->id;
             $uptV->payment_id = $payment->id;
             $uptV->product_id = $voucher['product_id'];
-            $uptV->save();
+            //$uptV->save();
           }
         }
 
         if($payment->discount_code=='' && $data['treat']['discount_code'] != '') {
           //$disCode = Voucher::where('code', $data['treat']['discount_code'])->where('patient_id', $payment->patient_id)->where('state', 'enable')->first();
-          $disCode = Voucher::where('code', $data['treat']['discount_code'])->where('state', 'enable')->first();
+          $disCode = PatientVoucher::where('code', $data['treat']['discount_code'])->where('state', 'enable')->first();
           if($disCode == null) {
             Session::flash('message', 'Discount Code invalid!');
             Session::flash('alert-class', 'alert-danger');
             return redirect()->route('payment.edit', $payment);
           } else {
-            if($disCode->patient_id == $payment->patient->id) {
+            /*if($disCode->patient_id == $payment->patient->id) {
               $disCode->state = 'claimed';
             } else {
               $disCode->state = 'claimed';
@@ -276,8 +309,11 @@ class PaymentController extends Controller
               $disCode->patient_id = $payment->patient->id;
               Session::flash('message', 'Voucher transfer from '.$payment->patient->fullname);
               Session::flash('alert-class', 'alert-success');
-            }
+            }*/
 
+            $disCode->state = 'claimed';
+            $disCode->claim_by = $payment->patient->id;
+            $disCode->use_in_payment = $payment->id;
             $disCode->save();
           }
         }
@@ -285,8 +321,31 @@ class PaymentController extends Controller
         $payment->update($data['treat']);
         PaymentProduct::where('payment_id', $payment->id)->delete();
 
-        $payment->products()->createMany($data['product']);
+        //$payment->products()->createMany($data['product']);
+        //dd($data['package']['voucher']);
 
+        if(isset($data['package']['id']) && isset($data['package']['variant']['id']) && !is_null($data['package']['id']) && !is_null($data['package']['variant']['id'])) {
+          $package = $payment->PatientPackage()->create([
+              'patient_id' => $payment->patient_id,
+              'payment_id' => $payment->id,
+              'package_id' => $data['package']['id'],
+              'variant_id' => $data['package']['variant']['id'],
+          ]);
+
+          foreach ($data['package']['voucher'] as $key => $voucher) {
+            //dd($voucher['voucher_type_id']);
+            $package->patientVouchers()->create([
+              'patient_package_id' => $package->id,
+              'patient_id' => $payment->patient_id,
+              'voucher_type_id' => $voucher['voucher_type_id'],
+              'code' => $voucher['code'],
+              'expired_date' => Carbon::now()->addMonths($package->variant->expiry),
+              'state' => 'enable',
+            ]);
+          }
+
+          //dd($package->load('patientVouchers'));
+        }
 
 
         switch(request('submit')) {

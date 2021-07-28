@@ -18,4 +18,8 @@ class VoucherType extends Model
       return $this->belongsTo(VariantVoucher::class);
     }
 
+    public function patientVoucher()
+    {
+      return $this->hasMany(PatientVoucher::class);
+    }
 }
