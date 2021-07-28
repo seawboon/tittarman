@@ -13,6 +13,7 @@ use App\Appointment;
 use App\Macros\whereLike;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Hash;
 
 use Session;
 
@@ -236,6 +237,8 @@ class PatientController extends Controller
       $dateTime = Carbon::parse(request('dob'));
 
       $data['dob'] = $dateTime->format('Y-m-d');
+
+      $data['password'] = Hash::make('tittarman.com.my');
 
       $data['uuid'] = Uuid::uuid4()->toString();
 
