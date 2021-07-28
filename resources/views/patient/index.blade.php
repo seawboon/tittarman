@@ -128,10 +128,7 @@
                 @else
                   {{ $patients->appends($searchTerms)->links() }}
                 @endif
-
-
-
-
+                
             </div>
 
 </div>
