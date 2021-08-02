@@ -91,6 +91,16 @@
 
                 <div class="col-6">
                   <div class="form-group">
+                    <label for="title">Expiry <small class="text-danger">required</small></label>
+                    {!! Form::select('expiry', $vExpiry, null, array('class' => 'form-control')) !!}
+                    @error('expiry')
+                    <small class="text-danger">{{ $message}}</small>
+                    @enderror
+                  </div>
+                </div>
+
+                <div class="col-6">
+                  <div class="form-group">
                     <label for="stock">Stock</label>
                     <input type="number" class="form-control" id="stock" name="stock" placeholder="Enter Stock" value="{{ old('stock') }}">
                     @error('stock')

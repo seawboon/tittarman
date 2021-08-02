@@ -21,7 +21,8 @@ class PackageController extends Controller
 {
     public function index()
     {
-        $packages = Package::PublishedDate()->with('variants')->paginate(10);
+        //$packages = Package::PublishedDate()->with('variants')->paginate(10);
+        $packages = Package::with('variants')->paginate(10);
         return view('package.index', compact('packages'));
     }
 
@@ -213,7 +214,8 @@ class PackageController extends Controller
     public function createVariant(Package $package)
     {
         $types = VoucherType::Published()->get();
-        return view('package.variant.create', compact('package', 'types'));
+        $vExpiry = config('ttm.expiry');
+        return view('package.variant.create', compact('package', 'types', 'vExpiry'));
     }
 
     public function saveVariant(Package $package)
@@ -224,6 +226,7 @@ class PackageController extends Controller
           'status' => 'required',
           'remark' => '',
           'stock' => '',
+          'expiry' => 'required',
           'price' => 'required',
           'sell' => 'required',
           'voucherRes.*' => '',

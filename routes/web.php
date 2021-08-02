@@ -112,6 +112,9 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('import-patient', 'ImportExcel\ImportExcelController@create');
 	Route::post('import-patient', 'ImportExcel\ImportExcelController@importPatient');
 
+	Route::get('import-patient-package', 'ImportExcel\ImportExcelController@createPatientPackage');
+	Route::post('import-patient-package', 'ImportExcel\ImportExcelController@storePatientPackage');
+
 	Route::get('export-patients', 'ImportExcel\ImportExcelController@exportPatient');
 
 });
