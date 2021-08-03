@@ -14,7 +14,7 @@ class AddPositionColToPackageVariantsTable extends Migration
     public function up()
     {
         Schema::table('package_variants', function (Blueprint $table) {
-            $table->unsignedBigInteger('position')->after('status');
+            $table->unsignedBigInteger('position')->default(0)->after('status');
         });
     }
 

@@ -51,6 +51,7 @@ class PackageVariant extends Model
 
         self::creating(function ($model) {
             $model->uuid = Uuid::uuid4()->toString();
+            $model->position = PackageVariant::where('package_id', $model->package_id)->max('position') + 1;
         });
     }
 
