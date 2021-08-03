@@ -3,6 +3,8 @@
 namespace App\Imports;
 
 use App\Patient;
+use App\Package;
+use App\PackageVariant;
 use App\PatientPackage;
 use App\PatientVoucher;
 use Illuminate\Support\Collection;
@@ -29,9 +31,12 @@ class PatientPackageImportCollection implements ToCollection, WithHeadingRow
         {
 
             if ($row->filter()->isNotEmpty()) {
+
+              $findVariant = PackageVariant::where('sku',$row['variant_sku'])->first();
+
               $package['patient'] = intval($row['patient_id']);
-              $package['package'] = intval($row['package_id']);
-              $package['variant'] = intval($row['variant_id']);
+              $package['package'] = $findVariant->package_id;
+              $package['variant'] = $findVariant->id;
               $package['date'] = Carbon::parse($row['bought_at'])->format('Y-m-d');
               $package['payment'] = intval($row['payment_id']);
 
@@ -43,18 +48,46 @@ class PatientPackageImportCollection implements ToCollection, WithHeadingRow
                 'created_at' => $package['date']
               ]);
 
-              $imPackage->patientVouchers()->create([
-                'patient_package_id' => $imPackage->id,
-                'patient_id' => $package['patient'],
-                'voucher_type_id' => 1,
-                'code' => 'FBA-Test-'.$imPackage->id,
-                'expired_date' => Carbon::parse($row['bought_at'])->addMonths(3)->format('Y-m-d'),
-                'state' => 'enable',
-              ]);
+              if(!empty($row['fba'])) {
+                $type = 1;
+                $this->storeCode($type, $row['fba'], $imPackage, $findVariant, $package, $row);
+              }
+
+              if(!empty($row['gs'])) {
+                $type = 2;
+                $this->storeCode($type, $row['gs'], $imPackage, $findVariant, $package, $row);
+              }
+
+              if(!empty($row['md'])) {
+                $type = 3;
+                $this->storeCode($type, $row['gs'], $imPackage, $findVariant, $package, $row);
+              }
+
+              if(!empty($row['cmco'])) {
+                $type = 4;
+                $this->storeCode($type, $row['gs'], $imPackage, $findVariant, $package, $row);
+              }
 
 
             } //end filter
         }//end foreach
+    }
+
+    public function storeCode($type, $rawCodes, $imPackage, $findVariant, $package, $row) {
+        $raw = str_replace(' ', '', $rawCodes);
+        $codes = explode(',', $raw);
+
+        foreach ($codes as $code) {
+          $imPackage->patientVouchers()->create([
+            'patient_package_id' => $imPackage->id,
+            'patient_id' => $package['patient'],
+            'voucher_type_id' => $type,
+            'code' => $code,
+            'expired_date' => Carbon::parse($row['bought_at'])->addMonths($findVariant->expiry)->format('Y-m-d'),
+            'state' => 'enable',
+          ]);
+        }
+
     }
 
 }
