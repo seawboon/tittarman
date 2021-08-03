@@ -14,6 +14,7 @@
 
             @foreach($patient->packages as $package)
             <div class="col-6" id="tab">
+
               <table class="table table-bordered table-white">
                 <tr>
                   <th colspan="5" class="text-capitalize">
@@ -54,6 +55,8 @@
                 <tbody>
                   <tr>
                     <td colspan="5" class="p-0">
+                      <form class="form-inline" name="patient-package-{{$package->id}}" action="{{ route('voucher.patient.update', ['patient' => $patient]) }}" method="post">
+                        @csrf
                       <table class="table table-bordered mb-0 bg-white">
                         <thead>
                           <tr>
@@ -71,17 +74,28 @@
                             <td>{{$voucher->code}}</td>
                             <td>{{($voucher->state == 'claimed') ? $voucher->claimBy->fullname : ''}}</td>
                             <td>{{($voucher->state == 'claimed') ? Carbon\Carbon::parse($voucher->updated_at)->format('d M Y') : ''}}</td>
-                            <td>{{ Carbon\Carbon::parse($voucher->expired_date)->format('d M Y') }}</td>
+                            <td>
+                              <span id="voucher-{{$voucher->id}}-expiry">{{ Carbon\Carbon::parse($voucher->expired_date)->format('d M Y') }}</span>
+                              <div class="form-group" id="voucher-{{$voucher->id}}-input-wrp" style="display:none; width:68%">
+                                <input type="text" name="voucher[{{$loop->iteration}}][expiry]" class="form-control form-control-sm flatpickr datetimepicker" data-date-end-date="0d" data-date-today-highlight="true" value="{{ $voucher->expired_date ?? '0000-00-00' }}" id="voucher-{{$voucher->id}}-input">
+                                <input type="hidden" name="voucher[{{$loop->iteration}}][id]" value="{{$voucher->id}}">
+                              </div>
+                              <i class="ni ni-settings text-pink btn-expiry" data-id="{{$voucher->id}}"></i>
+                            </td>
                           </tr>
                           @endforeach
                         </tbody>
                       </table>
+
+                      <div class="clearfix w-100">
+                        <button type="submit" name="submit" value="save" class="btn btn-primary m-2 float-right">Submit</button>
+                      </div>
+                    </form>
                     </td>
                   </tr>
 
                 </tbody>
               </table>
-
               {{-- <button id="btPrint" onclick="createPDF()" class="btn btn-danger btn-sm">TO PDF</button> --}}
             </div>
 
@@ -108,8 +122,15 @@
 @endsection
 
 @push('js')
+<style>
+.datetimepicker.input {
+  width: 100% !important;
+}
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
-    function createPDF() {
+    /*function createPDF() {
         var sTable = document.getElementById('tab').innerHTML;
 
         var style = "<style>";
@@ -132,7 +153,26 @@
         win.document.close(); 	// CLOSE THE CURRENT WINDOW.
 
         win.print();    // PRINT THE CONTENTS.
-    }
+    }*/
+
+
+    $(document).ready(function(){
+      $(".btn-expiry").click(function(){
+        var voucher_id = $(this).data("id");
+        $("#voucher-"+voucher_id+"-expiry").hide();
+        $("#voucher-"+voucher_id+"-input-wrp").css('display', 'inline-block');
+
+      });
+
+
+      flatpickr('.datetimepicker', {
+        enableTime: false,
+        altInput: true,
+        altFormat: "j M Y",
+        dateFormat: "Y-m-d"
+      });
+
+    });
 </script>
 
 @endpush

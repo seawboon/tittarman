@@ -27,6 +27,19 @@ class VoucherController extends Controller
       return view('voucher.index', compact('patient'/*, 'vouchers', 'transfers'*/));
     }
 
+    public function updateVouchers(Patient $patient, Request $request)
+    {
+        foreach($request->voucher as $voucher) {
+          $newExpiry = PatientVoucher::find($voucher['id']);
+          $newExpiry->expired_date = $voucher['expiry'];
+          if($newExpiry->isDirty('expired_date')) {
+            $newExpiry->save();
+          }
+        }
+
+        return redirect()->route('voucher.index', $patient);
+    }
+
     public function transfer(Patient $patient, Voucher $voucher)
     {
       $patients = Patient::where('id', '!=', $voucher->patient_id)->get();

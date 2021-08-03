@@ -90,6 +90,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('/patient/{patient}/vouchers', 'VoucherController@index')->name('voucher.index');
 	Route::get('/patient/{patient}/vouchers/{voucher}/transfer', 'VoucherController@transfer')->name('voucher.transfer');
 	Route::post('/patient/{patient}/vouchers/{voucher}/update', 'VoucherController@transferUpdate')->name('voucher.transfer.update');
+	Route::post('/patient/{patient}/vouchers', 'VoucherController@updateVouchers')->name('voucher.patient.update');
 
 	Route::get('/admin/vouchers', 'VoucherController@adminIndex')->name('voucher.admin.index');
 
