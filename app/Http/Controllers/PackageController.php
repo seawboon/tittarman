@@ -181,7 +181,11 @@ class PackageController extends Controller
     public function subVariants (Request $request)
     {
         //$variants = PackageVariant::where('package_id', $request->package_id)->Published()->get();
-        $variants = Package::where('id', $request->package_id)->with('variants')->get();
+        //$variants = Package::where('id', $request->package_id)->with('variants')->get();
+        $sortDirection = 'asc';
+        $variants = Package::where('id', $request->package_id)->with(['variants' => function ($query) use ($sortDirection) {
+            $query->orderBy('position', $sortDirection);
+        }])->get();
         return response()->json([
             'variants' => $variants
         ]);
