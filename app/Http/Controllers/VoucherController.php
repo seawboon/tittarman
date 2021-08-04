@@ -6,7 +6,9 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Patient;
 use App\Voucher;
+use App\PatientPackage;
 use App\PatientVoucher;
+use PDF;
 
 class VoucherController extends Controller
 {
@@ -38,6 +40,17 @@ class VoucherController extends Controller
         }
 
         return redirect()->route('voucher.index', $patient);
+    }
+
+    public function packagePdf(PatientPackage $package)
+    {
+      $package->load('patientvouchers','patient.accounts','package');
+      $pdf = PDF::loadView('voucher.packagePdf', compact('package'));
+      $patientName = strtolower($package->patient->fullname);
+      $patientName = str_replace(' ', '-', $patientName);
+      $filename = $package->patient->id.'_'.$patientName.'-'.$package->variant->sku.'_'.Carbon::parse($package->date)->format('Y-m-d');;
+    	return $pdf->stream($filename.'.pdf');
+      //return view('voucher.packagePdf', compact('package'));
     }
 
     public function transfer(Patient $patient, Voucher $voucher)

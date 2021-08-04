@@ -19,8 +19,10 @@ Route::post('/signature/post', 'SignaturePadController@store')->name('signaturep
 
 Route::get('/receipt', function() {
 	//return view('payment.receipt');
-	$pdf = PDF::loadView('payment.receipt');
+	$company = 'tittarman';
+	$pdf = PDF::loadView('payment.receipt', compact('company'));
 	return $pdf->stream('receipt.pdf');
+	//return $pdf->download('disney.pdf');
 });
 
 Auth::routes();
@@ -88,6 +90,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::post('/patient/{patient}/matter/{matter}/update', 'MatterController@update')->name('matter.update');
 
 	Route::get('/patient/{patient}/vouchers', 'VoucherController@index')->name('voucher.index');
+	Route::get('/patient/pdf/package/{package}', 'VoucherController@packagePdf')->name('package.pdf');
 	Route::get('/patient/{patient}/vouchers/{voucher}/transfer', 'VoucherController@transfer')->name('voucher.transfer');
 	Route::post('/patient/{patient}/vouchers/{voucher}/update', 'VoucherController@transferUpdate')->name('voucher.transfer.update');
 	Route::post('/patient/{patient}/vouchers', 'VoucherController@updateVouchers')->name('voucher.patient.update');

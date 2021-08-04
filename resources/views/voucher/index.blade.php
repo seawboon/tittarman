@@ -88,7 +88,8 @@
                       </table>
 
                       <div class="clearfix w-100">
-                        <button type="submit" name="submit" value="save" class="btn btn-primary m-2 float-right">Submit</button>
+                        <a class="btn btn-primary m-2 float-left" href="{{ route('package.pdf', $package) }}"  target="_blank">Print</a>
+                        <button type="submit" name="submit" value="save" class="btn btn-danger m-2 float-right">Submit</button>
                       </div>
                     </form>
                     </td>
@@ -96,7 +97,7 @@
 
                 </tbody>
               </table>
-              {{-- <button id="btPrint" onclick="createPDF()" class="btn btn-danger btn-sm">TO PDF</button> --}}
+              {{-- <button id="btPrint" onclick="createPDF()" class="btn btn-primary btn-sm">TO PDF</button> --}}
             </div>
 
             @endforeach
