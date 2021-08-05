@@ -144,6 +144,7 @@ class PaymentController extends Controller
               'patient_package_id' => $package->id,
               'patient_id' => $payment->patient_id,
               'voucher_type_id' => $voucher['voucher_type_id'],
+              'variant_id' => $data['package']['variant']['id'],
               'code' => $voucher['code'],
               'expired_date' => Carbon::now()->addMonths($package->variant->expiry),
               'state' => 'enable',
@@ -337,6 +338,7 @@ class PaymentController extends Controller
             $package->patientVouchers()->create([
               'patient_package_id' => $package->id,
               'patient_id' => $payment->patient_id,
+              'variant_id' => $data['package']['variant']['id'],
               'voucher_type_id' => $voucher['voucher_type_id'],
               'code' => $voucher['code'],
               'expired_date' => Carbon::now()->addMonths($package->variant->expiry),

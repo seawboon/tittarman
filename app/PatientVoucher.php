@@ -17,6 +17,11 @@ class PatientVoucher extends Model
       return $this->belongsTo(PatientPackage::class, 'patient_package_id');
     }
 
+    public function packageVariant()
+    {
+      return $this->belongsTo(PackageVariant::class, 'variant_id');
+    }
+
     public function patient()
     {
       return $this->belongsTo(Patient::class, 'patient_id');

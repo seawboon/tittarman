@@ -48,7 +48,37 @@ class PatientPackageImportCollection implements ToCollection, WithHeadingRow
                 'created_at' => $package['date']
               ]);
 
-              if(!empty($row['fba'])) {
+              $rawVouchers = array(
+                'fba' => $row['fba'],
+                'gs' => $row['gs'],
+                'md' => $row['md'],
+                'cmco' => $row['cmco']
+              );
+
+              foreach ($rawVouchers as $key => $rawVoucher) {
+                if(!empty($rawVoucher)) {
+                  switch ($key) {
+                      case 'fba':
+                          $type = 1;
+                          break;
+                      case 'gs':
+                          $type = 2;
+                          break;
+                      case 'md':
+                          $type = 3;
+                          break;
+                      case 'cmco':
+                          $type = 4;
+                          break;
+                  }
+
+                  $this->storeCode($type, $rawVoucher, $imPackage, $findVariant, $package, $row);
+
+                }
+
+              }
+
+              /*if(!empty($row['fba'])) {
                 $type = 1;
                 $this->storeCode($type, $row['fba'], $imPackage, $findVariant, $package, $row);
               }
@@ -66,7 +96,7 @@ class PatientPackageImportCollection implements ToCollection, WithHeadingRow
               if(!empty($row['cmco'])) {
                 $type = 4;
                 $this->storeCode($type, $row['gs'], $imPackage, $findVariant, $package, $row);
-              }
+              }*/
 
 
             } //end filter
@@ -81,6 +111,7 @@ class PatientPackageImportCollection implements ToCollection, WithHeadingRow
           $imPackage->patientVouchers()->create([
             'patient_package_id' => $imPackage->id,
             'patient_id' => $package['patient'],
+            'variant_id' => $imPackage->variant_id,
             'voucher_type_id' => $type,
             'code' => $code,
             'expired_date' => Carbon::parse($row['bought_at'])->addMonths($findVariant->expiry)->format('Y-m-d'),

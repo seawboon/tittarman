@@ -40,6 +40,11 @@ class PackageVariant extends Model
         return $this->hasMany(VariantVoucher::class, 'variant_id');
     }
 
+    public function patientVouchers()
+    {
+        return $this->hasMany(VariantVoucher::class, 'variant_id');
+    }
+
     public function scopePublished($query) {
         return $query
                 ->where('status', '=', 'yes');
