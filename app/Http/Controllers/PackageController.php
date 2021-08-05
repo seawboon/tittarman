@@ -16,6 +16,7 @@ use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Str;
 use Image;
 use File;
+use Illuminate\Support\Collection;
 
 class PackageController extends Controller
 {
@@ -195,7 +196,16 @@ class PackageController extends Controller
     {
         //$variants = PackageVariant::where('package_id', $request->package_id)->Published()->get();
         $variant = PackageVariant::where('id', $request->variant_id)->with('vouchers.type')->get();
+        //$maxVocuher = PatientVoucher::where('voucher_type_id', 2)->count();
+        //$variant[0]['vouchers'][0]['test'] = 'test';
+        //$maxVocuhers = $variant[0]['vouchers'][0]->put('third', 'I am third');
+        foreach ($variant[0]->vouchers as $key => $voucher) {
+          $count = PatientVoucher::where('voucher_type_id', $voucher->voucher_type_id)->count();
+          $voucher->max = 10000+$count;
+        }
+
         return response()->json([
+            //'max' => $maxVocuhers,
             'variant' => $variant
         ]);
     }

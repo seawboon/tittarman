@@ -89,14 +89,17 @@ function getVariantDetails(variant_id){
           //console.log(voucher);
           $('#voucher-details').append('<div><h3>'+voucher.type.name+'</h3></div>');
           $('#voucher-details').append('<div class="row field-'+voucher.prefix+'"></div>');
+          var newcode = voucher.max;
           for (let i = 0; i < voucher.quantity; ++i) {
+            newcode++;
             var defValue = voucher.prefix;
             @if(old('package.variant.id'))
               if(olds[arrIndex].code && olds[arrIndex].code != null) {
                 defValue = olds[arrIndex].code;
               }
             @endif
-            $('.field-'+voucher.prefix).append('<div class="col-6"><input type="text" class="form-control" name="package[voucher]['+arrIndex+'][code]" value="'+defValue+'" /><input type="hidden" name="package[voucher]['+arrIndex+'][voucher_type_id]" value="'+voucher.type.id+'"></div>');
+            defValue = defValue+newcode+makeid();
+            $('.field-'+voucher.prefix).append('<div class="col-6"><input type="text" class="form-control mb-2" name="package[voucher]['+arrIndex+'][code]" value="'+defValue+'" /><input type="hidden" name="package[voucher]['+arrIndex+'][voucher_type_id]" value="'+voucher.type.id+'"></div>');
             arrIndex++;
           };
 
@@ -110,6 +113,16 @@ function getVariantDetails(variant_id){
     }
   })
 };
+
+function makeid() {
+  var text = "";
+  var possible = "abcdefghijklmnopqrstuvwxyz";
+
+  for (var i = 0; i < 4; i++)
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+  return text;
+}
 
 @if(old('package.id'))
   getVariants({{old('package.id')}});
@@ -129,6 +142,7 @@ $('#chk-code').click(function(){
   $('.loader').css('display', 'inline-block');
   var arr = [];
   $("input[name$='[code]']").each(function() {
+
     var value = $(this).val();
     var name = $(this).attr("name");
     var chkResult;
@@ -175,7 +189,6 @@ function hideCheckCode() {
 
 function ajaxChkCode(code,name) {
   var result;
-
   $.ajax({
     async: false,
     url:"{{ route('checkCode') }}",
