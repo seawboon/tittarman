@@ -15,7 +15,7 @@ class Patient extends Model
         'uuid',
     ];
 
-    protected $appends = ['phone', 'age', 'mv', 'ark', '1u'];
+    protected $appends = ['age', 'mv', 'ark', '1u'];
 
     public function branch()
     {
@@ -78,10 +78,10 @@ class Patient extends Model
       return $this->hasMany(Account::class, 'patient_id');
     }
 
-    public function getPhoneAttribute()
+    /*public function getPhoneAttribute()
     {
         return $this->provider.$this->contact;
-    }
+    }*/
 
     public function getAgeAttribute()
     {

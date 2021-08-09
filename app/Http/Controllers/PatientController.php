@@ -190,6 +190,7 @@ class PatientController extends Controller
 
       $dateTime = Carbon::parse(request('dob'));
       $request['dob'] = $dateTime->format('Y-m-d');
+      $request['phone'] = request('provider').request('contact');
       //dd($request);
       $patient->update($request->except('submit','accounts'));
 
@@ -237,6 +238,7 @@ class PatientController extends Controller
       $dateTime = Carbon::parse(request('dob'));
 
       $data['dob'] = $dateTime->format('Y-m-d');
+      $data['phone'] = request('provider').request('contact');
 
       $data['password'] = Hash::make('tittarman.com.my');
 
