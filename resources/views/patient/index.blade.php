@@ -103,6 +103,8 @@
                                       <a class="dropdown-item" href="{{ route('appointments.create', ['patient' => $patient]) }}">New Case Appointment</a>
                                       <a class="dropdown-item" href="{{ route('payment.create', ['patient' => $patient]) }}">Make Payment</a>
                                       <div class="dropdown-divider"></div>
+                                      <a class="dropdown-item" href="{{ route('voucher.index', ['patient' => $patient]) }}">Vouchers</a>
+                                      <div class="dropdown-divider"></div>
                                       <div class=" dropdown-header noti-title">
                                           <h4 class="text-overflow m-0">Case</h4>
                                       </div>
@@ -128,7 +130,7 @@
                 @else
                   {{ $patients->appends($searchTerms)->links() }}
                 @endif
-                
+
             </div>
 
 </div>
