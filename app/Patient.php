@@ -15,7 +15,7 @@ class Patient extends Model
         'uuid',
     ];
 
-    protected $appends = ['age', 'mv', 'ark', '1u'];
+    protected $appends = ['age', 'mv', 'ark', '1u', 'referral_link'];
 
     public function branch()
     {
@@ -78,6 +78,16 @@ class Patient extends Model
       return $this->hasMany(Account::class, 'patient_id');
     }
 
+    public function referrer()
+    {
+        return $this->belongsTo(Patient::class, 'referrer_id', 'uuid');
+    }
+
+    public function referrals()
+    {
+        return $this->hasMany(Patient::class, 'referrer_id', 'uuid');
+    }
+
     /*public function getPhoneAttribute()
     {
         return $this->provider.$this->contact;
@@ -93,21 +103,38 @@ class Patient extends Model
     {
         //return $this->provider.$this->contact;
         $account = Account::select('account_no')->where('patient_id', $this->id)->where('branch_id', 1)->first();
-        return $account['account_no'];
+        if($account) {
+          return $account['account_no'];
+        } else {
+          return null;
+        }
     }
 
     public function getArkAttribute()
     {
         //return $this->provider.$this->contact;
         $account = Account::select('account_no')->where('patient_id', $this->id)->where('branch_id', 2)->first();
-        return $account['account_no'];
+        if($account) {
+          return $account['account_no'];
+        } else {
+          return null;
+        }
     }
 
     public function get1uAttribute()
     {
         //return $this->provider.$this->contact;
         $account = Account::select('account_no')->where('patient_id', $this->id)->where('branch_id', 3)->first();
-        return $account['account_no'];
+        if($account) {
+          return $account['account_no'];
+        } else {
+          return null;
+        }
+    }
+
+    public function getReferralLinkAttribute()
+    {
+        return $this->referral_link = route('patient.create', ['ref' => $this->uuid]);
     }
 
 }
