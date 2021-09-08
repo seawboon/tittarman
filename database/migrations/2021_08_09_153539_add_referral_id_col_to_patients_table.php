@@ -15,7 +15,6 @@ class AddReferralIdColToPatientsTable extends Migration
     {
         Schema::table('patients', function (Blueprint $table) {
           $table->string('referrer_id')->nullable()->after('remember_token');
-          $table->foreign('referrer_id')->references('uuid')->on('patients');
         });
     }
 
@@ -27,7 +26,6 @@ class AddReferralIdColToPatientsTable extends Migration
     public function down()
     {
         Schema::table('patients', function (Blueprint $table) {
-            $table->dropForeign(['referrer_id']);
             $table->dropColumn('referrer_id');
         });
     }
