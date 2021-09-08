@@ -26,9 +26,7 @@ class MatterController extends Controller
       /*$patient->load(['matters' => function ($query) {
           $query->orderBy('created_at', 'desc');
       }, 'treats']);*/
-      $patient->load('matters.parts.part', 'treats');
-
-      //dd($patient);
+      $patient->load('matters.parts.part', 'treats.payment');
 
       //$age = Carbon::parse($patient->dob)->age;
       //dd($patient);

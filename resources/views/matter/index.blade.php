@@ -28,7 +28,10 @@
                                         <div class="col-4">
                                           treatment
                                         </div>
-                                        <div class="col-8">
+                                        <div class="col-4">
+                                          Payment ID
+                                        </div>
+                                        <div class="col-4">
                                           Photos
                                         </div>
                                       </div>
@@ -65,7 +68,15 @@
                                           <div class="col-4">
                                             <a class="d-block mb-2 w-75" href="{{ route('treat.edit', ['patient' => $patient, 'matter' => $treat->matter_id, 'treat' => $treat]) }}">{{ Carbon\Carbon::parse($treat->treat_date)->format('d M Y') }}</a>
                                           </div>
-                                          <div class="col-8">
+                                          <div class="col-4">
+                                            @if($treat->payment)
+
+                                            <a class="d-block mb-2 w-75" href="{{ route('payment.edit', ['payment' => $treat->payment ]) }}">ID:  {{ $treat->payment ? $treat->payment->id : "" }}, Total:  RM{{ $treat->payment ? $treat->payment->total : 0 }}</a>
+
+                                            @endif
+
+                                          </div>
+                                          <div class="col-4">
                                             @foreach($treat->images as $image)
                                             @php
                                               $badgeColor = 'badge-default';

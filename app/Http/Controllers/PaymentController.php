@@ -40,6 +40,12 @@ class PaymentController extends Controller
     '30' => '1 Month',
   ];
 
+  public function index(Patient $patient)
+  {
+      $patient->load('payments.treat', 'payments.PatientPackage');
+      return view('payment.index', compact('patient'));
+  }
+
   public function create(Patient $patient)
   {
       //dd($payment->treat);

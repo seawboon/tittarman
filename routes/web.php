@@ -37,6 +37,8 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::resource('packages','PackageController');
 	Route::resource('methods','MethodController');
 	Route::resource('sources','SourceController');
+	Route::resource('market-sources','MarketSourceController');
+	Route::resource('promotions','PromotionController');
 
 	Route::get('/variants', 'PackageController@indexVariant')->name('index.variants');
 	Route::get('/packages/{package}/variant/add', 'PackageController@createVariant')->name('add.variant');
@@ -90,6 +92,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::post('/patient/{patient}/matter/{matter}/update', 'MatterController@update')->name('matter.update');
 
 	Route::get('/patient/{patient}/vouchers', 'VoucherController@index')->name('voucher.index');
+	Route::get('/patient/{patient}/payments', 'PaymentController@index')->name('payment.index');
 	Route::get('/patient/pdf/package/{package}', 'VoucherController@packagePdf')->name('package.pdf');
 	Route::get('/patient/{patient}/vouchers/{voucher}/transfer', 'VoucherController@transfer')->name('voucher.transfer');
 	Route::post('/patient/{patient}/vouchers/{voucher}/update', 'VoucherController@transferUpdate')->name('voucher.transfer.update');

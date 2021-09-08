@@ -174,6 +174,10 @@
                           <span>{{ __('Voucher Type') }}</span>
                       </a>
                       @endhasanyrole
+                      <a href="{{ route('market-sources.index') }}" class="dropdown-item">
+                          <i class="ni ni-app"></i>
+                          <span>{{ __('Market Sources') }}</span>
+                      </a>
                     </div>
                 </li>
 
@@ -181,8 +185,9 @@
                     <a class="nav-link pr-0" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="ni ni-app text-pink"></i> Shop
                     </a>
-                    @role('Admin')
+
                     <div class="dropdown-menu dropdown-menu-arrow dropdown-menu-right">
+                    @role('Admin')
                       <a href="{{ route('packages.index') }}" class="dropdown-item">
                             <i class="ni ni-app"></i>
                             <span>{{ __('Packages') }}</span>
@@ -191,6 +196,10 @@
                       <a href="{{ route('products.index') }}" class="dropdown-item">
                             <i class="ni ni-app"></i>
                             <span>{{ __('Products') }}</span>
+                      </a>
+                      <a href="{{ route('promotions.index') }}" class="dropdown-item">
+                            <i class="ni ni-app"></i>
+                            <span>{{ __('Promotions') }}</span>
                       </a>
                     </div>
                 </li>
@@ -214,6 +223,12 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('matter.index', ['patient' => $patient]) }}">
                         <i class="ni ni-badge text-pink"></i> Case(s)
+                    </a>
+
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('payment.index', ['patient' => $patient]) }}">
+                        <i class="ni ni-badge text-pink"></i> Payment(s)
                     </a>
 
                 </li>
