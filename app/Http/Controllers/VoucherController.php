@@ -45,6 +45,7 @@ class VoucherController extends Controller
     public function packagePdf(PatientPackage $package)
     {
       $package->load('patientvouchers','patient.accounts','package');
+      $package->alacarte = json_decode($package->alacarte, true);
       $pdf = PDF::loadView('voucher.packagePdf', compact('package'));
       $patientName = strtolower($package->patient->fullname);
       $patientName = str_replace(' ', '-', $patientName);

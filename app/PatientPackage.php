@@ -41,6 +41,11 @@ class PatientPackage extends Model
       return Carbon::parse($this->created_at)->format('d M Y');
     }
 
+    function getAlaCarteSellAttribute() {
+      $decode = json_decode($this->alacarte, true);
+      return $decode['sell'];
+    }
+
     protected static function boot()
     {
         parent::boot();

@@ -36,18 +36,20 @@
                 </tr>
 
                 <tr>
-                  <th>
-                    <small class="d-block">Package :</small>
-                    {{ $package->package->title }}
+                  <th scope="col">
+                    <small class="d-block">Price :</small>
+                    RM @if($package->ala_carte_sell)
+                    {{$package->ala_carte_sell}}
+                    @else
+                      {{ $package->variant->sell }}
+                    @endif
                   </th>
-                  <th colspan="2">
-                    <small class="d-block">Variant :</small>
-                    {{ $package->variant->name }}
-                  </th>
-                  <th colspan="2">
-                    <small class="d-block">Bought :</small>
-                    {{ $package->date }}
-                  </th>
+                  <th scope="col"><small class="d-block">Package :</small>
+                  {{ $package->package->title }}</th>
+                  <th scope="col"><small class="d-block">Variant :</small>
+                  {{ $package->variant->name }}</th>
+                  <th scope="col"><small class="d-block">Bought :</small>
+                  {{ $package->date }}</th>
                 </tr>
 
 

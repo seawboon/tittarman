@@ -195,10 +195,11 @@ class PackageController extends Controller
     public function varaintDetail (Request $request)
     {
         //$variants = PackageVariant::where('package_id', $request->package_id)->Published()->get();
-        $variant = PackageVariant::where('id', $request->variant_id)->with('vouchers.type')->get();
+
         //$maxVocuher = PatientVoucher::where('voucher_type_id', 2)->count();
         //$variant[0]['vouchers'][0]['test'] = 'test';
         //$maxVocuhers = $variant[0]['vouchers'][0]->put('third', 'I am third');
+        $variant = PackageVariant::where('id', $request->variant_id)->with('vouchers.type')->get();
         foreach ($variant[0]->vouchers as $key => $voucher) {
           $count = PatientVoucher::where('voucher_type_id', $voucher->voucher_type_id)->count();
           $voucher->max = 10000+$count;

@@ -51,55 +51,61 @@
 <div class="invoice">
     <table class="table table-bordered table-white" style="width:80%; margin-left:auto;margin-right:auto">
       <tr>
-        <th colspan="5" class="text-capitalize text-left">
+        <th colspan="4" class="text-capitalize text-left">
           <small class="d-block">Name :</small>
           <small>{{$package->patient->salutation}}</small> {{strtolower($package->patient->fullname)}}</h3>
         </th>
-      </tr>
-
-      <tr>
-        <th colspan="5">
-          <small class="d-block">Patient ID :</small>
-          {{ $package->patient->id }}&emsp;
+        <th colspan="1" class="text-capitalize text-left">
+          <small class="d-block">ID :</small>
+          {{ $package->patient->id }}
           @if($package->patient->accounts->isNotEmpty())
+            |
             @foreach($package->patient->accounts as $account)
-              {{ $account->branch->short}}-{{ $account->account_no}}&emsp;
+              {{ $account->branch->short}}-{{ $account->account_no}}
+              @if(!$loop->last)
+                 |
+             @endif
             @endforeach
           @endif
         </th>
       </tr>
 
       <tr>
-        <th style="width:33.33%">
-          <small class="d-block">Package :</small>
-          {{ $package->package->title }}
+        <th colspan="5" style="padding:0;margin:0">
+          <table width="100%" style="padding:0;margin:0">><tr>
+            <th style="width:25%">
+              <small class="d-block">Price :</small>
+              RM 
+              @if($package->package->id != 18)
+                {{ $package->variant->sell }}
+              @else
+                {{ $package->alacarte['sell'] }}
+              @endif
+            </th>
+            <th style="width:25%">
+              <small class="d-block">Package :</small>
+              {{ $package->package->title }}
+            </th>
+            <th style="width:25%">
+              <small class="d-block">Variant :</small>
+              {{ $package->variant->name }}
+            </th>
+            <th style="width:25%">
+              <small class="d-block">Bought :</small>
+              {{ $package->date }}
+            </th>
+          </tr></table>
         </th>
-        <th colspan="2" style="width:33.33%">
-          <small class="d-block">Variant :</small>
-          {{ $package->variant->name }}
-        </th>
-        <th colspan="2" style="width:33.33%">
-          <small class="d-block">Bought :</small>
-          {{ $package->date }}
-        </th>
+
       </tr>
 
-
-
-      <tbody>
-        <tr>
-          <td colspan="5" class="p-0">
-            <table class="table table-bordered m-0 bg-white">
-              <thead>
                 <tr>
                   <th scope="col">#</th>
-                  <th scope="col">code</th>
-                  <th scope="col">claim by</th>
-                  <th scope="col">date</th>
-                  <th scope="col">Expiry Date</th>
+                  <th scope="col">CODE</th>
+                  <th scope="col">CLAIM BY</th>
+                  <th scope="col">DATE</th>
+                  <th scope="col">EXPIRY DATE</th>
                 </tr>
-              </thead>
-              <tbody>
                 @foreach($package->patientVouchers as $voucher)
                 <tr>
                   <th>{{$loop->iteration}}</th>
@@ -111,12 +117,7 @@
                   </td>
                 </tr>
                 @endforeach
-              </tbody>
-            </table>
-          </td>
-        </tr>
 
-      </tbody>
     </table>
 </div>
 

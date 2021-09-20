@@ -6,6 +6,8 @@ function getvalues(){
      var fee = $('.treat-fee').val();
      var discount = $('.productdiscount').val();
      var bpackage = $('.variantValue').val();
+     var alacartsell = $('#alacartsell').val();
+     var buyPackage = $('#buyPackage').val();
      $('.producttotal'+key).val(total);
 
      var productsum = parseFloat(fee - discount);
@@ -17,6 +19,9 @@ function getvalues(){
      });
 
      productsum += parseFloat(bpackage);
+     if(buyPackage==18) {
+       productsum += parseFloat(alacartsell);
+     }
 
      $('.productsum').val(productsum);
 
@@ -40,11 +45,17 @@ function getVariants(package_id){
     },
     success:function (data) {
       $('#buyVariant, #voucher-details').empty();
+      //console.log(data);
       $('.variantValue').val(0);
       getvalues();
       hideCheckCode();
-      $('#buyVariant').append('<option value="">Choose Variant</option>');
-      var pkgVarId = 0;
+      if(data.variants[0].variants.length > 1) {
+        $('#buyVariant').append('<option value="">Choose Variant</option>');
+        var pkgVarId = 0;
+      } else {
+        var pkgVarId = data.variants[0].variants[0].id;
+      }
+
       @if(old('package.variant.id'))
         pkgVarId = {{old('package.variant.id')}};
       @endif
@@ -64,6 +75,8 @@ function getVariants(package_id){
   })
 };
 
+
+var alaPrefix, alaMax;
 function getVariantDetails(variant_id){
   hideCheckCode();
   $.ajax({
@@ -76,36 +89,43 @@ function getVariantDetails(variant_id){
       //$('#voucher-details').append('<option value="">Choose Variant</option>');
       //console.log(data);
       if(data.variant[0]) {
+        if(data.variant[0].id != 93) {
+          $('#ala-carte-details').hide();
+          $('#voucher-details').empty();
+          $('#voucher-details').append('<h2><del>RM '+data.variant[0].price+'</del> RM '+data.variant[0].sell+'</h2>');
+          $('.variantValue').val(data.variant[0].sell);
+          getvalues();
+          @if(old('package.variant.id'))
+          var olds = {!! json_encode(session()->getOldInput('package.voucher')) !!};
+          @endif
+          var arrIndex = 0;
+          $.each(data.variant[0].vouchers,function(index,voucher){
+            //console.log(voucher);
+            $('#voucher-details').append('<div><h3>'+voucher.type.name+'</h3></div>');
+            $('#voucher-details').append('<div class="row field-'+voucher.prefix+'"></div>');
+            var newcode = voucher.max;
+            for (let i = 0; i < voucher.quantity; ++i) {
+              newcode++;
+              var defValue = voucher.prefix;
+              @if(old('package.variant.id'))
+                if(olds[arrIndex].code && olds[arrIndex].code != null) {
+                  defValue = olds[arrIndex].code;
+                }
+              @endif
+              defValue = defValue+newcode+makeid();
+              $('.field-'+voucher.prefix).append('<div class="col-6"><input type="text" class="form-control mb-2" name="package[voucher]['+arrIndex+'][code]" value="'+defValue+'" /><input type="hidden" name="package[voucher]['+arrIndex+'][voucher_type_id]" value="'+voucher.type.id+'"></div>');
+              arrIndex++;
+            };
 
-        $('#voucher-details').empty();
-        $('#voucher-details').append('<h2><del>RM '+data.variant[0].price+'</del> RM '+data.variant[0].sell+'</h2>');
-        $('.variantValue').val(data.variant[0].sell);
-        getvalues();
-        @if(old('package.variant.id'))
-        var olds = {!! json_encode(session()->getOldInput('package.voucher')) !!};
-        @endif
-        var arrIndex = 0;
-        $.each(data.variant[0].vouchers,function(index,voucher){
-          //console.log(voucher);
-          $('#voucher-details').append('<div><h3>'+voucher.type.name+'</h3></div>');
-          $('#voucher-details').append('<div class="row field-'+voucher.prefix+'"></div>');
-          var newcode = voucher.max;
-          for (let i = 0; i < voucher.quantity; ++i) {
-            newcode++;
-            var defValue = voucher.prefix;
-            @if(old('package.variant.id'))
-              if(olds[arrIndex].code && olds[arrIndex].code != null) {
-                defValue = olds[arrIndex].code;
-              }
-            @endif
-            defValue = defValue+newcode+makeid();
-            $('.field-'+voucher.prefix).append('<div class="col-6"><input type="text" class="form-control mb-2" name="package[voucher]['+arrIndex+'][code]" value="'+defValue+'" /><input type="hidden" name="package[voucher]['+arrIndex+'][voucher_type_id]" value="'+voucher.type.id+'"></div>');
-            arrIndex++;
-          };
+          });
 
-        });
+          showCheckCode();
 
-        showCheckCode();
+        } else { //if variant id != 93
+          alaMax = data.variant[0].vouchers[0].max;
+          alaPrefix = data.variant[0].vouchers[0].prefix;
+          $('#ala-carte-details').show();
+        } //if variant id == 93
 
       } else {
         $('#voucher-details').empty();
@@ -136,6 +156,27 @@ $('#buyPackage').on('change',function(e) {
 $('#buyVariant').on('change',function(e) {
   var variant_id = e.target.value;
   getVariantDetails(variant_id);
+});
+
+$('#alacartquantity').on('change',function(e) {
+  var arrIndex = 0;
+  var alaQuantity = e.target.value;
+  $('#voucher-details').empty();
+  $('#voucher-details').append('<div class="row field-'+alaPrefix+'"></div>');
+  var newcode = alaMax;
+  for (let i = 0; i < alaQuantity; ++i) {
+    newcode++;
+    var defValue = alaPrefix;
+    @if(old('package.variant.id'))
+      if(olds[arrIndex].code && olds[arrIndex].code != null) {
+        defValue = olds[arrIndex].code;
+      }
+    @endif
+    defValue = defValue+newcode+makeid();
+    $('.field-'+alaPrefix).append('<div class="col-6"><input type="text" class="form-control mb-2" name="package[voucher]['+arrIndex+'][code]" value="'+defValue+'" /><input type="hidden" name="package[voucher]['+arrIndex+'][voucher_type_id]" value="5"></div>');
+    arrIndex++;
+  };
+  showCheckCode();
 });
 
 $('#chk-code').click(function(){

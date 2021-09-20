@@ -119,11 +119,38 @@
                           <input type="hidden" name="variantValue" class="variantValue" value="0" />
                           <label for="days" class="d-block">Package Variants</label>
                           <select class="form-control w-100" name="package[variant][id]" id="buyVariant">
-                            <option value="">Choose Package</option>
+                            {{-- <option value="">Choose Package</option> --}}
                           </select>
                         </div>
+                        <div id="ala-carte-details">
+                          <div class="row">
+                            <div class="col-12 col-md-4">
+                              <label for="alacartquantity">Quantity <small class="text-danger">required</small></label>
+                              {!! Form::select('alacart[quantity]', range(0, 10) , null, array('class' => 'form-control', 'id'=>'alacartquantity', 'required')) !!}
+                            </div>
+                            <div class="col-12 col-md-4">
+                              <div class="form-group">
+                                <label for="sell">Price <small class="text-danger">required</small></label>
+                                <input type="text" class="form-control" id="alacartsell" name="alacart[sell]" placeholder="Enter Selling Price" value="0">
+                              </div>
+                            </div>
+                            <div class="col-12 col-md-4">
+                              <div class="form-group">
+                                <label for="title">Expiry <small class="text-danger">required</small></label>
+                                <select class="form-control" name="alacart[expiry]">
+                                  <option value="">Please Choose</option>
+                                  <option value="1">1 month</option>
+                                  <option value="3">3 months</option>
+                                  <option value="6">6 months</option>
+                                  <option value="9">9 months</option>
+                                  <option value="12">12 months</option><option value="15">15 months</option><option value="18">18 months</option><option value="21">21 months</option><option value="24">24 months</option><option value="27">27 months</option><option value="30">30 months</option><option value="33">33 months</option><option value="36">36 months</option></select>
+                              </div>
+                            </div>
+                          </div>
 
+                        </div>
                         <div id="voucher-details"></div>
+
                         <button class="btn-sm btn-warning mt-2" id="chk-code">Check Cobe Availability <div class="loader"></div></button>
                         <span id="hidden-chkbox"></span>
 
@@ -365,7 +392,7 @@ $(document).ready(function() {
   getvalues();
 
 
-  $('[class*=product], .treat-fee, .productdiscount').change(function(){
+  $('[class*=product], .treat-fee, .productdiscount, #alacartsell').change(function(){
     getvalues();
   });
 
