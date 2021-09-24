@@ -184,6 +184,8 @@ class PaymentController extends Controller
   public function edit(Payment $payment)
   {
       //dd($payment->treat);
+      $payment->load('PatientPackage');
+      $payment->PatientPackage->alacarte = json_decode($payment->PatientPackage->alacarte);
       $packages = Package::Published()->PublishedDate()->get();
       $packages->load('products.product');
       $age = Carbon::parse($payment->patient->dob)->age;
@@ -271,6 +273,7 @@ class PaymentController extends Controller
         'package.id' => '',
         'package.variant.id' => '',
         'package.voucher.*' => '',
+        'alacart.*' => '',
       ]);
 
 
@@ -345,17 +348,24 @@ class PaymentController extends Controller
               'payment_id' => $payment->id,
               'package_id' => $data['package']['id'],
               'variant_id' => $data['package']['variant']['id'],
+              'alacarte' => json_encode($data['alacart']),
           ]);
 
           foreach ($data['package']['voucher'] as $key => $voucher) {
             //dd($voucher['voucher_type_id']);
+            if($package->id != 18) {
+              $setExpired_date = Carbon::now()->addMonths($package->variant->expiry);
+            } else {
+              $setExpired_date = Carbon::now()->addMonths($data['alacart']['expiry']);
+            }
+
             $package->patientVouchers()->create([
               'patient_package_id' => $package->id,
               'patient_id' => $payment->patient_id,
               'variant_id' => $data['package']['variant']['id'],
               'voucher_type_id' => $voucher['voucher_type_id'],
               'code' => $voucher['code'],
-              'expired_date' => Carbon::now()->addMonths($package->variant->expiry),
+              'expired_date' => $setExpired_date,
               'state' => 'enable',
             ]);
           }
