@@ -185,7 +185,9 @@ class PaymentController extends Controller
   {
       //dd($payment->treat);
       $payment->load('PatientPackage');
-      $payment->PatientPackage->alacarte = json_decode($payment->PatientPackage->alacarte);
+      if($payment->PatientPackage) {
+        $payment->PatientPackage->alacarte = json_decode($payment->PatientPackage->alacarte);
+      }
       $packages = Package::Published()->PublishedDate()->get();
       $packages->load('products.product');
       $age = Carbon::parse($payment->patient->dob)->age;
