@@ -40,11 +40,16 @@ class PatientPackageImportCollection implements ToCollection, WithHeadingRow
               $package['date'] = Carbon::parse($row['bought_at'])->format('Y-m-d');
               $package['payment'] = intval($row['payment_id']);
 
+              $package['alacarte']['sell'] = intval($row['ala_carte_price']);
+              $package['alacarte']['quantity'] = intval($row['ala_carte_quantity']);
+              $package['alacarte']['expiry'] = intval($row['ala_carte_expiry']);
+
               $imPackage = PatientPackage::create([
                 'patient_id' => $package['patient'],
                 'payment_id' => $package['payment'],
                 'package_id' => $package['package'],
                 'variant_id' => $package['variant'],
+                'alacarte' => json_encode($package['alacarte']),
                 'created_at' => $package['date']
               ]);
 
@@ -52,7 +57,8 @@ class PatientPackageImportCollection implements ToCollection, WithHeadingRow
                 'fba' => $row['fba'],
                 'gs' => $row['gs'],
                 'md' => $row['md'],
-                'cmco' => $row['cmco']
+                'cmco' => $row['cmco'],
+                'alacarte' => $row['ala_carte']
               );
 
               foreach ($rawVouchers as $key => $rawVoucher) {
@@ -70,9 +76,12 @@ class PatientPackageImportCollection implements ToCollection, WithHeadingRow
                       case 'cmco':
                           $type = 4;
                           break;
+                      case 'alacarte':
+                          $type = 5;
+                          break;
                   }
 
-                  $this->storeCode($type, $rawVoucher, $imPackage, $findVariant, $package, $row);
+                  $this->storeCode($type, $rawVoucher, $imPackage, $findVariant, $package, $row, $package['alacarte']['expiry']);
 
                 }
 
@@ -103,9 +112,15 @@ class PatientPackageImportCollection implements ToCollection, WithHeadingRow
         }//end foreach
     }
 
-    public function storeCode($type, $rawCodes, $imPackage, $findVariant, $package, $row) {
+    public function storeCode($type, $rawCodes, $imPackage, $findVariant, $package, $row, $alaexpiry) {
         $raw = str_replace(' ', '', $rawCodes);
         $codes = explode(',', $raw);
+
+        if($type == 5) {
+          $expired = Carbon::parse($row['bought_at'])->addMonths($alaexpiry)->format('Y-m-d');
+        } else {
+          $expired = Carbon::parse($row['bought_at'])->addMonths($findVariant->expiry)->format('Y-m-d');
+        }
 
         foreach ($codes as $code) {
           $imPackage->patientVouchers()->create([
@@ -114,7 +129,7 @@ class PatientPackageImportCollection implements ToCollection, WithHeadingRow
             'variant_id' => $imPackage->variant_id,
             'voucher_type_id' => $type,
             'code' => $code,
-            'expired_date' => Carbon::parse($row['bought_at'])->addMonths($findVariant->expiry)->format('Y-m-d'),
+            'expired_date' => $expired,
             'state' => 'enable',
           ]);
         }
