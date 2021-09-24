@@ -234,7 +234,7 @@ $(document).ready(function() {
 
   getvalues();
 
-  $('[class*=product], .treat-fee, .productdiscount').change(function(){
+  $('[class*=product], .treat-fee, .productdiscount, #alacartsell').change(function(){
     getvalues();
   });
 
@@ -320,8 +320,6 @@ $(document).ready(function() {
   @if($payment->discount_code!='')
   $(".voucherselect").prop("disabled", true);
   @endif
-
-
 
 
 });
