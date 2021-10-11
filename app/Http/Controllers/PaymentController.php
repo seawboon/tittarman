@@ -378,7 +378,9 @@ class PaymentController extends Controller
 
         switch(request('submit')) {
           case 'save':
-            return redirect()->route('checkin.index');
+
+            return redirect()->route('payment.index', ['patient' => $payment->patient->id]);
+            //return redirect()->route('checkin.index');
           break;
 
           case 'new-appointment':
