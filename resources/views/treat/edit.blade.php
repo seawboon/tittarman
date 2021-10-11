@@ -94,16 +94,18 @@
                 <div class="col-12">
                   <div class="form-group control-group increment before">
                     <label>Before Treat Upload</label>
-                    <div>
-                      @foreach($treat->images as $image)
-                        @if($image->state == 'before')
-                        <span class="badge badge-md badge-circle badge-floating badge-default border-white" data-toggle="modal" data-target="#exampleModal" data-whatever="{{ asset('storage/'.$image->filename) }}">
+
+                    <div>@foreach($treat->getMedia('treat_before') as $image)
+                        <span class="badge badge-md badge-circle badge-floating badge-default border-white"
+                        data-toggle="modal" data-target="#exampleModal"
+                        data-whatever="{{$image->getFullUrl()}}">
                           {{$loop->iteration}}
                         </span>
-                        @endif
-                      @endforeach
-                    </div>
+                    @endforeach</div>
 
+                    {{--<div class="custom-file before">
+                        {!! Form::file('filenamebefore[]', ['multiple']) !!}
+                    </div>--}}
                     <div class="custom-file before">
                         <input type="file" class="custom-file-input" name="filenamebefore[]" lang="en">
                         <label class="custom-file-label" for="customFileLang">Select file</label>
@@ -113,7 +115,6 @@
                         </button>
                     </div>
                   </div>
-
 
                   <div class="clone before d-none">
                     <div class="form-group control-group">
@@ -127,7 +128,6 @@
                       </div>
                     </div>
                   </div>
-
 
                   @error('filenamebefore')
                   <small class="text-danger">{{ $message}}</small>
@@ -223,12 +223,10 @@
                   <div class="form-group control-group increment after">
                     <label>After Treat Upload</label>
                     <div>
-                      @foreach($treat->images as $image)
-                        @if($image->state == 'after')
-                        <span class="badge badge-md badge-circle badge-floating badge-default border-white" data-toggle="modal" data-target="#exampleModal" data-whatever="{{ asset('storage/'.$image->filename) }}">
+                      @foreach($treat->getMedia('treat_after') as $image)
+                        <span class="badge badge-md badge-circle badge-floating badge-default border-white" data-toggle="modal" data-target="#exampleModal" data-whatever="{{ $image->getUrl() }}">
                           {{$loop->iteration}}
                         </span>
-                        @endif
                       @endforeach
                     </div>
 

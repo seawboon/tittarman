@@ -14,6 +14,7 @@
                     <thead class="thead-light">
                         <tr>
                             <th scope="col" class="sort" data-sort="name">No.</th>
+                            <th scope="col" class="sort" data-sort="budget">Date</th>
                             <th scope="col" class="sort" data-sort="budget">Payment ID</th>
                             <th scope="col" class="sort" data-sort="budget">Treat ID</th>
                             <th scope="col" class="sort" data-sort="status">Total</th>
@@ -32,6 +33,9 @@
                                     </div>
                                 </div>
                             </th>
+                            <td>
+                              {{ $payment->treat ? Carbon\Carbon::parse($payment->treat->treat_date)->format('d M Y') : Carbon\Carbon::parse($payment->created_at)->format('d M Y') }}
+                            </td>
                             <td>
                                 {{ $payment->id }}
                             </td>
