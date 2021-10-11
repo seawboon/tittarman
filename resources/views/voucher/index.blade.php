@@ -48,8 +48,18 @@
                   {{ $package->package->title }}</th>
                   <th scope="col"><small class="d-block">Variant :</small>
                   {{ $package->variant->name }}</th>
-                  <th scope="col"><small class="d-block">Bought :</small>
-                  {{ $package->date }}</th>
+                  <th scope="col"><small class="d-block">Bought / Expiry Date :</small>
+                  {{ $package->date }} / <span id="package-{{$package->id}}-expiry">{{ Carbon\Carbon::parse($package->patientVouchers->first()->expired_date)->format('d M Y') }} <i class="ni ni-settings text-pink btn-expiry" data-id="{{$package->id}}"></i></span>
+                  <form class="form-inline" name="patient-package-{{$package->id}}" action="{{ route('voucher.patient.update', ['patient' => $patient]) }}" method="post">
+                    @csrf
+                    <div class="form-group" id="package-{{$package->id}}-input-wrp" style="display: none; width:68%">
+                      <input type="text" name="package_voucher_expiry_date" class="form-control form-control-sm flatpickr datetimepicker" data-date-end-date="0d" data-date-today-highlight="true" value="{{ $package->patientVouchers->first()->expired_date ?? '0000-00-00' }}" id="package-voucher-{{$package->id}}-input">
+                      <input type="hidden" name="package_id" value="{{$package->id}}">
+                    </div>
+
+                  </form>
+                  </th>
+
                 </tr>
 
 
@@ -66,7 +76,7 @@
                             <th scope="col">code</th>
                             <th scope="col">claim by</th>
                             <th scope="col">date</th>
-                            <th scope="col">Expiry Date</th>
+                            <th scope="col">Branch</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -76,14 +86,17 @@
                             <td>{{$voucher->code}}</td>
                             <td>{{($voucher->state == 'claimed') ? $voucher->claimBy->fullname : ''}}</td>
                             <td>{{($voucher->state == 'claimed') ? Carbon\Carbon::parse($voucher->updated_at)->format('d M Y') : ''}}</td>
-                            <td>
+                            {{--<td>
                               <span id="voucher-{{$voucher->id}}-expiry">{{ Carbon\Carbon::parse($voucher->expired_date)->format('d M Y') }}</span>
                               <div class="form-group" id="voucher-{{$voucher->id}}-input-wrp" style="display:none; width:68%">
                                 <input type="text" name="voucher[{{$loop->iteration}}][expiry]" class="form-control form-control-sm flatpickr datetimepicker" data-date-end-date="0d" data-date-today-highlight="true" value="{{ $voucher->expired_date ?? '0000-00-00' }}" id="voucher-{{$voucher->id}}-input">
                                 <input type="hidden" name="voucher[{{$loop->iteration}}][id]" value="{{$voucher->id}}">
                               </div>
                               <i class="ni ni-settings text-pink btn-expiry" data-id="{{$voucher->id}}"></i>
-                            </td>
+                            </td>--}}
+                            <td>
+                                {{$voucher->useInPayment ? $voucher->useInPayment->treat->branch->short:''}}
+                              </td>
                           </tr>
                           @endforeach
                         </tbody>
@@ -91,7 +104,7 @@
 
                       <div class="clearfix w-100">
                         <a class="btn btn-primary m-2 float-left" href="{{ route('package.pdf', $package) }}"  target="_blank">Print</a>
-                        <button type="submit" name="submit" value="save" class="btn btn-danger m-2 float-right">Submit</button>
+                        {{-- <button type="submit" name="submit" value="save" class="btn btn-danger m-2 float-right">Submit</button> --}}
                       </div>
                     </form>
                     </td>
@@ -160,10 +173,17 @@
 
 
     $(document).ready(function(){
-      $(".btn-expiry").click(function(){
+      /*$(".btn-expiry").click(function(){
         var voucher_id = $(this).data("id");
         $("#voucher-"+voucher_id+"-expiry").hide();
         $("#voucher-"+voucher_id+"-input-wrp").css('display', 'inline-block');
+
+      });*/
+
+      $(".btn-expiry").click(function(){
+        var voucher_id = $(this).data("id");
+        $("#package-"+voucher_id+"-expiry").hide();
+        $("#package-"+voucher_id+"-input-wrp").css('display', 'inline-block');
 
       });
 

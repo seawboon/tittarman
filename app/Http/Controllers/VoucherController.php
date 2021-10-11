@@ -21,8 +21,7 @@ class VoucherController extends Controller
             $query->orderBy('created_at', 'desc');
         }, 'treats']);*/
 
-        $patient->load('packages.patientvouchers');
-
+        $patient->load('packages.patientvouchers.useInPayment.treat.branch');
         /*$vouchers = $patient->vouchers()->paginate(10);
         $transfers = $patient->transfers()->paginate(10);*/
 
@@ -31,13 +30,16 @@ class VoucherController extends Controller
 
     public function updateVouchers(Patient $patient, Request $request)
     {
-        foreach($request->voucher as $voucher) {
+        //dd($request->all());
+        PatientVoucher::where('patient_package_id', $request->package_id)
+        ->update(['expired_date' => $request->package_voucher_expiry_date]);
+        /*foreach($request->voucher as $voucher) {
           $newExpiry = PatientVoucher::find($voucher['id']);
           $newExpiry->expired_date = $voucher['expiry'];
           if($newExpiry->isDirty('expired_date')) {
             $newExpiry->save();
           }
-        }
+        }*/
 
         return redirect()->route('voucher.index', $patient);
     }

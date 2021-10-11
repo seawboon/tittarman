@@ -9,6 +9,7 @@ use App\Package;
 use App\Product;
 use App\PackageProduct;
 use App\PackageVariant;
+use App\PackageVariantRedeemLocation;
 use App\VoucherType;
 use App\VariantVoucher;
 use App\PatientVoucher;
@@ -289,31 +290,70 @@ class PackageController extends Controller
 
     public function updateVariant(Package $package,PackageVariant $variant)
     {
+        //dd(request()->all());
         $data = request()->validate([
           'name' => 'required',
           'sku' => 'required',
+          'title' => '',
+          'banner_image' => '',
           'status' => 'required',
           'remark' => '',
           'stock' => '',
           'expiry' => 'required',
           'price' => 'required',
           'sell' => 'required',
+          'description' => '',
+          'redeem' => '',
+          'will_get' => '',
+          'tnc' => '',
           'voucherRes.*' => '',
+          'location.*' => '',
         ]);
 
         $variant->update($data);
 
         VariantVoucher::where('variant_id', $variant->id)->delete();
+        PackageVariantRedeemLocation::where('variant_id', $variant->id)->delete();
+
+        if(isset($data['location'])) {
+          $variant->redeemLocations()->createMany($data['location']);
+        }
 
         $collection = collect($data['voucherRes']);
         $filtered = $collection->where('quantity', '!=', 0);
 
         $variant->vouchers()->createMany($filtered->toarray());
 
+        if(isset($data['banner_image']))
+        {
+          $image = $data['banner_image'];
+          $name = $image->getClientOriginalName();
+          $extensss = $image->getClientOriginalExtension();
+          $newName = $variant->id.'_'.'_'.Carbon::now()->timestamp.'.'.$extensss;
+          $image = Image::make($image)->resize(1280, null, function ($constraint) {
+              $constraint->aspectRatio();
+          });
+          $local = public_path().'/banner_variant/';
+          $savefile = $local.$newName;
+
+          if (!file_exists($local)) {
+              mkdir($local, 666, true);
+          }
+
+          $image->save($savefile,80);
+
+          Storage::put('public/banner_variant/'.$newName, $image);
+
+          File::delete($savefile);
+
+          $variant->banner_image = $newName;
+          $variant->save();
+        }
 
         switch(request('submit')) {
           case 'save':
-            return redirect()->route('show.package.variants', $variant->package_id);
+            //return redirect()->route('show.package.variants', $variant->package_id);
+            return back();
           break;
 
           case 'new':

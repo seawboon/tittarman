@@ -8,7 +8,7 @@
         <div class="card-body">
 
 
-            <form action="{{ route('update.variant',[$variant->package_id, $variant]) }}" method="post">
+            <form action="{{ route('update.variant',[$variant->package_id, $variant]) }}" method="post" enctype="multipart/form-data">
               @csrf
 
               <div class="row">
@@ -81,27 +81,6 @@
 
                 </div>
 
-
-                <div class="col-6">
-                  <div class="form-group">
-                    <label for="price">Original Price <small class="text-danger">required</small></label>
-                    <input type="text" class="form-control" id="price" name="price" placeholder="Enter Price" value="{{ old('price', $variant->price) }}">
-                    @error('price')
-                    <small class="text-danger">{{ $message}}</small>
-                    @enderror
-                  </div>
-                </div>
-
-                <div class="col-6">
-                  <div class="form-group">
-                    <label for="sell">Selling Price <small class="text-danger">required</small></label>
-                    <input type="text" class="form-control" id="sell" name="sell" placeholder="Enter Selling Price" value="{{ old('sell', $variant->sell) }}">
-                    @error('sell')
-                    <small class="text-danger">{{ $message}}</small>
-                    @enderror
-                  </div>
-                </div>
-
                 <div class="col-6">
                   <div class="form-group">
                     <label for="title">Expiry <small class="text-danger">required</small></label>
@@ -142,7 +121,9 @@
                 </div>
 
 
-
+                <div class="col-12">
+                  @include('package.variant.tabs.tab')
+                </div>
 
 
 
@@ -190,6 +171,7 @@ legend {
   padding-right: 0.5rem;
 }
 </style>
+<link href="{{ asset('css/easy-responsive-tabs.css') }}" rel="stylesheet" />
 @endpush
 
 @push('js')
@@ -206,7 +188,8 @@ legend {
 </style>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-
+<script src="{{ asset('js/easyResponsiveTabs.js') }}"></script>
+<script src="https://cdn.tiny.cloud/1/xu08nwxv3pwzvh9y9j2j2e827o4d70g4ybodm3m4smg7ancu/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
 
 <script>
 $(document).ready(function() {
@@ -218,6 +201,23 @@ $(document).ready(function() {
     dateFormat: "Y-m-d H:i",
     defaultHour: {{date('H')}},
     defaultMinute: {{date('i')}}
+  });
+
+  $('#VariantTabs').easyResponsiveTabs({
+      type: 'vertical',
+      width: 'auto',
+      fit: true,
+      tabidentify: 'ver_1', // The tab groups identifier
+      activetab_bg: '#fff', // background color for active tabs in this group
+      inactive_bg: '#F5F5F5', // background color for inactive tabs in this group
+      active_border_color: '#c1c1c1', // border color for active tabs heads in this group
+      active_content_border_color: '#5AB1D0' // border color for active tabs contect in this group so that it matches the tab head border
+  });
+
+  tinymce.init({
+        selector: '.mce',
+        plugins: 'advcode casechange linkchecker autolink lists checklist powerpaste table advtable tinymcespellchecker',
+        toolbar: 'casechange checklist code table',
   });
 
 $('.unitChg').change( function() {

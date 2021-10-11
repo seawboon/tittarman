@@ -36,4 +36,9 @@ class Branches extends Model
     return $this->hasMany(Account::class, 'branch_id');
   }
 
+  public function variantRedeemLocations()
+  {
+    return $this->hasMany(PackageVariantRedeemLocation::class, 'branch_id');
+  }
+
 }
