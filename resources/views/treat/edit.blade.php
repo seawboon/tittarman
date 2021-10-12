@@ -5,8 +5,7 @@
       <div class="container-fluid">
         <div class="row">
 
-
-        <div class="col-xl-4 order-xl-2">
+      <div class="col-xl-4 order-xl-2">
          @include('treat.card')
         </div>
 
@@ -102,10 +101,7 @@
                           {{$loop->iteration}}
                         </span>
                     @endforeach</div>
-
-                    {{--<div class="custom-file before">
-                        {!! Form::file('filenamebefore[]', ['multiple']) !!}
-                    </div>--}}
+                    
                     <div class="custom-file before">
                         <input type="file" class="custom-file-input" name="filenamebefore[]" lang="en">
                         <label class="custom-file-label" for="customFileLang">Select file</label>

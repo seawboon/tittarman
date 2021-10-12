@@ -92,7 +92,7 @@ class TreatController extends Controller
         return view('treat.create', compact('patient', 'matter', 'age', 'ii', 'options'));
     }
 
-    public function store(Patient $patient, Matter $matter)
+    public function store(Patient $patient, Matter $matter, Request $request)
     {
 
         //dd($request->all());
@@ -110,12 +110,12 @@ class TreatController extends Controller
           'treat.total' => 'required',
           'treat.days' => '',
           //'product.*' => '',
-          'filenamebefore' => '',
-          'filenamebefore.*' => 'image',
-          'filenamebefore.*.state' => '',
-          'filenameafter' => '',
-          'filenameafter.*' => 'image',
-          'filenameafter.*.state' => '',
+          //'filenamebefore' => '',
+          //'filenamebefore.*' => 'image',
+          //'filenamebefore.*.state' => '',
+          //'filenameafter' => '',
+          //'filenameafter.*' => 'image',
+          //'filenameafter.*.state' => '',
           'drug' => '',
           'drug.*' => '',
         ]);
@@ -156,64 +156,20 @@ class TreatController extends Controller
         //$treat->products()->createMany($data['product']);
         //$matter->injuries()->createMany($data['injuries']); ≈
 
-        if(isset($data['filenamebefore']))
-        {
-          foreach ($data['filenamebefore'] as $key => $image) {
-
-            $name = $image->getClientOriginalName();
-            $extensss = $image->getClientOriginalExtension();
-            $newName = $matter->id.'_'.$key.'_'.Carbon::now()->timestamp.'.'.$extensss;
-            //$image->move(public_path().'/image/', $newName);
-            $image = Image::make($image)->resize(1280, null, function ($constraint) {
-                $constraint->aspectRatio();
-            });
-            $local = public_path().'/image/';
-            $savefile = $local.$newName;
-
-            if (!file_exists($local)) {
-                mkdir($local, 666, true);
+        if($request->filenamebefore) {
+          foreach ($request->filenamebefore as $md) {
+            if($md->isValid()) {
+              $treat->addMedia($md)->toMediaCollection('treat_before');
             }
-
-            $image->save($savefile,80);
-
-            Storage::put('public/'.$newName, $image);
-
-            File::delete($savefile);
-            //$newName = Storage::disk('public')->put('/', $image);
-            $mfile[] = ['filename' => $newName, 'state'=>'before'];
           }
-
-          $treat->images()->createMany($mfile);
         }
 
-        if(isset($data['filenameafter']))
-        {
-          foreach ($data['filenameafter'] as $key => $image) {
-
-            $name = $image->getClientOriginalName();
-            $extensss = $image->getClientOriginalExtension();
-            $newName = $matter->id.'_'.$key.'_'.Carbon::now()->timestamp.'.'.$extensss;
-            //$image->move(public_path().'/image/', $newName);
-            $image = Image::make($image)->resize(1280, null, function ($constraint) {
-                $constraint->aspectRatio();
-            });
-            $local = public_path().'/image/';
-            $savefile = $local.$newName;
-
-            if (!file_exists($local)) {
-                mkdir($local, 666, true);
+        if($request->filenameafter) {
+          foreach ($request->filenameafter as $md) {
+            if($md->isValid()) {
+              $treat->addMedia($md)->toMediaCollection('treat_after');
             }
-
-            $image->save($savefile,80);
-
-            Storage::put('public/'.$newName, $image);
-
-            File::delete($savefile);
-            //$newName = Storage::disk('public')->put('/', $image);
-            $amfile[] = ['filename' => $newName, 'state'=>'after'];
           }
-
-          $treat->images()->createMany($amfile);
         }
 
         $checkin = $patient->checkins->where('state', 'treating')->first();
