@@ -44,6 +44,20 @@ class VoucherController extends Controller
         return redirect()->route('voucher.index', $patient);
     }
 
+    public function updateSingleCode(PatientVoucher $code, Request $request)
+    {
+        $chk = PatientVoucher::where('code', $request['voucher-code'])->first();
+
+        if ($chk === null) {
+          $code->code = $request['voucher-code'];
+          $code->save();
+        }
+
+        return redirect()->back();
+
+        //return redirect()->route('voucher.index', $patient);
+    }
+
     public function packagePdf(PatientPackage $package)
     {
       $package->load('patientvouchers','patient.accounts','package');

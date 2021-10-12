@@ -109,6 +109,11 @@ class PaymentController extends Controller
         $payment->state = 'paid';
         $payment->save();
 
+        if($request->payment_date != null) {
+          $payment->created_at = date('Y-m-d H:i:s', strtotime($request->payment_date));
+          $payment->save();
+        }
+
         if(isset($data['voucher'])) {
           foreach ($data['voucher'] as $key => $voucher) {
             $uptV = Voucher::where('code', $voucher['code'])->where('patient_id', null)->first();

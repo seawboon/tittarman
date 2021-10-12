@@ -9,8 +9,19 @@ use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 class Treat extends Model implements HasMedia
 {
   use HasMediaTrait;
-  
+
   protected $guarded = [];
+
+  public function registerMediaCollections()
+  {
+      $this
+      ->addMediaCollection('treat_before')
+      ->useDisk('treatBefore');
+
+      $this
+      ->addMediaCollection('treat_after')
+      ->useDisk('treatAfter');
+  }
 
   public function matter()
   {

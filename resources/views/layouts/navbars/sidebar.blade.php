@@ -138,12 +138,12 @@
                           <i class="ni ni-app"></i>
                           <span>{{ __('Users') }}</span>
                       </a>
-
+                      {{--
                       <a href="{{ route('voucher.admin.index') }}" class="dropdown-item">
                           <i class="ni ni-app"></i>
                           <span>Vouchers</span>
                       </a>
-
+                      --}}
                       @role('Admin')
                       <a href="{{ route('roles.index') }}" class="dropdown-item">
                           <i class="ni ni-app"></i>
@@ -155,12 +155,12 @@
                             <i class="ni ni-app"></i>
                             <span>{{ __('Payment Methods') }}</span>
                       </a>
-
+                      {{--
                       <a href="{{ route('sources.index') }}" class="dropdown-item">
                             <i class="ni ni-app"></i>
                             <span>{{ __('Appointment Sources') }}</span>
                       </a>
-
+                      --}}
                       @hasanyrole('Admin|Master')
                       <a href="{{ route('injuryparts.index') }}" class="dropdown-item">
                           <i class="ni ni-app"></i>
@@ -174,10 +174,12 @@
                           <span>{{ __('Voucher Type') }}</span>
                       </a>
                       @endhasanyrole
+                      {{--
                       <a href="{{ route('market-sources.index') }}" class="dropdown-item">
                           <i class="ni ni-app"></i>
                           <span>{{ __('Market Sources') }}</span>
                       </a>
+                      --}}
                     </div>
                 </li>
 

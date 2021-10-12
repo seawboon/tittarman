@@ -249,12 +249,31 @@
                         <td colspan="2" class="text-right">
                           Total Fees (RM)
                         </td>
-                        <td  class="">
+                        <td class="">
                           <div class="form-group">
                             <input type="text" class="form-control productsum" name="treat[total]" value="{{ old('treat.total', 0) }}" readonly />
                           </div>
                         </td>
                       </tr>
+
+                      <tr>
+                        <td colspan="4" class="text-left">
+                          <label for="payment_date" class="d-block">Payment Date</label>
+                          <div class="form-group">
+                            <div class="input-group">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="ni ni-calendar-grid-58"></i></span>
+                              </div>
+                              <input class="flatpickr datetimepicker form-control" name="payment_date" type="text" placeholder="Date & Time" value="{{ old('payment_date') }}">
+                            </div>
+                            @error('payment_date')
+                            <small class="text-danger">{{ $message}}</small>
+                            @enderror
+                          </div>
+                        </td>
+
+                      </tr>
+
                     </tbody>
                   </table>
                 </div>

@@ -7,11 +7,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Ramsey\Uuid\Uuid;
 use Carbon\Carbon;
 use Cviebrock\EloquentSluggable\Sluggable;
+use Spatie\MediaLibrary\HasMedia\HasMedia;
+use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 
-class Package extends Model
+class Package extends Model implements HasMedia
 {
     use SoftDeletes;
     use Sluggable;
+    use HasMediaTrait;
     //protected $guarded = [];
     protected $table = 'packages';
 
@@ -24,6 +27,14 @@ class Package extends Model
     protected $hidden = [
       'uuid'
     ];
+
+    public function registerMediaCollections()
+    {
+        $this
+        ->addMediaCollection('PackageBanner')
+        ->singleFile()
+        ->useDisk('PackageBanners');
+    }
 
     function getWebImageUrlAttribute() {
       if(is_null($this->image_url)) {

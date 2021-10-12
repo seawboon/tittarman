@@ -88,14 +88,14 @@
 
                   <div class="col-12">
                     <div class="form-group control-group increment after">
-                      <label>Package Banner</label>
+                      <label>Package Banner</label>{{-- <img src="{{$package->getFirstMediaUrl('PackageBanner')}}" /> --}}
                       <div class="custom-file after">
                           <input type="file" class="custom-file-input" name="filename" lang="en">
                           <label class="custom-file-label" for="customFileLang">Select file</label>
                       </div>
                     </div>
-                  </div>
 
+                  </div>
 
 
                   <div class="col-4">

@@ -34,7 +34,7 @@ class PackageController extends Controller
         return view('package.create', compact('products'));
     }
 
-    public function store()
+    public function store(Request $request)
     {
         $data = request()->validate([
           'title' => 'required',
@@ -44,15 +44,19 @@ class PackageController extends Controller
           'publish_date_end' => 'required',
           'description' => '',
           'remark' => '',
-          /*'productRes.*' => '',*/
+          /*'productRes.*' => '',
           'filename' => '',
-          'filename.*' => 'image',
+          'filename.*' => 'image',*/
         ]);
 
 
         $package = Package::create($data);
 
-        if(isset($data['filename']))
+        if($request->hasFile('filename') && $request->file('filename')->isValid()){
+            $package->addMediaFromRequest('filename')->toMediaCollection('PackageBanner');
+        }
+
+        /*if(isset($data['filename']))
         {
           $image = $data['filename'];
           $name = $image->getClientOriginalName();
@@ -76,7 +80,7 @@ class PackageController extends Controller
 
           $package->image_url = $newName;
           $package->save();
-        }
+        }*/
 
         /*
         $collection = collect($data['productRes']);
@@ -114,7 +118,7 @@ class PackageController extends Controller
         return view('package.edit', compact('products','package'));
     }
 
-    public function update(Package $package)
+    public function update(Package $package, Request $request)
     {
         $data = request()->validate([
           'title' => 'required',
@@ -131,8 +135,10 @@ class PackageController extends Controller
 
         $package->update($data);
 
-
-        if(isset($data['filename']))
+        if($request->hasFile('filename') && $request->file('filename')->isValid()){
+            $package->addMediaFromRequest('filename')->toMediaCollection('PackageBanner');
+        }
+        /*if(isset($data['filename']))
         {
           $image = $data['filename'];
           $name = $image->getClientOriginalName();
@@ -156,7 +162,7 @@ class PackageController extends Controller
 
           $package->image_url = $newName;
           $package->save();
-        }
+        }*/
 
         /*
         PackageProduct::where('package_id', $package->id)->delete();
@@ -288,14 +294,14 @@ class PackageController extends Controller
 
     }
 
-    public function updateVariant(Package $package,PackageVariant $variant)
+    public function updateVariant(Package $package,PackageVariant $variant,Request $request)
     {
         //dd(request()->all());
         $data = request()->validate([
           'name' => 'required',
           'sku' => 'required',
           'title' => '',
-          'banner_image' => '',
+          //'banner_image' => '',
           'status' => 'required',
           'remark' => '',
           'stock' => '',
@@ -324,7 +330,11 @@ class PackageController extends Controller
 
         $variant->vouchers()->createMany($filtered->toarray());
 
-        if(isset($data['banner_image']))
+        if($request->hasFile('banner_image') && $request->file('banner_image')->isValid()){
+            $variant->addMediaFromRequest('banner_image')->toMediaCollection('VariantBanner');
+        }
+
+        /*if(isset($data['banner_image']))
         {
           $image = $data['banner_image'];
           $name = $image->getClientOriginalName();
@@ -348,7 +358,7 @@ class PackageController extends Controller
 
           $variant->banner_image = $newName;
           $variant->save();
-        }
+        }*/
 
         switch(request('submit')) {
           case 'save':

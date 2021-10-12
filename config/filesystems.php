@@ -55,6 +55,34 @@ return [
             'visibility' => 'public',
         ],
 
+        'treatBefore' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/treatBefore'),
+            'url' => env('APP_URL').'/storage/treatBefore',
+            'visibility' => 'public',
+        ],
+
+        'treatAfter' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/treatAfter'),
+            'url' => env('APP_URL').'/storage/treatAfter',
+            'visibility' => 'public',
+        ],
+
+        'PackageBanners' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/PackageBanners'),
+            'url' => env('APP_URL').'/storage/PackageBanners',
+            'visibility' => 'public',
+        ],
+
+        'VariantBanners' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/VariantBanners'),
+            'url' => env('APP_URL').'/storage/VariantBanners',
+            'visibility' => 'public',
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

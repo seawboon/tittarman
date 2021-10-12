@@ -11,7 +11,7 @@
     </div>
 
     <div class="col-12">
-      {{ asset('storage/banner_variant/'.$variant->banner_image) }}
+      <img src="{{$variant->getFirstMediaUrl('VariantBanner')}}" />
       <div class="form-group control-group increment after">
         <label>Banner</label>
         <div class="custom-file after">

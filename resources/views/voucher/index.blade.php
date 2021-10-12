@@ -48,8 +48,8 @@
                   {{ $package->package->title }}</th>
                   <th scope="col"><small class="d-block">Variant :</small>
                   {{ $package->variant->name }}</th>
-                  <th scope="col"><small class="d-block">Bought / Expiry Date :</small>
-                  {{ $package->date }} / <span id="package-{{$package->id}}-expiry">{{ Carbon\Carbon::parse($package->patientVouchers->first()->expired_date)->format('d M Y') }} <i class="ni ni-settings text-pink btn-expiry" data-id="{{$package->id}}"></i></span>
+                  <th scope="col"><small class="d-block">Bought - Expiry Date :</small>
+                  {{ $package->date }} - <span id="package-{{$package->id}}-expiry">{{ Carbon\Carbon::parse($package->patientVouchers->first()->expired_date)->format('d M Y') }} <i class="ni ni-settings text-pink btn-expiry" data-id="{{$package->id}}"></i></span>
                   <form class="form-inline" name="patient-package-{{$package->id}}" action="{{ route('voucher.patient.update', ['patient' => $patient]) }}" method="post">
                     @csrf
                     <div class="form-group" id="package-{{$package->id}}-input-wrp" style="display: none; width:68%">
@@ -67,8 +67,8 @@
                 <tbody>
                   <tr>
                     <td colspan="5" class="p-0">
-                      <form class="form-inline" name="patient-package-{{$package->id}}" action="{{ route('voucher.patient.update', ['patient' => $patient]) }}" method="post">
-                        @csrf
+                      {{-- <form class="form-inline" name="patient-package-{{$package->id}}" action="{{ route('voucher.patient.update', ['patient' => $patient]) }}" method="post">
+                        @csrf --}}
                       <table class="table table-bordered mb-0 bg-white">
                         <thead>
                           <tr>
@@ -83,7 +83,20 @@
                           @foreach($package->patientVouchers as $voucher)
                           <tr>
                             <th>{{$loop->iteration}}</th>
-                            <td>{{$voucher->code}}</td>
+                            <td>
+                              <span id="code-{{$voucher->id}}">{{$voucher->code}}@if($voucher->state != 'claimed')<i class="ni ni-settings text-pink btn-edit-voucher" data-id="{{$voucher->id}}"></i>@endif</span>
+                              <form class="form-inline" name="voucher-code-{{$voucher->id}}" action="{{ route('single.code.update', ['code' => $voucher->id]) }}" method="post">
+                                @csrf
+                                <div class="form-group" id="voucher-code-{{$voucher->id}}-input-wrp" style="display: none; width:68%">
+                                  <input type="text" name="voucher-code" class="form-control form-control-sm" value="{{ $voucher->code }}" id="voucher-code-{{$voucher->id}}-input">
+                                </div>
+                                <div>
+                                  <button class="btn-sm btn-warning mt-2 chk-ava-code" id="voucher-code-{{$voucher->id}}-btn-check" data-id="{{$voucher->id}}" style="display:none">Check Cobe Availability</button>
+                                  <span id="hidden-chkbox-{{$voucher->id}}"><input type="text" id="hchkbox-{{$voucher->id}}" required style="width:0; height:0;opacity: 0;"></span>
+                                </div>
+                                <button type="submit" id="btn-submit-{{$voucher->id}}" name="submit" value="save" class="btn-sm btn-primary" style="display:none">Edit Code</button>
+                              </form>
+                            </td>
                             <td>{{($voucher->state == 'claimed') ? $voucher->claimBy->fullname : ''}}</td>
                             <td>{{($voucher->state == 'claimed') ? Carbon\Carbon::parse($voucher->updated_at)->format('d M Y') : ''}}</td>
                             {{--<td>
@@ -106,7 +119,7 @@
                         <a class="btn btn-primary m-2 float-left" href="{{ route('package.pdf', $package) }}"  target="_blank">Print</a>
                         {{-- <button type="submit" name="submit" value="save" class="btn btn-danger m-2 float-right">Submit</button> --}}
                       </div>
-                    </form>
+                    {{-- </form> --}}
                     </td>
                   </tr>
 
@@ -146,31 +159,6 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
-    /*function createPDF() {
-        var sTable = document.getElementById('tab').innerHTML;
-
-        var style = "<style>";
-        style = style + "table {width: 100%;font: 17px Calibri;}";
-        style = style + "table, th, td {border: solid 1px #DDD; border-collapse: collapse;";
-        style = style + "padding: 2px 3px;text-align: center;}";
-        style = style + "</style>";
-
-        // CREATE A WINDOW OBJECT.
-        var win = window.open('', '', 'height=700,width=700');
-
-        win.document.write('<html><head>');
-        win.document.write('<title>Profile</title>');   // <title> FOR PDF HEADER.
-        win.document.write(style);          // ADD STYLE INSIDE THE HEAD TAG.
-        win.document.write('</head>');
-        win.document.write('<body>');
-        win.document.write(sTable);         // THE TABLE CONTENTS INSIDE THE BODY TAG.
-        win.document.write('</body></html>');
-
-        win.document.close(); 	// CLOSE THE CURRENT WINDOW.
-
-        win.print();    // PRINT THE CONTENTS.
-    }*/
-
 
     $(document).ready(function(){
       /*$(".btn-expiry").click(function(){
@@ -187,13 +175,76 @@
 
       });
 
-
       flatpickr('.datetimepicker', {
         enableTime: false,
         altInput: true,
         altFormat: "j M Y",
         dateFormat: "Y-m-d"
       });
+
+      $(".btn-edit-voucher").click(function(){
+        var code_id = $(this).data("id");
+        $("#code-"+code_id).hide();
+        $("#voucher-code-"+code_id+"-input-wrp, #voucher-code-"+code_id+"-btn-check, hidden-chkbox-"+code_id).css('display', 'inline-block');
+        $("#voucher-code-"+code_id+"-btn-check").css('display', 'inline-block');
+      });
+
+      $.ajaxSetup({
+        headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+      });
+
+      $(".chk-ava-code").click(function(){
+        var code_id = $(this).data("id");
+        var newcode = $("#voucher-code-"+code_id+"-input").val();
+        chkResult = ajaxChkCode(newcode);
+        if(chkResult == 'yes') {
+          $("#voucher-code-"+code_id+"-input").removeClass("alert-danger alert-success").addClass("alert-danger");
+          $("#hchkbox-"+code_id).val('');
+          $("#btn-submit-"+code_id).css('display', 'none');
+        } else {
+          $("#voucher-code-"+code_id+"-input").removeClass("alert-danger alert-success").addClass("alert-success");
+          $("#hchkbox-"+code_id).val('ok');
+          $("#btn-submit-"+code_id).css('display', 'inline-block');
+        }
+        return false;
+      });
+
+      function ajaxChkCode(code) {
+        var result;
+        $.ajax({
+          async: false,
+          url:"{{ route('checkCode') }}",
+          type:"GET",
+          data: {
+          code: code
+          },
+          success:function (data) {
+            console.log(data.status);
+            result = data.status;
+          }
+        });
+
+          return result;
+
+      };
+
+      function InvalidMsg(textbox) {
+
+          if (textbox.value === '' || textbox.value!='ok') {
+              textbox.setCustomValidity
+                    ('Please Check Codes');
+          } else if (textbox.validity.typeMismatch) {
+              textbox.setCustomValidity
+                    ('Please Check Codes');
+          } else {
+              textbox.setCustomValidity('');
+          }
+
+          return true;
+      }
+
 
     });
 </script>
