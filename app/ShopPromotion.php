@@ -15,12 +15,18 @@ class ShopPromotion extends Model
     public static function types(){
 
         return array(
-            'coupon'=>'Coupon',
+            'coupon' => 'Coupon',
+            'flexi' => 'Flexible',
             /*'general'=>'General',
             'group'=>'Group',
             'brand'=>'Brand',
             'full_discount'=>'Full Discount'*/
         );
+    }
+
+    public function discounts()
+    {
+        return $this->morphMany(PaymentDiscount::class, 'discountable');
     }
 
     public function rule()

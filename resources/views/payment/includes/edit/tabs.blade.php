@@ -3,8 +3,6 @@
 
     @include('payment.includes.edit.vouchers')
 
-    @include('payment.includes.edit.treatment_fee')
-
     @include('payment.includes.edit.myvoucher')
 
 
@@ -12,7 +10,7 @@
     <div for="Memo">
         <p>{{ $payment->treat->memo}}</p>
     </div>
-    <div for="Next Appointment">
+    {{-- <div for="Next Appointment">
       <div class="row">
         <div class="col-6">
           <div class="form-group">
@@ -24,7 +22,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> --}}
     @endif
 
 </div>

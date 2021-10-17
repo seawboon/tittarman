@@ -14,7 +14,8 @@
                     <thead class="thead-light">
                         <tr>
                             <th scope="col" class="sort" data-sort="name">No.</th>
-                            <th scope="col" class="sort" data-sort="budget">Name</th>
+                            <th scope="col" class="sort" data-sort="budget">Code / Name</th>
+                            <th scope="col" class="sort" data-sort="budget">Type</th>
                             <th scope="col" class="sort" data-sort="status">Publish</th>
                             <th scope="col"></th>
                         </tr>
@@ -34,6 +35,9 @@
                                 <small>{{ $promotion->name }}</small>
                             </td>
                             <td class="text-capitalize">
+                              {{ $promotion->type }}
+                            </td>
+                            <td class="text-capitalize">
                               {{ $promotion->status }}
                             </td>
 
@@ -43,7 +47,7 @@
                                       <i class="fas fa-ellipsis-v"></i>
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-                                        <a class="dropdown-item" href="{{-- route('promotions.edit', $promotion) --}}">View / Edit</a>
+                                        <a class="dropdown-item" href="{{route('promotions.edit', $promotion)}}">View / Edit</a>
                                         <!--<a class="dropdown-item" href="#">View</a>
                                         <a class="dropdown-item" href="#">Something else here</a>-->
                                     </div>

@@ -8,6 +8,21 @@ class Payment extends Model
 {
     protected $guarded = [];
 
+    public function discounts()
+    {
+      return $this->hasMany(PaymentDiscount::class);
+    }
+
+    public function discountPromotions()
+    {
+      return $this->discounts()->where('discountable_type', 'App\ShopPromotion');
+    }
+
+    public function discountVouchers()
+    {
+      return $this->discounts()->where('discountable_type', 'App\PatientVoucher');
+    }
+
     public function patient()
     {
       return $this->belongsTo(Patient::class);

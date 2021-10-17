@@ -38,10 +38,6 @@
                   <ul class="resp-tabs-list ver_1">
                       <li>Products</li>
                       <li>Voucher Package</li>
-                      {{-- <li>Vouchers</li> --}}
-                      <li>Treatment Fee</li>
-                      {{-- <li>Memo</li>
-                      <li>My Voucher</li> --}}
                   </ul>
                   <div class="resp-tabs-container ver_1">
                       <div for="Products">
@@ -151,86 +147,41 @@
                         </div>
                         <div id="voucher-details"></div>
 
-                        <button class="btn-sm btn-warning mt-2" id="chk-code">Check Cobe Availability <div class="loader"></div></button>
+                        <button class="btn-sm btn-warning mt-2" id="chk-code">Check Cobe Availability</button>
                         <span id="hidden-chkbox"></span>
 
                       </div>
-
-                      <div for="Treatment Fee">
-                        <div class="row">
-                          <div class="col-12">
-
-                            <div class="form-group">
-                              <label>Treatment Fee (RM)</label>
-                              <input type="text" class="form-control treat-fee" name="treat[fee]" value="{{ old('treat.fee', 0) }}" {{$permit['text']}} readonly />
-                            </div>
-                          </div>
-                          <div class="col-12">
-                            <div class="form-group">
-                              <label>Discount (RM)</label>
-                              <input type="text" class="form-control productdiscount" name="treat[discount]" value="{{ old('treat.discount', 0) }}" />
-                            </div>
-                          </div>
-                          <div class="col-12">
-                            <div class="form-group">
-                              <label>Total</label>
-                              <input type="text" class="form-control treatmentfinal" name="treat[treat_final]" value="0" readonly />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      {{--<div for="Next Appointment">
-                          <p>d ut ornare non, volutpat vel tortor. InLorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum nibh urna, euismod ut ornare non, volutpat vel tortor. Integer laoreet placerat suscipit. Sed sodales scelerisque commodo. Nam porta cursus lectus. Proin nunc erat, gravida a facilisis quis, ornare id lectus. Proin consectetur nibh quis urna gravida mollis.t in malesuada odio venenatis.</p>
-                      </div>
-                       <div for="My voucher">
-                        <div class="row">
-                          <div class="col-4">
-                            <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#voucherModal">
-                              My Vouchers
-                            </button>
-                            <div class="modal fade" id="voucherModal" tabindex="-1" role="dialog" aria-labelledby="voucherModalLabel" aria-hidden="true">
-                              <div class="modal-dialog modal-lg">
-                                <div class="modal-content">
-                                   <div class="modal-body">
-                                     <div class="row newVouchers">
-                                     </div>
-                                     <div class="row">
-                                       @if(count($patient->vouchers))
-                                       @foreach($patient->vouchers as $voucher)
-                                        @if($voucher->state == 'enable')
-                                         <div class="col-3">
-                                           <span class="code-{{$loop->iteration}} mr-2">{{ $voucher->code }}</span>
-                                           <span class="copyCode border-0 bg-transparent" data-vcode="{{ $voucher->code }}"><i class="ni ni-single-copy-04"></i></span>
-                                         </div>
-                                         @endif
-                                       @endforeach
-                                       @endif
-                                     </div>
-
-                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                       <span aria-hidden="true">&times;</span>
-                                     </button>
-                                   </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="col-8">
-                            <div class="form-group mb-0">
-                              <input type="text" class="form-control productdiscountcode" name="treat[discount_code]" placeholder="voucher code" value="{{ old('treat.discount_code') }}" />
-                            </div>
-                          </div>
-
-
-
-                        </div>
-                      </div> --}}
                   </div>
               </div>
 
               <div class="products">
-                <div class="mt-3">
-
+                <div class="mt-3"></div>
+                <div class="row pt-4">
+                  <div class="col-3">
+                    <div class="form-group">
+                      <input type="hidden" class="treat-fee" name="treat[fee]" value="0" />
+                      <input type="hidden" class="treatmentfinal" name="treat[treat_final]" value="0" />
+                      <input type="hidden" name="redeem_code[0][amount]" id="redeem_code_1_amount" value="0">
+                      <input type="hidden" name="redeem_code[1][amount]" id="redeem_code_2_amount" value="0">
+                      {!! Form::select('promotion_id', [null=>'Promotion Redeem'] + $promotions, null, array('class' => 'form-control', 'id' => 'slt-promotion')) !!}
+                      @error('salutation')
+                      <small class="text-danger">{{ $message}}</small>
+                      @enderror
+                    </div>
+                  </div>
+                  <div class="col-3">
+                    <div class="form-group">
+                      <input type="text" class="form-control" name="promotion_code" placeholder="Code" value=""   />
+                    </div>
+                  </div>
+                  <div class="col-3">
+                    Promotion Applied (RM)
+                  </div>
+                  <div class="col-3">
+                    <div class="form-group">
+                      <input type="text" class="form-control" name="promotion_amount" id="promo_amount" value="0" />
+                    </div>
+                  </div>
                 </div>
                 <div>
                   <table class="table align-items-center">
@@ -252,6 +203,17 @@
                         <td class="">
                           <div class="form-group">
                             <input type="text" class="form-control productsum" name="treat[total]" value="{{ old('treat.total', 0) }}" readonly />
+                          </div>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td colspan="3" class="text-right">
+                          Paid Amount (RM)
+                        </td>
+                        <td class="">
+                          <div class="form-group">
+                            <input type="text" class="form-control" name="treat[paid_amount]" value="{{ old('treat.paid_amount', 0) }}" />
                           </div>
                         </td>
                       </tr>
@@ -414,6 +376,38 @@ $(document).ready(function() {
   $('[class*=product], .treat-fee, .productdiscount, #alacartsell').change(function(){
     getvalues();
   });
+
+  $('#slt-promotion').on('change',function(e) {
+    var promo_id = e.target.value;
+    getPromotion(promo_id);
+  });
+
+  function getPromotion(promo_id){
+
+    $.ajax({
+      url:"{{ route('getPromo') }}",
+      type:"POST",
+      data: {
+      promo_id: promo_id
+      },
+      success:function (data) {
+        //console.log(data.promotion.action.config);
+        if(data.promotion != null) {
+          if(data.promotion.type == 'coupon') {
+            $('#promo_amount').val(data.promotion.action.config.amount);
+          } else {
+            $('#promo_amount').val(0);
+          }
+
+        } else {
+          $('#promo_amount').val(0);
+        }
+
+        getvalues();
+
+      }
+    })
+  };
 
 
 });

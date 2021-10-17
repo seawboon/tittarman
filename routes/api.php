@@ -33,6 +33,8 @@ Route::get('checkCode', 'PackageController@checkDuplicateCode')->name('checkCode
 Route::put('login', 'PassportController@login');
 //Route::post('register', 'PassportController@register');
 
+Route::post('getPromo', 'PromotionController@getPromo')->name('getPromo');
+
 Route::middleware('auth:api')->group(function () {
     Route::get('user', 'PassportController@details');
     Route::apiResource('/patients', 'Api\PatientController');

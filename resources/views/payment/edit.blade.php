@@ -6,7 +6,6 @@
         <div class="row">
         <div class="col-xl-2 order-xl-2">
         </div>
-
       <div class="col-xl-10 order-xl-1">
         <div class="card-body">
           @if(Session::has('message'))
@@ -35,11 +34,10 @@
                   <ul class="resp-tabs-list ver_1">
                       <li>Products</li>
                       <li>Voucher Package</li>
-                      <li>Treatment Fee</li>
-                      <li>My Voucher</li>
+                      <li>Treatment Fee / My Voucher</li>
                       @if($payment->treat)
                       <li>Memo From Therapist</li>
-                      <li>Appointment</li>
+                      {{-- <li>Appointment</li> --}}
                       @endif
 
                   </ul>
@@ -47,6 +45,29 @@
               </div>
 
               <div class="clearfix pt-4" style="clear:both">
+                <div class="row">
+                  <div class="col-3">
+                    <div class="form-group">
+                      {!! Form::select('promotion_id', [null=>'Promotion Redeem'] + $promotions, $payment->discountPromotions->first() ? $payment->discountPromotions->first()->discountable_id:null, array('class' => 'form-control', 'id' => 'slt-promotion')) !!}
+                      @error('salutation')
+                      <small class="text-danger">{{ $message}}</small>
+                      @enderror
+                    </div>
+                  </div>
+                  <div class="col-3">
+                    <div class="form-group">
+                      <input type="text" class="form-control" name="promotion_code" placeholder="Code" value="{{$payment->discountPromotions->first() ? $payment->discountPromotions->first()->code:''}}"   />
+                    </div>
+                  </div>
+                  <div class="col-3">
+                    Promotion Applied (RM)
+                  </div>
+                  <div class="col-3">
+                    <div class="form-group">
+                      <input type="text" class="form-control" name="promotion_amount" id="promo_amount" value="{{$payment->discountPromotions->first() ? $payment->discountPromotions->first()->discount_amount:0}}" />
+                    </div>
+                  </div>
+                </div>
                 <div class="row">
                   <div class="col-12 col-lg-4">
                     <div class="form-group">
@@ -65,12 +86,26 @@
                     </div>
                   </div>
                 </div>
+
+                <div class="row">
+                  <div class="col-12 col-lg-7 text-right">
+                    Paid Amount (RM)
+                  </div>
+                  <div class="col-12 col-lg-5">
+                    <div class="form-group">
+                      <input type="text" class="form-control" name="treat[paid_amount]" value="{{ old('treat.paid_amount', $payment->paid_amount) }}" />
+                    </div>
+                  </div>
+                </div>
+
               </div>
 
               <div class="clearfix pt-4" style="clear:both">
                 <button type="submit" name="submit" value="save" class="btn btn-primary">Submit</button>
+
+                <button type="submit" name="submit" value="payment-list" class="btn btn-primary">Submit & Back Payment List</button>
                 @if($payment->treat)
-                <button type="submit" name="submit" value="new-appointment" class="btn btn-primary">Submit & Make Appointment</button>
+                {{-- <button type="submit" name="submit" value="new-appointment" class="btn btn-primary">Submit & Make Appointment</button> --}}
                 @endif
               </div>
 
@@ -169,32 +204,44 @@ hr.invisible {
 <script src="{{ asset('js/easyResponsiveTabs.js') }}"></script>
 <script src="{{ asset('js/payment.js') }}"></script>
 
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-<div class="modal-dialog modal-lg">
-<div class="modal-content">
+<div class="modal fade" id="patient-vouchers-modal" tabindex="-1" role="dialog" aria-labelledby="patient-vouchers-modal-Label" aria-hidden="true" style="display:none">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
 
- <div class="modal-body">
-   <img class="modalimage w-100" src="" />
-   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-     <span aria-hidden="true">&times;</span>
-   </button>
- </div>
+       <div class="modal-body">
+         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+           <span aria-hidden="true">&times;</span>
+         </button>
+
+         <form action="{{ route('payment.edit', $payment)}}" method="get">
+           <div class="row">
+             <div class="col-12"><h4>Search Vouchers</h4></div>
+             <div class="col-3"><input class="form-control form-control-sm" name="searchName" id="searchName" placeholder="by Name" type="text"></div>
+             <div class="col-3"><input class="form-control form-control-sm" name="searchContact" id="searchContact" placeholder="by Contact" type="text"></div>
+             <div class="col-3"><input class="form-control form-control-sm" name="searchNRIC" id="searchNRIC" placeholder="by NRIC" type="text"></div>
+             <div class="col-3"><button type="submit" name="submit" class="btn btn-sm btn-primary">Search</button></div>
+           </div>
+         </form>
+         @if($customerVouchers->isNotEmpty())
+         <div class="row mt-3">
+           <div class="col-12 pb-3"><h3 class="pt-2 text-success">{{$customerVouchers->first()->patient->fullname}}</h3></div>
+
+            @foreach($customerVouchers->groupBy('voucher_type_id') as $voucherTypes)
+            <div class="col-12 pb-3">
+              <h4>{{$voucherTypes->first()->type->name}}</h4>
+              <div class="row">
+                @foreach($voucherTypes as $aVoucher)
+                <div class="col-3" id="wrp-{{$aVoucher->code}}">{{$aVoucher->code}} <i class="ni ni-ungroup cp-code text-pink" data-code="{{$aVoucher->code}}" style="color:green"></i></div>
+                @endforeach
+              </div>
+            </div>
+             @endforeach
+         </div>
+         @endif
+       </div>
+    </div>
+  </div>
 </div>
-</div>
-</div>
-<script>
-$(function(){
-  $('#exampleModal').on('show.bs.modal', function (event) {
-    var button = $(event.relatedTarget); // Button that triggered the modal
-    var recipient = button.data('whatever'); // Extract info from data-* attributes
-    // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
-    // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-    var modal = $(this);
-    modal.find('.modal-title').text(recipient);
-    modal.find('.modalimage').attr('src', recipient);
-  });
-});
-</script>
 
 <script>
 $(document).ready(function() {
@@ -234,7 +281,7 @@ $(document).ready(function() {
 
   getvalues();
 
-  $('[class*=product], .treat-fee, .productdiscount, #alacartsell').change(function(){
+  $('[class*=product], .treat-fee, .productdiscount, #alacartsell, #promo_amount, #redeem_code_1_amount, #redeem_code_2_amount').change(function(){
     getvalues();
   });
 
@@ -321,6 +368,37 @@ $(document).ready(function() {
   $(".voucherselect").prop("disabled", true);
   @endif
 
+  $('#slt-promotion').on('change',function(e) {
+    var promo_id = e.target.value;
+    getPromotion(promo_id);
+  });
+
+  function getPromotion(promo_id){
+
+    $.ajax({
+      url:"{{ route('getPromo') }}",
+      type:"POST",
+      data: {
+      promo_id: promo_id
+      },
+      success:function (data) {
+        //console.log(data.promotion.action.config);
+        if(data.promotion != null) {
+          if(data.promotion.type == 'coupon') {
+            $('#promo_amount').val(data.promotion.action.config.amount);
+          } else {
+            $('#promo_amount').val(0);
+          }
+
+        } else {
+          $('#promo_amount').val(0);
+        }
+
+        getvalues();
+
+      }
+    })
+  };
 
 });
 @include('payment.js')

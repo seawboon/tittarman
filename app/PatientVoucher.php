@@ -11,6 +11,10 @@ class PatientVoucher extends Model
     protected $guarded = [];
 
     //protected $appends = ['expiry_on'];
+    public function discounts()
+    {
+        return $this->morphMany(PaymentDiscount::class, 'discountable');
+    }
 
     public function patientPackage()
     {

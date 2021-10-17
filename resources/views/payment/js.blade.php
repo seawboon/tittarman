@@ -1,13 +1,16 @@
+
+
 function getvalues(){
   $('[class*=productprice]').each(function (key, value) {
      var price = $(this).val();
      var unit = $('.productunit'+key).val();
      var total = price*unit;
      var fee = $('.treat-fee').val();
-     var discount = $('.productdiscount').val();
+     var discount = parseFloat($('#redeem_code_1_amount').val()) + parseFloat($('#redeem_code_2_amount').val());
      var bpackage = $('.variantValue').val();
      var alacartsell = $('#alacartsell').val();
      var buyPackage = $('#buyPackage').val();
+     var promo_amount = $('#promo_amount').val();
      $('.producttotal'+key).val(total);
 
      var productsum = parseFloat(fee - discount);
@@ -22,6 +25,8 @@ function getvalues(){
      if(buyPackage==18) {
        productsum += parseFloat(alacartsell);
      }
+
+     productsum -= parseFloat(promo_amount);
 
      $('.productsum').val(productsum);
 
@@ -113,7 +118,7 @@ function getVariantDetails(variant_id){
                 }
               @endif
               defValue = defValue+newcode+makeid();
-              $('.field-'+voucher.prefix).append('<div class="col-6"><input type="text" class="form-control mb-2" name="package[voucher]['+arrIndex+'][code]" value="'+defValue+'" /><input type="hidden" name="package[voucher]['+arrIndex+'][voucher_type_id]" value="'+voucher.type.id+'"></div>');
+              $('.field-'+voucher.prefix).append('<div class="col-6"><input type="text" class="form-control mb-2 new-voucher" name="package[voucher]['+arrIndex+'][code]" value="'+defValue+'" /><input type="hidden" name="package[voucher]['+arrIndex+'][voucher_type_id]" value="'+voucher.type.id+'"></div>');
               arrIndex++;
             };
 
@@ -173,14 +178,13 @@ $('#alacartquantity').on('change',function(e) {
       }
     @endif
     defValue = defValue+newcode+makeid();
-    $('.field-'+alaPrefix).append('<div class="col-6"><input type="text" class="form-control mb-2" name="package[voucher]['+arrIndex+'][code]" value="'+defValue+'" /><input type="hidden" name="package[voucher]['+arrIndex+'][voucher_type_id]" value="5"></div>');
+    $('.field-'+alaPrefix).append('<div class="col-6"><input type="text" class="form-control mb-2 new-voucher" name="package[voucher]['+arrIndex+'][code]" value="'+defValue+'" /><input type="hidden" name="package[voucher]['+arrIndex+'][voucher_type_id]" value="5"></div>');
     arrIndex++;
   };
   showCheckCode();
 });
 
 $('#chk-code').click(function(){
-  $('.loader').css('display', 'inline-block');
   var arr = [];
   $("input[name$='[code]']").each(function() {
 
@@ -189,6 +193,7 @@ $('#chk-code').click(function(){
     var chkResult;
     if (arr.indexOf(value) == -1) {
       arr.push(value);
+      console.log(arr);
       $(this).removeClass("alert-danger");
       chkResult = ajaxChkCode(value, name);
       if(chkResult == 'yes') {
@@ -202,15 +207,11 @@ $('#chk-code').click(function(){
       //console.log( this.value + ":" + this.value );
   });
 
-
-
-  if ($('.alert-danger').length) {
+  if ($('.new-voucher.alert-danger').length) {
     $("#hchkbox").val('');
   } else {
     $("#hchkbox").val('ok');
   }
-
-  $('.loader').hide(500);
 
   return false;
 

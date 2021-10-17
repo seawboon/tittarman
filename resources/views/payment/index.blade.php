@@ -17,8 +17,9 @@
                             <th scope="col" class="sort" data-sort="budget">Date</th>
                             <th scope="col" class="sort" data-sort="budget">Payment ID</th>
                             <th scope="col" class="sort" data-sort="budget">Treat ID</th>
-                            <th scope="col" class="sort" data-sort="status">Total</th>
                             <th scope="col" class="sort" data-sort="status">Package/Voucher</th>
+                            <th scope="col" class="sort" data-sort="status">Total</th>
+                            <th scope="col" class="sort" data-sort="status">Paid</th>
                             <th scope="col" class="sort" data-sort="status">Status</th>
                             <th scope="col"></th>
                         </tr>
@@ -43,10 +44,13 @@
                                 {{ $payment->treat ? $payment->treat->id : "" }}
                             </td>
                             <td>
+                                {{ $payment->PatientPackage ? $payment->PatientPackage->variant->name : "" }}
+                            </td>
+                            <td>
                                 RM {{ $payment->total }}
                             </td>
                             <td>
-                                {{ $payment->PatientPackage ? $payment->PatientPackage->variant->name : "" }}
+                                RM {{ $payment->paid_amount }}
                             </td>
                             <td class="text-capitalize">
                               {{ $payment->state }}

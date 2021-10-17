@@ -60,7 +60,7 @@
 
   </div>
   <div id="voucher-details"></div>
-  <button class="btn-sm btn-warning mt-2" id="chk-code">Check Cobe Availability <div class="loader"></div></button>
+  <button class="btn-sm btn-warning mt-2" id="chk-code">Check Code Availability <div class="loader"></div></button>
   <span id="hidden-chkbox"></span>
 
   {{-- <div id="packageContent">

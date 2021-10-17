@@ -14,8 +14,8 @@
 
             @foreach($patient->packages as $package)
             <div class="col-6" id="tab">
-
-              <table class="table table-bordered table-white">
+              <div class="table-responsive">
+              <table class="table tm-sm table-bordered table-white">
                 <tr>
                   <th colspan="5" class="text-capitalize">
                     <small class="d-block">Name :</small>
@@ -69,7 +69,7 @@
                     <td colspan="5" class="p-0">
                       {{-- <form class="form-inline" name="patient-package-{{$package->id}}" action="{{ route('voucher.patient.update', ['patient' => $patient]) }}" method="post">
                         @csrf --}}
-                      <table class="table table-bordered mb-0 bg-white">
+                      <table class="table table-sm table-bordered mb-0 bg-white table-hover">
                         <thead>
                           <tr>
                             <th scope="col">#</th>
@@ -91,8 +91,8 @@
                                   <input type="text" name="voucher-code" class="form-control form-control-sm" value="{{ $voucher->code }}" id="voucher-code-{{$voucher->id}}-input">
                                 </div>
                                 <div>
-                                  <button class="btn-sm btn-warning mt-2 chk-ava-code" id="voucher-code-{{$voucher->id}}-btn-check" data-id="{{$voucher->id}}" style="display:none">Check Cobe Availability</button>
-                                  <span id="hidden-chkbox-{{$voucher->id}}"><input type="text" id="hchkbox-{{$voucher->id}}" required style="width:0; height:0;opacity: 0;"></span>
+                                  <button class="btn-sm btn-warning mt-2 chk-ava-code" id="voucher-code-{{$voucher->id}}-btn-check" data-id="{{$voucher->id}}" style="display:none">Check Code Availability</button>
+                                  <span id="hidden-chkbox-{{$voucher->id}}" style="display:block;height:0"><input type="text" id="hchkbox-{{$voucher->id}}" required style="width:0; height:0;opacity: 0;"></span>
                                 </div>
                                 <button type="submit" id="btn-submit-{{$voucher->id}}" name="submit" value="save" class="btn-sm btn-primary" style="display:none">Edit Code</button>
                               </form>
@@ -125,7 +125,8 @@
 
                 </tbody>
               </table>
-              {{-- <button id="btPrint" onclick="createPDF()" class="btn btn-primary btn-sm">TO PDF</button> --}}
+            </div>
+            {{-- <button id="btPrint" onclick="createPDF()" class="btn btn-primary btn-sm">TO PDF</button> --}}
             </div>
 
             @endforeach

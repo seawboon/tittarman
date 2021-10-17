@@ -43,7 +43,7 @@ class PromotionController extends Controller
         'rule.config.amount' => 'required',
         'action.type' => 'required',
         'action.config' => '',
-        'action.config.amount' => 'required',
+        'action.config.amount' => '',
       ]);
 
       $promotion = ShopPromotion::create($data['promotion']);
@@ -91,8 +91,12 @@ class PromotionController extends Controller
         'rule.config.amount' => 'required',
         'action.type' => 'required',
         'action.config' => '',
-        'action.config.amount' => 'required',
+        'action.config.amount' => '',
       ]);
+
+      if($data['action']['config']['amount'] == null) {
+        $data['action']['config']['amount'] = 0;
+      }
 
       $promotion->update($data['promotion']);
       $promotion->rule->update($data['rule']);
@@ -110,6 +114,15 @@ class PromotionController extends Controller
           return redirect()->route('market-sources.market_create');
         break;
       }*/
+    }
+
+    public function getPromo (Request $request)
+    {
+        $promotion = ShopPromotion::with('action')->where('id', $request->promo_id)->first();
+
+        return response()->json([
+            'promotion' => $promotion
+        ]);
     }
 
 }
