@@ -59,13 +59,12 @@
             </th>
             <th style="width:40%">
               <small class="d-block">ID :</small>
-              {{ $package->patient->id }}
+              {{ $package->patient->id }} &nbsp;&nbsp;|&nbsp;&nbsp;
               @if($package->patient->accounts->isNotEmpty())
 
                 @foreach($package->patient->accounts as $account)
                   @if($account->account_no)
                     {{ $account->branch->short}} - {{$account->account_no}}
-                  @else
                     @if(!$loop->last)
                        &nbsp;&nbsp;|&nbsp;&nbsp;
                     @endif
