@@ -20,7 +20,7 @@ class PackageVariant extends Model implements HasMedia
     protected $table = 'package_variants';
 
     protected $fillable = [
-        'name', 'sku', 'title', 'banner_image', 'remark', 'status', 'stock', 'expiry', 'price', 'sell', 'description', 'tnc',
+        'name', 'sku', 'title', 'banner_image', 'remark', 'status', 'online', 'stock', 'expiry', 'price', 'sell', 'description', 'tnc',
         'will_get', 'redeem'
     ];
 
@@ -65,6 +65,11 @@ class PackageVariant extends Model implements HasMedia
     public function scopePublished($query) {
         return $query
                 ->where('status', '=', 'yes');
+    }
+
+    public function scopeOnline($query) {
+        return $query
+                ->where('online', '=', 'yes');
     }
 
     protected static function boot()

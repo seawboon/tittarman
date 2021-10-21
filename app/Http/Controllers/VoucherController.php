@@ -65,7 +65,7 @@ class VoucherController extends Controller
       $pdf = PDF::loadView('voucher.packagePdf', compact('package'));
       $patientName = strtolower($package->patient->fullname);
       $patientName = str_replace(' ', '-', $patientName);
-      $filename = $package->patient->id.'_'.$patientName.'-'.$package->variant->sku.'_'.Carbon::parse($package->date)->format('Y-m-d');;
+      $filename = $patientName.'-'.str_replace(' ', '-',$package->variant->name).'_'.Carbon::now()->format('d-M-Y');
     	return $pdf->stream($filename.'.pdf');
       //return view('voucher.packagePdf', compact('package'));
     }

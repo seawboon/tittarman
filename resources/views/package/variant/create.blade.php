@@ -128,6 +128,24 @@
                   </div>
                 </div>
 
+                <div class="col-4">
+                  <div class="form-group">
+                    <label for="gemder" class="d-block">Available in Online <small class="text-danger">required</small></label>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="online" id="online_yes" value="yes" {{(old('online') == 'yes') ? 'checked' : ''}}>
+                      <label class="form-check-label" for="online_yes">Yes</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="online" id="online_no" value="no" {{(old('online') == 'no') ? 'checked' : ''}}>
+                      <label class="form-check-label" for="online_no">No</label>
+                    </div>
+
+                    @error('online')
+                    <small class="text-danger d-block">{{ $message}}</small>
+                    @enderror
+                  </div>
+                </div>
+
 
 
 
