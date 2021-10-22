@@ -12,4 +12,9 @@ class PaymentMethod extends Model
     {
       return $this->hasMany(Payment::class, 'method_id');
     }
+
+    public function collections()
+    {
+      return $this->hasMany(PaymentCollection::class, 'payment_method_id');
+    }
 }

@@ -25,7 +25,7 @@
                         </tr>
                     </thead>
                     <tbody class="list">
-                      @foreach($patient->payments as $payment)
+                      @foreach($patient->paymentsDesc as $payment)
                         <tr>
                             <th scope="row">
                                 <div class="media align-items-center">
@@ -50,7 +50,7 @@
                                 RM {{ $payment->total }}
                             </td>
                             <td>
-                                RM {{ $payment->paid_amount }}
+                                RM {{ $payment->collections->sum('amount') }}
                             </td>
                             <td class="text-capitalize">
                               {{ $payment->state }}

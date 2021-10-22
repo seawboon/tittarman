@@ -13,6 +13,11 @@ class Payment extends Model
       return $this->hasMany(PaymentDiscount::class);
     }
 
+    public function collections()
+    {
+      return $this->morphMany(PaymentCollection::class, 'collectable');
+    }
+
     public function discountPromotions()
     {
       return $this->discounts()->where('discountable_type', 'App\ShopPromotion');

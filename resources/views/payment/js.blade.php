@@ -29,7 +29,11 @@ function getvalues(){
      productsum -= parseFloat(promo_amount);
 
      $('.productsum').val(productsum);
-
+     var collection = 0;
+     @if(isset($payment))
+     collection = {{$payment->collections->sum('amount')}};
+     @endif
+     $('.balance-wrp').html('RM '+(productsum-collection));
   });
 
 };

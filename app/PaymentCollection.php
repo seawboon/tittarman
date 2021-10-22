@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class PaymentDiscount extends Model
+class PaymentCollection extends Model
 {
     protected $guarded = [];
 
@@ -13,8 +13,14 @@ class PaymentDiscount extends Model
       return $this->belongsTo(Payment::class);
     }
 
-    public function discountable()
+    public function collectable()
     {
         return $this->morphTo();
     }
+
+    public function method()
+    {
+        return $this->belongsTo(PaymentMethod::class, 'payment_method_id');
+    }
+
 }

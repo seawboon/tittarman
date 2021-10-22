@@ -89,11 +89,35 @@
 
                 <div class="row">
                   <div class="col-12 col-lg-7 text-right">
+                    Paid History (RM)
+                  </div>
+                  <div class="col-12 col-lg-5">
+                    @foreach($payment->collections as $collection)
+                    <div class="row">
+                      <div class="col-4"><small>{{Carbon\Carbon::parse($collection->created_at)->format('d M Y')}}</small></div>
+                      <div class="col-4"><small>RM {{$collection->amount}}</small></div>
+                      <div class="col-4"><small>{{$collection->method->name}}</small></div>
+                    </div>
+                    @endforeach
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-12 col-lg-7 text-right">
+                    Balance (RM)
+                  </div>
+                  <div class="col-12 col-lg-5 balance-wrp">
+                    RM {{$payment->total - $payment->collections->sum('amount')}}
+                  </div>
+                </div>
+
+                <div class="row mt-2">
+                  <div class="col-12 col-lg-7 text-right">
                     Paid Amount (RM)
                   </div>
                   <div class="col-12 col-lg-5">
                     <div class="form-group">
-                      <input type="text" class="form-control" name="treat[paid_amount]" value="{{ old('treat.paid_amount', $payment->paid_amount) }}" />
+                      <input type="text" class="form-control" name="treat[paid_amount]" value="{{ old('treat.paid_amount', 0) }}" />
                     </div>
                   </div>
                 </div>
@@ -399,6 +423,7 @@ $(document).ready(function() {
       }
     })
   };
+
 
 });
 @include('payment.js')

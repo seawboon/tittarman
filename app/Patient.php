@@ -52,9 +52,19 @@ class Patient extends Model
       return $this->hasMany(Payment::class, 'patient_id');
     }
 
+    public function paymentsDesc()
+    {
+      return $this->hasMany(Payment::class, 'patient_id')->orderBy('id', 'desc');;
+    }
+
     public function packages()
     {
       return $this->hasMany(PatientPackage::class, 'patient_id');
+    }
+
+    public function packagesDesc()
+    {
+      return $this->hasMany(PatientPackage::class, 'patient_id')->orderBy('id', 'desc');
     }
 
     public function vouchers()

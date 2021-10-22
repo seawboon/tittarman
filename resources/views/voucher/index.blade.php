@@ -12,7 +12,7 @@
 
           <div class="row">
 
-            @foreach($patient->packages as $package)
+            @foreach($patient->packagesDesc as $package)
             <div class="col-6" id="tab">
               <div class="table-responsive">
               <table class="table tm-sm table-bordered table-white">

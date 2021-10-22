@@ -72,7 +72,7 @@
                                       <input type="text" class="form-control productprice" name="product[{{ $key }}][price]" value="{{ old('product.'.$key.'.price', $product->price) }}" />
                                     </div>
                                   </td>
-                                  <td class="w-15">
+                                  <td class="w-25">
                                     <div class="form-group">
                                     @php $pType = 'item';
                                       if($product->type == 'voucher') {

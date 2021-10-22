@@ -14,16 +14,8 @@ class VoucherController extends Controller
 {
     public function index(Patient $patient)
     {
-        //$patient = Patient::with('matters')->get();
-        //$patient->load('matters');
 
-        /*$patient->load(['matters' => function ($query) {
-            $query->orderBy('created_at', 'desc');
-        }, 'treats']);*/
-
-        $patient->load('packages.patientvouchers.useInPayment.treat.branch');
-        /*$vouchers = $patient->vouchers()->paginate(10);
-        $transfers = $patient->transfers()->paginate(10);*/
+        //$patient->load('packagesDesc.patientvouchers.useInPayment.treat.branch');
 
       return view('voucher.index', compact('patient'/*, 'vouchers', 'transfers'*/));
     }

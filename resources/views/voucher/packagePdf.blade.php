@@ -112,7 +112,7 @@
                   <th scope="col" style="width:90px!important">CODE</th>
                   <th scope="col">CLAIM BY</th>
                   <th scope="col" style="width:80px!important">DATE</th>
-                  <th scope="col" style="width:50px!important">Branch</th>
+                  <th scope="col" style="width:50px!important">BRANCH</th>
                 </tr>
                 @foreach($package->patientVouchers as $voucher)
                 <tr>

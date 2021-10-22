@@ -17,6 +17,7 @@ use Spatie\Permission\Models\Role;
 use App\Product;
 use App\PaymentProduct;
 use App\PaymentDiscount;
+use App\PaymentCollection;
 use App\Images;
 use App\Checkin;
 use App\Payment;
@@ -46,7 +47,7 @@ class PaymentController extends Controller
 
   public function index(Patient $patient)
   {
-      $patient->load('payments.treat', 'payments.PatientPackage');
+      $patient->load('paymentsDesc.treat', 'paymentsDesc.PatientPackage');
       return view('payment.index', compact('patient'));
   }
 
@@ -82,25 +83,12 @@ class PaymentController extends Controller
         'alacart.*' => '',
       ]);
 
-      $data['treat']['product_amount'] = $data['treat']['total'] - $request->treat['fee'];
-      if($data['treat']['total'] > $data['treat']['paid_amount']) {
-        $data['treat']['state'] = 'partial';
-      } else {
-        $data['treat']['state'] = 'paid';
-      }
-
-
       $payment = new Payment;
       $payment->patient_id = $patient->id;
       $payment->branch_id = isset(session('myBranch')->id) ? session('myBranch')->id : 0;
       $payment->treatment_fee = $request->treat['fee'];
-      $payment->product_amount = $request->treat['total'] - $request->treat['fee'];
-      //$payment->discount = $request->treat['discount'];
       $payment->method_id = $request->treat['method_id'];
-      //$payment->discount_code = $request->treat['discount_code'];
       $payment->total = $request->treat['total'];
-      $payment->paid_amount = $request->treat['paid_amount'];
-      $payment->state = $data['treat']['state'];
       $payment->save();
 
       if($request->payment_date != null) {
@@ -110,8 +98,10 @@ class PaymentController extends Controller
 
       $this->updatePromotion($payment, $request->promotion_id, $request->promotion_amount, $request->promotion_code);
 
-      PaymentProduct::where('payment_id', $payment->id)->delete();
-      $payment->products()->createMany($data['product']);
+      $payment->product_amount = $request->variantValue + $this->updatePaymentProducts($payment, $data['product']);
+      $payment->state = $this->updatePaymentCollection($payment, $data['treat']);
+      $payment->discount = $payment->discounts->sum('discount_amount');
+      $payment->save($data['treat']);
 
       if(!is_null($data['package']['id']) && !is_null($data['package']['variant']['id'])) {
         $package = $payment->PatientPackage()->updateOrCreate(
@@ -125,13 +115,6 @@ class PaymentController extends Controller
             'variant_id' => $data['package']['variant']['id'],
             'alacarte' => json_encode($data['alacart'])
           ]
-          /*[
-            'patient_id' => $payment->patient_id,
-            'payment_id' => $payment->id,
-            'package_id' => $data['package']['id'],
-            'variant_id' => $data['package']['variant']['id'],
-            'alacarte' => json_encode($data['alacart']),
-        ]*/
         );
 
         $this->createVouchers($package, $data['package']['variant']['id'], $payment->patient_id, $data['package']['voucher'], $data['alacart']['expiry']);
@@ -145,6 +128,13 @@ class PaymentController extends Controller
 
   public function edit(Payment $payment, Request $request)
   {
+    /*$collection = new PaymentCollection;
+    $collection->amount = 30;
+    $collection->payment_method_id = 1;
+    $payment->collections()->save($collection);*/
+
+
+
       $payment->load('PatientPackage');
       if($payment->PatientPackage) {
         $payment->PatientPackage->alacarte = json_decode($payment->PatientPackage->alacarte);
@@ -185,7 +175,6 @@ class PaymentController extends Controller
 
   public function update(Payment $payment, Request $request)
   {
-      //dd($request->all());
       $data = request()->validate([
         'product.*' => '',
         'voucher.*' => '',
@@ -200,23 +189,18 @@ class PaymentController extends Controller
         'alacart.*' => '',
       ]);
 
-
-      $data['treat']['product_amount'] = $data['treat']['total'] - $request->treat['fee'];
-      if($data['treat']['total'] > $data['treat']['paid_amount']) {
-        $data['treat']['state'] = 'partial';
-      } else {
-        $data['treat']['state'] = 'paid';
-      }
-
       $vvE = $this->chkRedeemCode('update', $request->redeem_code, $payment);
 
       if($vvE === 'yes') {
 
+        $data['treat']['state'] = $this->updatePaymentCollection($payment, $data['treat']);
+        $data['treat']['product_amount'] = $request->variantValue + $this->updatePaymentProducts($payment, $data['product']);
         $this->updatePatientVoucher($request->redeem_code, $payment->patient->id, $payment);
-
-        $payment->update($data['treat']);
-
         $this->updatePromotion($payment, $request->promotion_id, $request->promotion_amount, $request->promotion_code);
+        $data['treat']['discount'] = $payment->discounts->sum('discount_amount');
+        $updateTreat = $data['treat'];
+        $updateTreat = Arr::except($updateTreat, ['paid_amount']);
+        $payment->update($updateTreat);
 
         if(isset($data['package']['id']) && isset($data['package']['variant']['id']) && !is_null($data['package']['id']) && !is_null($data['package']['variant']['id'])) {
           $package = $payment->PatientPackage()->updateOrCreate(
@@ -230,17 +214,9 @@ class PaymentController extends Controller
               'variant_id' => $data['package']['variant']['id'],
               'alacarte' => json_encode($data['alacart'])
             ]
-            /*[
-              'patient_id' => $payment->patient_id,
-              'payment_id' => $payment->id,
-              'package_id' => $data['package']['id'],
-              'variant_id' => $data['package']['variant']['id'],
-              'alacarte' => json_encode($data['alacart']),
-          ]*/
           );
 
           $this->createVouchers($package, $data['package']['variant']['id'], $payment->patient_id, $data['package']['voucher'], $data['alacart']['expiry']);
-          //dd($package->load('patientVouchers'));
         }
 
         switch(request('submit')) {
@@ -361,4 +337,51 @@ class PaymentController extends Controller
       PaymentDiscount::where('payment_id', $payment->id)->where('discountable_type', 'App\ShopPromotion')->delete();
     }
   }
+
+  private function updatePaymentProducts($payment, $paymentProducts)
+  {
+    //dd($paymentProducts);
+    $paymentProducts = collect($paymentProducts);
+    $productsAmount = $paymentProducts->sum('total');
+      foreach ($paymentProducts as $product) {
+        $payment->products()->updateOrCreate(
+            [
+            'payment_id'   => $payment->id,
+            'treat_id' => $payment->treat_id,
+            'matter_id' => $payment->matter_id,
+            'patient_id' => $payment->patient_id,
+            'product_id' => $product['product_id'],
+            ],
+            [
+              'price' => $product['price'],
+              'unit' => $product['unit'],
+              'total' => $product['total']
+            ]
+        );
+      }
+    return $productsAmount;
+
+  }
+
+
+  private function updatePaymentCollection($payment, $treat)
+  {
+      if($treat['paid_amount'] > 0) {
+        $collection = new PaymentCollection;
+        $collection->amount = $treat['paid_amount'];
+        $collection->payment_method_id = $treat['method_id'];
+        $payment->collections()->save($collection);
+      }
+
+      if($payment->collections->sum('amount') >= $treat['total']) {
+        $returnState = 'paid';
+      } else if($payment->collections->sum('amount') > 0){
+        $returnState = 'partial';
+      } else {
+        $returnState = 'pay';
+      }
+
+      return $returnState;
+  }
+
 }
