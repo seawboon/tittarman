@@ -76,12 +76,14 @@ class PaymentController extends Controller
         'voucher.*' => '',
         'treat.total' => 'required',
         'treat.paid_amount' => 'required',
+        'treat.paid_date' => '',
         'treat.method_id' => 'required',
         'package.id' => '',
         'package.variant.id' => '',
         'package.voucher.*' => '',
         'alacart.*' => '',
       ]);
+      $data['treat']['paid_date'] = null;
 
       $payment = new Payment;
       $payment->patient_id = $patient->id;
@@ -93,6 +95,7 @@ class PaymentController extends Controller
 
       if($request->payment_date != null) {
         $payment->created_at = date('Y-m-d H:i:s', strtotime($request->payment_date));
+        $data['treat']['paid_date'] = $payment->created_at;
         $payment->save();
       }
 
@@ -101,7 +104,9 @@ class PaymentController extends Controller
       $payment->product_amount = $request->variantValue + $this->updatePaymentProducts($payment, $data['product']);
       $payment->state = $this->updatePaymentCollection($payment, $data['treat']);
       $payment->discount = $payment->discounts->sum('discount_amount');
-      $payment->save($data['treat']);
+      $updateTreat = $data['treat'];
+      $updateTreat = Arr::except($updateTreat, ['paid_amount', 'paid_date ']);
+      $payment->save($updateTreat);
 
       if(!is_null($data['package']['id']) && !is_null($data['package']['variant']['id'])) {
         $package = $payment->PatientPackage()->updateOrCreate(
@@ -175,6 +180,7 @@ class PaymentController extends Controller
 
   public function update(Payment $payment, Request $request)
   {
+      //dd($request->all());
       $data = request()->validate([
         'product.*' => '',
         'voucher.*' => '',
@@ -182,6 +188,7 @@ class PaymentController extends Controller
         //'treat.discount_code' => '',
         'treat.total' => 'required',
         'treat.paid_amount' => 'required',
+        'treat.paid_date' => '',
         'treat.method_id' => 'required',
         'package.id' => '',
         'package.variant.id' => '',
@@ -199,7 +206,7 @@ class PaymentController extends Controller
         $this->updatePromotion($payment, $request->promotion_id, $request->promotion_amount, $request->promotion_code);
         $data['treat']['discount'] = $payment->discounts->sum('discount_amount');
         $updateTreat = $data['treat'];
-        $updateTreat = Arr::except($updateTreat, ['paid_amount']);
+        $updateTreat = Arr::except($updateTreat, ['paid_amount', 'paid_date']);
         $payment->update($updateTreat);
 
         if(isset($data['package']['id']) && isset($data['package']['variant']['id']) && !is_null($data['package']['id']) && !is_null($data['package']['variant']['id'])) {
@@ -370,6 +377,13 @@ class PaymentController extends Controller
         $collection = new PaymentCollection;
         $collection->amount = $treat['paid_amount'];
         $collection->payment_method_id = $treat['method_id'];
+        if($treat['paid_date'] != null) {
+          $collection->created_at = date('Y-m-d H:i:s', strtotime($treat['paid_date']));
+        } else {
+          if($payment->treat!=null) {
+            $collection->created_at = date('Y-m-d H:i:s', strtotime($payment->treat->treat_date));
+          }
+        }
         $payment->collections()->save($collection);
       }
 

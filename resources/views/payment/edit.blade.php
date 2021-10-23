@@ -88,10 +88,10 @@
                 </div>
 
                 <div class="row">
-                  <div class="col-12 col-lg-7 text-right">
+                  <div class="col-12 col-lg-5 text-right">
                     Paid History (RM)
                   </div>
-                  <div class="col-12 col-lg-5">
+                  <div class="col-12 col-lg-7">
                     @foreach($payment->collections as $collection)
                     <div class="row">
                       <div class="col-4"><small>{{Carbon\Carbon::parse($collection->created_at)->format('d M Y')}}</small></div>
@@ -103,22 +103,40 @@
                 </div>
 
                 <div class="row">
-                  <div class="col-12 col-lg-7 text-right">
+                  <div class="col-12 col-lg-5 text-right">
                     Balance (RM)
                   </div>
-                  <div class="col-12 col-lg-5 balance-wrp">
+                  <div class="col-12 col-lg-7 balance-wrp">
                     RM {{$payment->total - $payment->collections->sum('amount')}}
                   </div>
                 </div>
 
                 <div class="row mt-2">
-                  <div class="col-12 col-lg-7 text-right">
+                  <div class="col-12 col-lg-5 text-right">
                     Paid Amount (RM)
                   </div>
-                  <div class="col-12 col-lg-5">
-                    <div class="form-group">
-                      <input type="text" class="form-control" name="treat[paid_amount]" value="{{ old('treat.paid_amount', 0) }}" />
+                  <div class="col-12 col-lg-7">
+                    <div class="row">
+                      <div class="col">
+                        <div class="form-group">
+                          <input type="text" class="form-control" name="treat[paid_amount]" value="{{ old('treat.paid_amount', 0) }}" />
+                        </div>
+                      </div>
+                      <div class="col">
+                        <div class="form-group">
+                          <div class="input-group">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text"><i class="ni ni-calendar-grid-58"></i></span>
+                            </div>
+                            <input class="flatpickr datetimepicker form-control" name="treat[paid_date]" type="text" placeholder="Date & Time" value="{{ old('treat.paid_date') }}">
+                          </div>
+                          @error('treat.paid_date')
+                          <small class="text-danger">{{ $message}}</small>
+                          @enderror
+                        </div>
+                      </div>
                     </div>
+
                   </div>
                 </div>
 
