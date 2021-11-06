@@ -319,4 +319,29 @@ class TreatController extends Controller
         //return view('matter.edit', compact('patient', 'matter', 'injuries', 'matter_injuries'));
     }
 
+
+    public function delete(Patient $patient, Matter $matter, Treat $treat, Request $request)
+    {
+      //dd($treat->payment->UsedVoucher);
+
+      if($treat->payment->UsedVoucher) {
+        foreach ($treat->payment->UsedVoucher as $resetVoucher) {
+          $resetVoucher->state = 'enable';
+          $resetVoucher->claim_by = null;
+          $resetVoucher->use_in_payment = null;
+          $resetVoucher->save();
+        }
+      }
+
+      TreatUser::where('treat_id', $treat->id)->delete();
+      TreatDrug::where('treat_id', $treat->id)->delete();
+      $treat->images()->delete();
+      $treat->checkins()->delete();
+      $treat->payment->collections()->delete();
+      $treat->payment->discounts()->delete();
+      $treat->payment->delete();
+      $treat->delete();
+      return redirect()->back();
+    }
+
 }

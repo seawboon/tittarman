@@ -69,7 +69,7 @@ class Payment extends Model
 
     public function UsedVoucher()
     {
-      return $this->hasOne(PatientVoucher::class, 'use_in_payment');
+      return $this->hasMany(PatientVoucher::class, 'use_in_payment');
     }
 
 }

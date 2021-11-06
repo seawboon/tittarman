@@ -108,6 +108,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::post('/patient/{patient}/matter/{matter}/treat/store', 'TreatController@store')->name('treat.store');
 	Route::get('/patient/{patient}/matter/{matter}/treat/{treat}', 'TreatController@edit')->name('treat.edit');
 	Route::post('/patient/{patient}/matter/{matter}/treat/{treat}/update', 'TreatController@update')->name('treat.update');
+	Route::get('/patient/{patient}/matter/{matter}/treat/{treat}/delete', 'TreatController@delete')->name('treat.delete');
 
 	Route::get('/payment/create/{patient}', 'PaymentController@create')->name('payment.create');
 	Route::post('/payment/create/{patient}/store', 'PaymentController@store')->name('payment.store');

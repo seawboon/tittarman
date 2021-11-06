@@ -159,6 +159,7 @@
                                     <th scope="col" class="sort" data-sort="status">Treatment</th>
                                     <th scope="col" class="sort" data-sort="budget">Photo</th>
                                     <th scope="col" class="sort" data-sort="branch">Treatment Fee</th>
+                                    @role('Admin')<th scope="col" class="sort" data-sort="branch">Action</th>@endrole
                                 </tr>
                             </thead>
                             <tbody class="list">
@@ -201,7 +202,11 @@
                                     <td class="align-top">
                                         @money($treat->fee)
                                     </td>
-
+                                    @role('Admin')
+                                    <td class="align-top">
+                                        <a href="{{ route('treat.delete', ['patient' => $patient, 'matter' => $matter, 'treat' => $treat]) }}" class="btn btn-sm btn-warning">Del</a>
+                                    </td>
+                                    @endrole
                                 </tr>
                                 @endforeach
 
