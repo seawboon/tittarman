@@ -38,7 +38,8 @@ class MatterController extends Controller
   {
       $injuries = injury::get();
       $injuryparts = InjuryPart::where('status','yes')->get();
-      return view('matter.create', compact('patient', 'injuries', 'injuryparts', 'olds'));
+      //return view('matter.create', compact('patient', 'injuries', 'injuryparts', 'olds'));
+      return view('matter.create', compact('patient', 'injuries', 'injuryparts'));
   }
 
   public function store(Patient $patient, Request $request)
