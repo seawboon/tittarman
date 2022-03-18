@@ -356,7 +356,7 @@ $(document).ready(function() {
     dateFormat: "Y-m-d H:i",
     maxDate: new Date().fp_incr(1),
     minTime: "10:00",
-    maxTime: "20:00",
+    maxTime: "22:00",
     //defaultHour: "{{date('H')}}",
     //defaultMinute: "{{date('i')}}",
     //defaultDate: "2016-10-20"

@@ -101,7 +101,7 @@
                           {{$loop->iteration}}
                         </span>
                     @endforeach</div>
-                    
+
                     <div class="custom-file before">
                         <input type="file" class="custom-file-input" name="filenamebefore[]" lang="en">
                         <label class="custom-file-label" for="customFileLang">Select file</label>
@@ -402,7 +402,7 @@ $(document).ready(function() {
     dateFormat: "Y-m-d H:i",
     maxDate: new Date().fp_incr(1),
     minTime: "10:00",
-    maxTime: "20:00",
+    maxTime: "22:00",
   });
 
   $('.treat-fee').on('change blur',function(){
